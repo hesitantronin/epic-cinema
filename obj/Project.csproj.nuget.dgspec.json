@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj": {}
+    "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\Project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj": {
+    "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj",
+        "projectUniqueName": "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\Project.csproj",
         "projectName": "Project",
-        "projectPath": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj",
-        "packagesPath": "C:\\Users\\ronin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\obj\\",
+        "projectPath": "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\Project.csproj",
+        "packagesPath": "C:\\Users\\alysh\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ronin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\alysh\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
