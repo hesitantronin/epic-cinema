@@ -12,5 +12,12 @@
 		"genre": "horror",
         "rating": 4.5,
 		"description": "Nikola Tes"
+	},
+	{
+		"id": 3,
+		"title": "alysha's big adventure",
+		"genre": "documentary",
+        "rating": 0.1,
+		"description": "Tikola nes"
 	}
 ]

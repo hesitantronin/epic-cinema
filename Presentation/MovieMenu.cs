@@ -6,5 +6,7 @@ class MovieMenu
         movielogic.PrintMovies();
         movielogic.PrintMovies();
 
+        movielogic.PrintMovies(movielogic.SortBy("GENRE"));
+
     }
 }
