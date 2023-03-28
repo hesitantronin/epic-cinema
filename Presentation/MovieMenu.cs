@@ -4,7 +4,6 @@ class MovieMenu
     {
         MovieLogic movielogic = new MovieLogic();
         movielogic.PrintMovies();
-        movielogic.PrintMovies();
 
         movielogic.PrintMovies(movielogic.SortBy("GENRE"));
 

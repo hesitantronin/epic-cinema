@@ -36,7 +36,13 @@ class MovieLogic
             _movies.Add(mov);
         }
         MovieAccess.WriteAll(_movies);
+    }
 
+    public void RemoveMovie(int id)
+    {
+        int index = _movies.FindIndex(s => s.Id == id);
+        _movies.Remove(_movies[index]);
+        MovieAccess.WriteAll(_movies);
     }
 
     public MovieModel GetById(int id)
