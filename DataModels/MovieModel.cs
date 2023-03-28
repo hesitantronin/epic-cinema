@@ -17,6 +17,16 @@ class MovieModel
     [JsonPropertyName("description")]
     public string Description { get; set; }
 
+    [JsonPropertyName("age")]
+    public int Age { get; set; }
+
+    [JsonPropertyName("viewing_date")]
+    public DateTime ViewingDate { get; set; }
+
+    [JsonPropertyName("publish_date")]
+    public DateTime PublishDate { get; set; }
+    
+
     public MovieModel(int id, string title, string genre, double rating, string description)
     {
         Id = id;

@@ -43,6 +43,24 @@ class MovieLogic
     {
         return _movies.Find(i => i.Id == id);
     }
+
+    public void PrintMovies()
+    {
+        Console.WriteLine("MOVIES\n");
+        foreach (MovieModel movie in _movies)
+        {
+            Console.WriteLine($"Title: {movie.Title}");
+            Console.WriteLine($"Genre: {movie.Genre}");
+            Console.WriteLine($"Rating: {movie.Rating}");
+            Console.WriteLine($"Description: {movie.Description}");
+            Console.WriteLine();
+        }
+    }
+
+    public void AddMovie()
+    {
+        
+    }
 }
 
 
