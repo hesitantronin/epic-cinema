@@ -62,6 +62,7 @@ class AccountsLogic
         CurrentAccount = _accounts.Find(i => i.EmailAddress == email);
         return CurrentAccount;
     }
+    
     public int GetNextId()
     {
         int maxId = 0;
@@ -74,23 +75,32 @@ class AccountsLogic
         }
         return maxId + 1;
     }
-
-    public AccountModel Register(string email, string password, string fullName)
+    public string GetMaskedPassword()
     {
-        if (email == null || password == null || fullName == null)
+        Console.Write("Enter password: ");
+        string password = "";
+
+        while (true)
         {
-            return null;
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+            if (keyInfo.Key == ConsoleKey.Enter)
+            {
+                break;
+            }
+            else if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
+            {
+                password = password.Substring(0, password.Length - 1);
+                Console.Write("\b \b");
+            }
+            else if (keyInfo.KeyChar >= 32 && keyInfo.KeyChar <= 126)
+            {
+                password += keyInfo.KeyChar;
+                Console.Write("*");
+            }
         }
-        CurrentAccount = _accounts.Find(i => i.EmailAddress == email && i.Password == password);
-        if (CurrentAccount != null)
-        {
-            // An account with this email already exists
-            return null;
-        }
-        int nextId = GetNextId();
-        AccountModel newAcc = new AccountModel(nextId, email, password, fullName);
-        _accounts.Add(newAcc);
-        AccountsAccess.WriteAll(_accounts);
-        return newAcc;
+
+        Console.WriteLine();
+        return password;
     }
 }

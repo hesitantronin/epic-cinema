@@ -21,29 +21,38 @@ static class UserLogin
         }
         else
         {
-            Console.WriteLine("No account found with that email and password");
+            Console.WriteLine("One or more fields contains a invalid character");
         }
     }
 
     public static void Register()
     {
         Console.WriteLine("Welcome to the registration page");
-        Console.WriteLine("Please enter your email address");
-        string email = Console.ReadLine();
-        AccountModel accReg = accountsLogic.CheckEmailExists(email);
-        if (accReg != null)
+
+        string email;
+        bool test = false;
+        AccountModel registerAcc = null; // Initialize to null
+        do
         {
-            Console.WriteLine($"An account with {email} already exists");
-            return;
-        }
+            Console.WriteLine("Please enter your email address");
+            email = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
+            {
+                Console.WriteLine($"Invalid email, please try again.");
+                continue;
+            }
+            registerAcc = accountsLogic.CheckEmailExists(email);
+            test = true;
+            
+        } while (test == false);
+
         string password;
         string confirmedPassword;
         do
         {
-            Console.WriteLine("Please enter your password");
-            password = Console.ReadLine();
+            password = accountsLogic.GetMaskedPassword();
             Console.WriteLine("Please confirm your password");
-            confirmedPassword = Console.ReadLine();
+            confirmedPassword = accountsLogic.GetMaskedPassword();
             if (password != confirmedPassword)
             {
                 Console.WriteLine("Passwords do not match, please try again.");
@@ -52,10 +61,12 @@ static class UserLogin
 
         Console.WriteLine("Please enter your full name");
         string fullName = Console.ReadLine();
+
         int id = accountsLogic.GetNextId();
         AccountModel acc = new AccountModel(id, email, password, fullName);
         accountsLogic.UpdateList(acc);
+
         Console.WriteLine("Account created successfully!");
-        Console.WriteLine("Welcome " + fullName);
+        Console.WriteLine($"Welcome {fullName}");
     }
 }
