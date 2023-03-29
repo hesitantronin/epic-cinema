@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj": {}
+    "D:\\Users\\Lucas\\Source\\Repos\\Project-B\\Project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj": {
+    "D:\\Users\\Lucas\\Source\\Repos\\Project-B\\Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj",
+        "projectUniqueName": "D:\\Users\\Lucas\\Source\\Repos\\Project-B\\Project.csproj",
         "projectName": "Project",
-        "projectPath": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj",
-        "packagesPath": "C:\\Users\\ronin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\obj\\",
+        "projectPath": "D:\\Users\\Lucas\\Source\\Repos\\Project-B\\Project.csproj",
+        "packagesPath": "C:\\Users\\Lucas\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\Lucas\\Source\\Repos\\Project-B\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\ronin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -53,7 +60,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.405\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

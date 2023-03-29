@@ -55,9 +55,9 @@ class MovieLogic
 
     }
 
-    public List<MovieModel> FilterBy(string? genre, bool? mature)
+    public List<MovieModel> FilterBy(string? genre, bool? mature, List<MovieModel>? sorted)
     {
-        List<MovieModel> filtered = _movies;
+        List<MovieModel> filtered = (sorted != null) ? sorted : _movies;
         if (genre != null)
             filtered = _movies.Where(movie => movie.Genre == genre).ToList();
         if (mature == true)
@@ -66,10 +66,22 @@ class MovieLogic
         return filtered;
     }
 
-    public List<MovieModel> SortBy(string input)
+    public List<MovieModel> Search(string query, List<MovieModel>? sorted) 
+    {
+        List<MovieModel> unsorted = (sorted != null) ? sorted : _movies;
+        List<MovieModel> searched = new();
+
+        foreach(MovieModel movie in unsorted) 
+            if(movie.Title.ToLower().Contains(query.ToLower()) || movie.Description.ToLower().Contains(query.ToLower())) 
+                searched.Add(movie);
+
+        return searched;
+    }
+
+    public List<MovieModel> SortBy(string input, List<MovieModel>? filtered)
     {
         SortOrder order = GetOrder();
-        List<MovieModel> unsorted = _movies;
+        List<MovieModel> unsorted = (filtered != null) ? filtered : _movies;
 
         // Check what to sort by per subject, counting common misspellings in.
         if (input.ToUpper() == "DATE" || input.ToUpper() == "DARE" || input.ToUpper() == "DATR")
