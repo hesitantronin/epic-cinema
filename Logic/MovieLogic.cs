@@ -71,6 +71,7 @@ class MovieLogic
         List<MovieModel> unsorted = (sorted != null) ? sorted : _movies;
         List<MovieModel> searched = new();
 
+        //Filter only items containing query
         foreach(MovieModel movie in unsorted) 
             if(movie.Title.ToLower().Contains(query.ToLower()) || movie.Description.ToLower().Contains(query.ToLower())) 
                 searched.Add(movie);
@@ -117,7 +118,8 @@ class MovieLogic
         // Ask user what to sort by, if the input is not a string the question will repeat.
         Console.WriteLine("Would you like to sort ascending or descending? Type 'ASC' or 'DESC'.");
         while (true)
-        {
+        {   
+            //Decide the sort order based on user input
             string? _order = Console.ReadLine();
             if (_order != null && _order is string)
                 if (_order.ToUpper() == "ASC" || _order.ToUpper() == "DESC")
