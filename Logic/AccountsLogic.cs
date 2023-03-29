@@ -53,8 +53,44 @@ class AccountsLogic
         CurrentAccount = _accounts.Find(i => i.EmailAddress == email && i.Password == password);
         return CurrentAccount;
     }
+    public AccountModel CheckEmailExists(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
+        {
+            return null;
+        }
+        CurrentAccount = _accounts.Find(i => i.EmailAddress == email);
+        return CurrentAccount;
+    }
+    public int GetNextId()
+    {
+        int maxId = 0;
+        foreach (var acc in _accounts)
+        {
+            if (acc.Id > maxId)
+            {
+                maxId = acc.Id;
+            }
+        }
+        return maxId + 1;
+    }
+
+    public AccountModel Register(string email, string password, string fullName)
+    {
+        if (email == null || password == null || fullName == null)
+        {
+            return null;
+        }
+        CurrentAccount = _accounts.Find(i => i.EmailAddress == email && i.Password == password);
+        if (CurrentAccount != null)
+        {
+            // An account with this email already exists
+            return null;
+        }
+        int nextId = GetNextId();
+        AccountModel newAcc = new AccountModel(nextId, email, password, fullName);
+        _accounts.Add(newAcc);
+        AccountsAccess.WriteAll(_accounts);
+        return newAcc;
+    }
 }
-
-
-
-
