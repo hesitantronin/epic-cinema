@@ -1,28 +1,82 @@
+using System.Text;
+
+//This shows the menu. You can call back to this method to show the menu again
+//after another presentation method is completed.
+//You could edit this to show different menus depending on the user's role
+
 static class OptionsMenu
-{
-
-    //This shows the menu. You can call back to this method to show the menu again
-    //after another presentation method is completed.
-    //You could edit this to show different menus depending on the user's role
-    static public void Start()
+{ 
+    public static void Start()
     {
-        Console.WriteLine("Enter 1 to login");
-        Console.WriteLine("Enter 2 to register");
+        //Some settings for how the menu will look/act
+        Console.Clear();
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.CursorVisible = false;
 
-        string input = Console.ReadLine();
-        if (input == "1")
+        // Prints some instructions for the user
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter/Return to select:");
+        Console.ResetColor();
+
+        // gets the cursor position and sets option to 1
+        (int left, int top) = Console.GetCursorPosition();
+        var option = 1;
+
+        // this is the decorator that will help you see where the cursor is at
+        var decorator = " > \u001b[32m";
+
+        // sets a variable for 'key' that will be used later
+        ConsoleKeyInfo key;
+
+        // the loop in which an option is chosen from a list
+        bool isSelected = false;
+        while (!isSelected)
         {
+            // sets the cursor to the right position
+            Console.SetCursorPosition(left, top);
+
+            // prints the options and uses the decorator depending on what value 'option' has
+            Console.WriteLine($"{(option == 1 ? decorator : "   ")}Login\u001b[0m");
+            Console.WriteLine($"{(option == 2 ? decorator : "   ")}Register\u001b[0m");
+            Console.WriteLine($"{(option == 3 ? decorator : "   ")}Guest\u001b[0m");
+
+            // sees what key has been pressed
+            key = Console.ReadKey(false);
+
+            // a switch case that changes the value from 'option', depending on the key input
+            switch (key.Key)
+            {
+                // moves one up
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? 3 : option - 1;
+                    break;
+                // moves one down
+                case ConsoleKey.DownArrow:
+                    option = option == 3 ? 1 : option + 1;
+                    break;
+
+                // if enter is pressed, breaks out of the while loop
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
+            }
+        }
+
+        // depending on the option that was chosen, it will clear the console and call the right function
+        if (option == 1)
+        {
+            Console.Clear();
             UserLogin.Start();
         }
-        else if (input == "2")
+        else if (option == 2)
         {
+            Console.Clear();
             UserLogin.Register();
         }
-        else
+        else if (option == 3)
         {
-            Console.WriteLine("Invalid input");
-            Start();
+            Console.Clear();
+            Console.WriteLine("Not yet implemented.");
         }
-
     }
 }
