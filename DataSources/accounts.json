@@ -16,5 +16,11 @@
     "emailAddress": "email@hmal.nl",
     "password": "wewew",
     "fullName": "Ally"
+  },
+  {
+    "id": 4,
+    "emailAddress": "t@b.c",
+    "password": "poop",
+    "fullName": "poop"
   }
 ]

@@ -8,19 +8,19 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\ronin\\.nuget\\packages\\": {}
+    "C:\\Users\\kingd\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj",
+      "projectUniqueName": "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\Project.csproj",
       "projectName": "Project",
-      "projectPath": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\Project.csproj",
-      "packagesPath": "C:\\Users\\ronin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ronin\\OneDrive\\Github projects\\Project-B\\obj\\",
+      "projectPath": "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\Project.csproj",
+      "packagesPath": "C:\\Users\\kingd\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\ronin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\kingd\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
