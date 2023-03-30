@@ -1,63 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-
-
-//This class is not static so later on we can use inheritance and interfaces
 class MovieLogic
 {
     private List<MovieModel> _movies = new();
-
-    //Static properties are shared across all instances of the class
-    //This can be used to get the current logged in account from anywhere in the program
-    //private set, so this can only be set by the class itself
     static public MovieModel? CurrentMovie { get; private set; }
 
     public MovieLogic()
     {
+        // uses the loadall function to load the json to the list
         _movies = MovieAccess.LoadAll();
     }
 
 
     public void UpdateList(MovieModel mov)
     {
-        //Find if there is already an model with the same id
+        // finds if there is already a movie with the same id
         int index = _movies.FindIndex(s => s.Id == mov.Id);
 
+        // if the index exists, itll update the movie, otherwhise itll add a new one
         if (index != -1)
         {
-            //update existing model
+            // updates existing movie
             _movies[index] = mov;
         }
         else
         {
-            //add new model
+            //adds new movie
             _movies.Add(mov);
         }
+
+        // writes the changed data to the json file
         MovieAccess.WriteAll(_movies);
     }
 
     public void RemoveMovie(int id)
     {
+        // finds if there is a movie with the same id
         int index = _movies.FindIndex(s => s.Id == id);
+
+        // removes the movie with that id, and updates the json file
         _movies.Remove(_movies[index]);
         MovieAccess.WriteAll(_movies);
     }
 
     public MovieModel GetById(int id)
     {
+        // returns the movie data that matches the id
         return _movies.Find(i => i.Id == id);
-    }
-
-    public void AddMovie()
-    {
-
     }
 
     public List<MovieModel> FilterBy(string? genre, bool? mature)
     {
+        // copies the original list
         List<MovieModel> filtered = _movies;
+
         if (genre != null)
             filtered = _movies.Where(movie => movie.Genre == genre).ToList();
         if (mature == true)
@@ -114,7 +108,7 @@ class MovieLogic
         }
     }
 
-    enum SortOrder
+    enum SortOrder    
     {
         ASCENDING,
         DESCENDING

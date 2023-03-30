@@ -1,9 +1,5 @@
 using System.Text;
 
-//This shows the menu. You can call back to this method to show the menu again
-//after another presentation method is completed.
-//You could edit this to show different menus depending on the user's role
-
 static class OptionsMenu
 { 
     public static void Start()
@@ -15,7 +11,7 @@ static class OptionsMenu
 
         // Prints some instructions for the user
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter/Return to select:");
+        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter to select:");
         Console.ResetColor();
 
         // gets the cursor position and sets option to 1
@@ -50,6 +46,7 @@ static class OptionsMenu
                 case ConsoleKey.UpArrow:
                     option = option == 1 ? 3 : option - 1;
                     break;
+                    
                 // moves one down
                 case ConsoleKey.DownArrow:
                     option = option == 3 ? 1 : option + 1;
