@@ -6,22 +6,26 @@ static class UserLogin
     public static void Start()
     {
         Console.WriteLine("Welcome to the login page");
-        Console.WriteLine("Please enter your email address");
-        string email = Console.ReadLine();
-        Console.WriteLine("Please enter your password");
-        string password = Console.ReadLine();
-        AccountModel acc = accountsLogic.CheckLogin(email, password);
-        if (acc != null)
-        {
-            Console.WriteLine("Welcome back " + acc.FullName);
-            Console.WriteLine("Your email number is " + acc.EmailAddress);
 
-            //Write some code to go back to the menu
-            //Menu.Start();
-        }
-        else
+        while (true)
         {
-            Console.WriteLine("One or more fields contains a invalid character");
+            Console.WriteLine("Please enter your email address");
+            string email = Console.ReadLine();
+
+            string password = accountsLogic.GetMaskedPassword();
+
+            AccountModel acc = accountsLogic.CheckLogin(email, password);
+            if (acc != null)
+            {
+                Console.WriteLine("Welcome back " + acc.FullName);
+                Console.WriteLine("Your email address is " + acc.EmailAddress);
+
+                break;
+            }
+            else
+            {
+                Console.WriteLine("No account found with these credentials");
+            }
         }
     }
 
@@ -43,7 +47,7 @@ static class UserLogin
             }
             registerAcc = accountsLogic.CheckEmailExists(email);
             test = true;
-            
+
         } while (test == false);
 
         string password;

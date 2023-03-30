@@ -62,7 +62,7 @@ class AccountsLogic
         CurrentAccount = _accounts.Find(i => i.EmailAddress == email);
         return CurrentAccount;
     }
-    
+
     public int GetNextId()
     {
         int maxId = 0;
