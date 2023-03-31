@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-
+ 
 class AccountModel
 {
     [JsonPropertyName("id")]

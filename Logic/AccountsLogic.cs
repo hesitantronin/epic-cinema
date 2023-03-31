@@ -66,7 +66,7 @@ class AccountsLogic
             }
         }
         return new AccountModel(0, email, password, string.Empty);
-    } 
+    }  
 
     // Returns true if the email is not empty, contains an '@', contains a '.' and does not contain any white space.
     public bool IsEmailValid(string email) => (!string.IsNullOrWhiteSpace(email) && email.Contains("@") && email.Contains(".") && !email.Contains(" "));
