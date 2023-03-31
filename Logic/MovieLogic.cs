@@ -129,20 +129,23 @@ class MovieLogic
 
     public void PrintMovies(List<MovieModel> to_print)
     {
+        // writes header for movies
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("\nMOVIES\n");
         Console.ResetColor();
         
+        // prints the movies one by one
         foreach (MovieModel movie in to_print)
         {
+            // writes movie title in red
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine(movie.Title);
             Console.ResetColor();
 
+            // prints the rest of the data
             Console.WriteLine($"* Genre:\n   {movie.Genre}");
             Console.WriteLine($"* Rating:\n   {movie.Rating}");
             Console.WriteLine($"* Description:\n   {MovieLogic.SpliceText(movie.Description)}");
-            Console.WriteLine();
         }
     }
 
@@ -225,6 +228,10 @@ class MovieLogic
                 finalString += "\n   ";
                 charCounter = 0;
             }
+        }
+        if (inputText.Length < lineLength)
+        {
+            finalString += "\n   ";
         }
         return finalString;
     }
