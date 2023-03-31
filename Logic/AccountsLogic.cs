@@ -94,7 +94,7 @@ class AccountsLogic
     }
     public string GetMaskedPassword()
     {
-        Console.Write("Enter password: ");
+        Console.Write("\nEnter password:\n");
         string password = "";
 
         while (true)
@@ -119,8 +119,6 @@ class AccountsLogic
                 password += keyInfo.KeyChar;
                 Console.Write("*");
             }
-
-
         }
 
         Console.WriteLine();

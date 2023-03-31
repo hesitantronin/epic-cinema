@@ -175,7 +175,7 @@ class MovieLogic
                     Console.ResetColor();
 
                     // prints the description
-                    Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(to_print[i].Description)}");
+                    Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(to_print[i].Description, "    ")}");
                 }
 
                 Console.WriteLine($"\n{(option == to_print.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
@@ -208,12 +208,45 @@ class MovieLogic
                 Console.Clear();
                 MovieMenu.Start();
             } 
+            else
+            {
+                Console.Clear();
+                MovieInfo(to_print[option - 1]);
+            }
         }
 
     }
 
     public void PrintMovies() => PrintMovies(_movies);
  
+    public void MovieInfo(MovieModel movie)
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine($"{movie.Title.ToUpper()}\n");
+        Console.ResetColor();
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Genre");
+        Console.ResetColor();
+        Console.WriteLine($" {movie.Genre}\n");
+
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Rating");
+        Console.ResetColor();
+        Console.WriteLine($" {movie.Rating}\n");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Age Restriction");
+        Console.ResetColor();
+        Console.WriteLine($" {movie.Age}\n");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Description");
+        Console.ResetColor();
+        Console.WriteLine($" {MovieLogic.SpliceText(movie.Description, " ")}\n");
+
+    }
     public List<MovieModel> SortBy(string input)
     {
         SortOrder order = GetOrder();
@@ -271,7 +304,7 @@ class MovieLogic
         return searched;
     }
 
-    public static string SpliceText(string inputText) 
+    public static string SpliceText(string inputText, string spacing) 
     {
         int lineLength = 50;
         string[] stringSplit = inputText.Split(' ');
@@ -285,13 +318,13 @@ class MovieLogic
     
             if(charCounter > lineLength)
             {
-                finalString += "\n    ";
+                finalString += $"\n{spacing}";
                 charCounter = 0;
             }
         }
         if (inputText.Length < lineLength)
         {
-            finalString += "\n    ";
+            finalString += $"\n{spacing}";
         }
         return finalString;
     }

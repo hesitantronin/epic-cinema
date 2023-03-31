@@ -4,11 +4,15 @@ static class UserLogin
 
     public static void Start()
     {
-        Console.WriteLine("Welcome to the login page");
+        Console.CursorVisible = true;
 
-        while (true) 
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("Welcome to the login page\n");
+        Console.ResetColor();
+
+        while (true)
         {
-            Console.WriteLine("Please enter your email address");
+            Console.WriteLine("Please enter your email address:");
             string email = Console.ReadLine() + "";
             string password = accountsLogic.GetMaskedPassword();
 
@@ -18,17 +22,23 @@ static class UserLogin
                 break;
             }
         }
+
+        Console.CursorVisible = false;
     }
 
     public static void Register()
     {
-        Console.WriteLine("Welcome to the registration page");
+        Console.CursorVisible = true;
+
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("Welcome to the registration page\n");
+        Console.ResetColor();
 
         string email = string.Empty;
         bool test = false;
 
         while(test == false) {
-            Console.WriteLine("Please enter your email address");
+            Console.WriteLine("Please enter your email address:");
             email = Console.ReadLine() + "";
 
             if (!accountsLogic.IsEmailValid(email)) 
@@ -66,6 +76,7 @@ static class UserLogin
         Console.WriteLine("\nAccount created successfully!");
         Console.WriteLine($"Welcome, {fullName}.");
 
+        Console.CursorVisible = false;
         Thread.Sleep(7000);
 
         OptionsMenu.GoBack();
