@@ -41,8 +41,29 @@ class AccountsLogic
 
     public AccountModel GetById(int id)
     {
+<<<<<<< HEAD
         return _accounts.Find(i => i.Id == id);
     }
+=======
+        if(IsLoginValid(email, password)) 
+        {
+            AccountModel? accountModel = _accounts.Find(a => a.EmailAddress == email && a.Password == password);
+            if(accountModel == null) 
+            {
+                Console.WriteLine("No account found with these credentials");
+                return new AccountModel(0, email, password, string.Empty);
+            } 
+            else 
+            {
+                Console.WriteLine($"Welcome back {accountModel.FullName}.");
+                Console.WriteLine($"Your email address is {accountModel.EmailAddress}.");
+                accountModel.Authorize();
+                return accountModel;
+            }
+        }
+        return new AccountModel(0, email, password, string.Empty);
+    }  
+>>>>>>> a2f6b86b1514c136bfa02313da4e1818232a84e8
 
     public AccountModel CheckLogin(string email, string password)
     {
@@ -63,7 +84,7 @@ class AccountsLogic
         return CurrentAccount;
     }
 
-    public int GetNextId()
+    public int GetNextId() 
     {
         int maxId = 0;
         foreach (var acc in _accounts)
