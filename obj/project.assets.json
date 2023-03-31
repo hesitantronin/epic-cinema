@@ -8,19 +8,19 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Redux Gamer\\.nuget\\packages\\": {}
+    "C:\\Users\\alysh\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\Project.csproj",
+      "projectUniqueName": "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\Project.csproj",
       "projectName": "Project",
-      "projectPath": "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\Project.csproj",
-      "packagesPath": "C:\\Users\\Redux Gamer\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\obj\\",
+      "projectPath": "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\Project.csproj",
+      "packagesPath": "C:\\Users\\alysh\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\alysh\\OneDrive\\documenten\\GitHub\\Project-B\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Redux Gamer\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\alysh\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"

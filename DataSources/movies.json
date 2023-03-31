@@ -2,22 +2,25 @@
     {
 		"id": 1,
 		"title": "Jackass: The Movie",
-		"genre": "Comedy/Action",
+		"genre": "Action",
         "rating": 6.6,
-		"description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time."
+		"description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time.",
+		"age": 18
 	},
     {
 		"id": 2,
 		"title": "murder",
-		"genre": "horror",
+		"genre": "Horror",
         "rating": 4.5,
-		"description": "Nikola Tes"
+		"description": "Nikola Tes",
+		"age": 16
 	},
 	{
 		"id": 3,
 		"title": "alysha's big adventure",
-		"genre": "documentary",
+		"genre": "Comedy",
         "rating": 0.1,
-		"description": "Tikola nes"
+		"description": "Tikola nes",
+		"age": 12
 	}
 ]

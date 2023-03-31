@@ -57,9 +57,6 @@ class MovieLogic
 
         // Prints some instructions for the user
         Console.WriteLine("Would you like to sort ascending or descending?");
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter to select:");
-        Console.ResetColor();
 
         // gets the cursor position and sets option to 1
         (int left, int top) = Console.GetCursorPosition();
@@ -129,31 +126,94 @@ class MovieLogic
 
     public void PrintMovies(List<MovieModel> to_print)
     {
+
         // writes header for movies
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("\nMOVIES\n");
         Console.ResetColor();
-        
-        // prints the movies one by one
-        foreach (MovieModel movie in to_print)
-        {
-            // writes movie title in red
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine(movie.Title);
-            Console.ResetColor();
 
-            // prints the rest of the data
-            Console.WriteLine($"* Genre:\n   {movie.Genre}");
-            Console.WriteLine($"* Rating:\n   {movie.Rating}");
-            Console.WriteLine($"* Description:\n   {MovieLogic.SpliceText(movie.Description)}");
+        // prints an error message if nothing was found
+        if (to_print.Count() == 0)
+        {
+            Console.WriteLine("No movies were found that matched the criteria.");
         }
+        else
+        {           
+            // makes a new movielogic to work with
+            MovieLogic movielogic = new MovieLogic();
+
+            //Some settings for how the menu will look/act
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.CursorVisible = false;
+
+            // Prints some instructions for the user
+            Console.WriteLine("Select the movie you want to take a closer look at.\n");
+
+            // gets the cursor position and sets option to 1
+            (int left, int top) = Console.GetCursorPosition();
+            var option = 1;
+
+            // this is the decorator that will help you see where the cursor is at
+            var decorator = " > \u001b[32m";
+
+            // sets a variable for 'key' that will be used later
+            ConsoleKeyInfo key;
+
+            // the loop in which an option is chosen from a list
+            bool isSelected = false;
+            while (!isSelected)
+            {
+                // sets the cursor to the right position
+                Console.SetCursorPosition(left, top);
+
+                // prints the movies one by one
+                for (int i = 0; i < to_print.Count(); i++)
+                {
+                    // writes movie title in red
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{to_print[i].Title}\u001b[0m");
+                    Console.ResetColor();
+
+                    // prints the description
+                    Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(to_print[i].Description)}");
+                }
+
+                Console.WriteLine($"\n{(option == to_print.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
+
+                // sees what key has been pressed
+                key = Console.ReadKey(false);
+
+                // a switch case that changes the value from 'option', depending on the key input
+                switch (key.Key)
+                {
+                    // moves one up
+                    case ConsoleKey.UpArrow:
+                        option = option == 1 ? to_print.Count() + 1 : option - 1;
+                        break;
+                        
+                    // moves one down
+                    case ConsoleKey.DownArrow:
+                        option = option == to_print.Count() + 1 ? 1 : option + 1;
+                        break;
+
+                    // if enter is pressed, breaks out of the while loop
+                    case ConsoleKey.Enter:
+                        isSelected = true;
+                        break;
+                }
+            }
+                
+            if (option == to_print.Count() + 1)
+            {
+                Console.Clear();
+                MovieMenu.Start();
+            } 
+        }
+
     }
 
     public void PrintMovies() => PrintMovies(_movies);
-
-
-//-------------------------------------------------------------------------------------------------
-
+ 
     public List<MovieModel> SortBy(string input)
     {
         SortOrder order = GetOrder();
@@ -195,8 +255,8 @@ class MovieLogic
 
         if (genre != null)
             filtered = _movies.Where(movie => movie.Genre == genre).ToList();
-        if (mature == true)
-            filtered = filtered.Where(movie => movie.Age >= 18).ToList();
+        if (mature == false)
+            filtered = filtered.Where(movie => movie.Age < 18).ToList();
 
         return filtered;
     }
@@ -225,13 +285,13 @@ class MovieLogic
     
             if(charCounter > lineLength)
             {
-                finalString += "\n   ";
+                finalString += "\n    ";
                 charCounter = 0;
             }
         }
         if (inputText.Length < lineLength)
         {
-            finalString += "\n   ";
+            finalString += "\n    ";
         }
         return finalString;
     }
