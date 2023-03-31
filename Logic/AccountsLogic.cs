@@ -78,6 +78,10 @@ class AccountsLogic
     // Return true if an account with this email is found in the JSON.
     public bool IsEmailInUse(string email) => (_accounts.Find(i => i.EmailAddress == email) != null);
 
+    // Return true if the given password matches the criteria
+    public bool IsPasswordValid(string password) => (password.Length > 8 && password.Length < 32 && password.Any(char.IsDigit) 
+                    && password.Any(char.IsUpper) && password.Any(char.IsSymbol));
+
     public int GetNextId() 
     {
         int maxId = 0;
@@ -98,8 +102,12 @@ class AccountsLogic
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
             if (keyInfo.Key == ConsoleKey.Enter)
-            {
-                break;
+            {            
+                if (IsPasswordValid(password))
+                    {
+                        break;
+                    }
+                Console.WriteLine("\nPassword must be between 8 and 32 characters long and contain one number, uppercase character and special character");
             }
             else if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
             {
@@ -111,6 +119,8 @@ class AccountsLogic
                 password += keyInfo.KeyChar;
                 Console.Write("*");
             }
+
+
         }
 
         Console.WriteLine();
