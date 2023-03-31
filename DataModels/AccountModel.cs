@@ -15,6 +15,8 @@ class AccountModel
     [JsonPropertyName("fullName")]
     public string FullName { get; set; }
 
+    public bool Authorized = false;
+
     public AccountModel(int id, string emailAddress, string password, string fullName)
     {
         Id = id;
@@ -22,6 +24,8 @@ class AccountModel
         Password = password;
         FullName = fullName;
     }
+
+    public void Authorize() => Authorized = true;
 
 }
 

@@ -22,5 +22,11 @@
     "emailAddress": "t@b.c",
     "password": "poop",
     "fullName": "poop"
+  },
+  {
+    "id": 5,
+    "emailAddress": "oke@edkeokde.com",
+    "password": "123",
+    "fullName": "nee"
   }
 ]

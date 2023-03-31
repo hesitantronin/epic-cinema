@@ -39,40 +39,49 @@ class AccountsLogic
 
     }
 
-    public AccountModel GetById(int id)
-    {
-        return _accounts.Find(i => i.Id == id);
-    }
+    public AccountModel? GetById(int id) => _accounts.Find(i => i.Id == id);
 
-    public AccountModel CheckLogin(string email, string password)
+    // Return false if either of the parameters are empty or null
+    public bool IsLoginValid(string email, string password) => (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password));
+
+
+    //Return authorized accountmodel that matches both credentials
+    //If no matching account is found, return an empty unauthorized account
+    public AccountModel Auth(string email, string password) 
     {
-        if (email == null || password == null)
+        if(IsLoginValid(email, password)) 
         {
-            return null;
+            AccountModel? accountModel = _accounts.Find(a => a.EmailAddress == email && a.Password == password);
+            if(accountModel == null) 
+            {
+                Console.WriteLine("No account found with these credentials");
+                return new AccountModel(0, email, password, string.Empty);
+            } 
+            else 
+            {
+                Console.WriteLine($"Welcome back {accountModel.FullName}.");
+                Console.WriteLine($"Your email address is {accountModel.EmailAddress}.");
+                accountModel.Authorize();
+                return accountModel;
+            }
         }
-        CurrentAccount = _accounts.Find(i => i.EmailAddress == email && i.Password == password);
-        return CurrentAccount;
-    }
-    public AccountModel CheckEmailExists(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
-        {
-            return null;
-        }
-        CurrentAccount = _accounts.Find(i => i.EmailAddress == email);
-        return CurrentAccount;
-    }
+        return new AccountModel(0, email, password, string.Empty);
+    } 
+
+    // Returns true if the email is not empty, contains an '@', contains a '.' and does not contain any white space.
+    public bool IsEmailValid(string email) => (!string.IsNullOrWhiteSpace(email) && email.Contains("@") && email.Contains(".") && !email.Contains(" "));
+    
+    // Return true if an account with this email is found in the JSON.
+    public bool IsEmailInUse(string email) => (_accounts.Find(i => i.EmailAddress == email) != null);
 
     public int GetNextId()
     {
         int maxId = 0;
+
         foreach (var acc in _accounts)
-        {
             if (acc.Id > maxId)
-            {
                 maxId = acc.Id;
-            }
-        }
+
         return maxId + 1;
     }
     public string GetMaskedPassword()
