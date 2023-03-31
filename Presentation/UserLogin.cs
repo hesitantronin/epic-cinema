@@ -42,14 +42,17 @@ static class UserLogin
         string password = string.Empty;
         string confirmedPassword = "no match";
 
-        while(password != confirmedPassword) {
+        while(password != confirmedPassword) 
+        {
             password = accountsLogic.GetMaskedPassword();
-
+                    
             Console.WriteLine("Please confirm your password");
             confirmedPassword = accountsLogic.GetMaskedPassword();
 
             if (password != confirmedPassword)
+            {
                 Console.WriteLine("Passwords do not match, please try again.");
+            }
         }
 
         Console.WriteLine("Please enter your full name");

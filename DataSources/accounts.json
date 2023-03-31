@@ -28,5 +28,11 @@
     "emailAddress": "kaasje@test.nl",
     "password": "kaasje",
     "fullName": "egberts"
+  },
+  {
+    "id": 6,
+    "emailAddress": "kaaske@bleh.com",
+    "password": "kees",
+    "fullName": "jan"
   }
 ]
