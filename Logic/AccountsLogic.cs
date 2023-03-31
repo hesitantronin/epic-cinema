@@ -74,7 +74,7 @@ class AccountsLogic
     // Return true if an account with this email is found in the JSON.
     public bool IsEmailInUse(string email) => (_accounts.Find(i => i.EmailAddress == email) != null);
 
-    public int GetNextId()
+    public int GetNextId() 
     {
         int maxId = 0;
 

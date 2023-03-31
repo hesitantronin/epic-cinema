@@ -7,7 +7,7 @@ class AccountModel
     public int Id { get; set; }
 
     [JsonPropertyName("emailAddress")]
-    public string EmailAddress { get; set; }
+    public string EmailAddress { get; set; } 
 
     [JsonPropertyName("password")]
     public string Password { get; set; }

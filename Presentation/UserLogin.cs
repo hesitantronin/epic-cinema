@@ -7,7 +7,7 @@ static class UserLogin
     {
         Console.WriteLine("Welcome to the login page");
 
-        while (true)
+        while (true) 
         {
             Console.WriteLine("Please enter your email address");
             string email = Console.ReadLine() + "";
