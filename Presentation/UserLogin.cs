@@ -1,6 +1,6 @@
 static class UserLogin
 {
-    static private AccountsLogic accountsLogic = new AccountsLogic();
+    private static AccountsLogic accountsLogic = new AccountsLogic();
 
     public static void Start()
     {
@@ -13,8 +13,10 @@ static class UserLogin
             string password = accountsLogic.GetMaskedPassword();
 
             AccountModel currentAccount = accountsLogic.Auth(email, password);
-            if(currentAccount.Authorized == true)
+            if(currentAccount.Authorized == true) {
+                accountsLogic.SetCurrentAccount(currentAccount);
                 break;
+            }
         }
     }
 
@@ -55,6 +57,8 @@ static class UserLogin
 
         AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, password, fullName);
         accountsLogic.UpdateList(acc);
+
+        accountsLogic.SetCurrentAccount(acc);
 
         Console.WriteLine("\nAccount created successfully!");
         Console.WriteLine($"Welcome, {fullName}.");
