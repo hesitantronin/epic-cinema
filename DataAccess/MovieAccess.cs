@@ -8,7 +8,11 @@ static class MovieAccess
     public static List<MovieModel> LoadAll()
     {
         string json = File.ReadAllText(path);
-        return JsonSerializer.Deserialize<List<MovieModel>>(json);
+
+        if(!string.IsNullOrEmpty(json))
+            return JsonSerializer.Deserialize<List<MovieModel>>(json!)!;
+        else
+            return new List<MovieModel>();
     }
 
 
