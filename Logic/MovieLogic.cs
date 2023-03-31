@@ -126,16 +126,67 @@ class MovieLogic
 
     public void PrintMovies(List<MovieModel> to_print)
     {
-
         // writes header for movies
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nMOVIES\n");
+        Console.WriteLine("MOVIES\n");
         Console.ResetColor();
 
         // prints an error message if nothing was found
         if (to_print.Count() == 0)
         {
-            Console.WriteLine("No movies were found that matched the criteria.");
+
+            Console.CursorVisible = false;
+            Console.WriteLine("No movies were found that matched the criteria.\n");
+
+            // gets the cursor position and sets option to 1
+            (int left, int top) = Console.GetCursorPosition();
+            var option = 1;
+
+            // this is the decorator that will help you see where the cursor is at
+            var decorator = " > \u001b[32m";
+
+            // sets a variable for 'key' that will be used later
+            ConsoleKeyInfo key;
+
+            // the loop in which an option is chosen from a list
+            bool isSelected = false;
+            while (!isSelected)
+            {
+                // sets the cursor to the right position
+                Console.SetCursorPosition(left, top);
+
+                // prints the options and uses the decorator depending on what value 'option' has
+                Console.WriteLine($"{(option == 1 ? decorator : "   ")}Return\u001b[0m");
+
+                // sees what key has been pressed
+                key = Console.ReadKey(false);
+
+                // a switch case that changes the value from 'option', depending on the key input
+                switch (key.Key)
+                {
+                    // moves one up
+                    case ConsoleKey.UpArrow:
+                        option = option == 1 ? 1 : option - 1;
+                        break;
+                        
+                    // moves one down
+                    case ConsoleKey.DownArrow:
+                        option = option == 1 ? 1 : option + 1;
+                        break;
+
+                    // if enter is pressed, breaks out of the while loop
+                    case ConsoleKey.Enter:
+                        isSelected = true;
+                        break;
+                }
+            }
+
+            // depending on the option that was chosen, it will clear the console and call the right function
+            if (option == 1)
+            {
+                Console.Clear();
+                MovieMenu.Start();
+            }
         }
         else
         {           
@@ -175,7 +226,7 @@ class MovieLogic
                     Console.ResetColor();
 
                     // prints the description
-                    Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(to_print[i].Description, "    ")}");
+                    Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(to_print[i].Description, "    ")}\n");
                 }
 
                 Console.WriteLine($"\n{(option == to_print.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
@@ -246,6 +297,68 @@ class MovieLogic
         Console.ResetColor();
         Console.WriteLine($" {MovieLogic.SpliceText(movie.Description, " ")}\n");
 
+        //Some settings for how the menu will look/act
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.CursorVisible = false;
+
+        // Prints some instructions for the user
+        Console.WriteLine("\nDo you want to select this movie?");
+
+        // gets the cursor position and sets option to 1
+        (int left, int top) = Console.GetCursorPosition();
+        var option = 1;
+
+        // this is the decorator that will help you see where the cursor is at
+        var decorator = " > \u001b[32m";
+
+        // sets a variable for 'key' that will be used later
+        ConsoleKeyInfo key;
+
+        // the loop in which an option is chosen from a list
+        bool isSelected = false;
+        while (!isSelected)
+        {
+            // sets the cursor to the right position
+            Console.SetCursorPosition(left, top);
+
+            // prints the options and uses the decorator depending on what value 'option' has
+            Console.WriteLine($"{(option == 1 ? decorator : "   ")}Continue\u001b[0m");
+            Console.WriteLine($"{(option == 2 ? decorator : "   ")}Return\u001b[0m");
+
+            // sees what key has been pressed
+            key = Console.ReadKey(false);
+
+            // a switch case that changes the value from 'option', depending on the key input
+            switch (key.Key)
+            {
+                // moves one up
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? 2 : option - 1;
+                    break;
+                    
+                // moves one down
+                case ConsoleKey.DownArrow:
+                    option = option == 2 ? 1 : option + 1;
+                    break;
+
+                // if enter is pressed, breaks out of the while loop
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
+            }
+        }
+
+        // depending on the option that was chosen, it will clear the console and call the right function
+        if (option == 1)
+        {
+            Console.Clear();
+            Console.WriteLine("This option will lead to the catering page");
+        }
+        else if (option == 2)
+        {
+            Console.Clear();
+            MovieMenu.Start();
+        }
     }
     public List<MovieModel> SortBy(string input)
     {

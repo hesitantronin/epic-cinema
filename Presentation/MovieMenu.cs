@@ -11,6 +11,11 @@ class MovieMenu
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
 
+        // writes header for movies
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("MOVIES\n");
+        Console.ResetColor();
+
         // Prints some instructions for the user
         Console.WriteLine("Would you like to sort, filter or search? Or would you like to see the entire movie list?");
 
@@ -122,7 +127,7 @@ class MovieMenu
             // prints the options and uses the decorator depending on what value 'option' has
             Console.WriteLine($"{(option == 1 ? decorator : "   ")}Date\u001b[0m");
             Console.WriteLine($"{(option == 2 ? decorator : "   ")}Genre\u001b[0m");
-            Console.WriteLine($"{(option == 3 ? decorator : "   ")}Name\u001b[0m");
+            Console.WriteLine($"{(option == 3 ? decorator : "   ")}Title\u001b[0m");
             Console.WriteLine($"{(option == 4 ? decorator : "   ")}Rating\u001b[0m");
             Console.WriteLine($"{(option == 5 ? decorator : "   ")}Publishing Date\u001b[0m");
             Console.WriteLine($"\n{(option == 6 ? decorator : "   ")}Return\u001b[0m");
@@ -343,6 +348,7 @@ class MovieMenu
         // asks for an input to search for and searches
         Console.WriteLine("What would you like to search for?\n");
         string? query = Console.ReadLine();
+        Console.Clear();
         movielogic.PrintMovies(movielogic.SearchBy(query));
 
         Console.CursorVisible = false;
