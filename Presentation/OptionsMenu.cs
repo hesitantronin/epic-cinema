@@ -4,8 +4,12 @@ static class OptionsMenu
 { 
     public static void Start()
     {
-        //Some settings for how the menu will look/act
         Console.Clear();
+
+        // logo gets printed
+        OptionsMenu.Logo();
+
+        //Some settings for how the menu will look/act
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
 
@@ -73,7 +77,24 @@ static class OptionsMenu
         else if (option == 3)
         {
             Console.Clear();
-            Console.WriteLine("Not yet implemented.");
         }
+
+        // starts up the movie menu
+        MovieMenu.Start();
+    }
+
+    static public void Logo()
+    {
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine(@"      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.      ");
+        Console.WriteLine(@"   ,-.--` , \  .-`.' ,`.  /==/_ /.' .' -   \         .' .' -   \  /==/_ //==/ \  .-._  ,-.--` , \ .-._ .'=.'\  .--.'  \     ");
+        Console.WriteLine(@"  |==|-  _.-` /==/, -   \|==|, |/==/  ,  ,-'        /==/  ,  ,-' |==|, | |==|, \/ /, /|==|-  _.-`/==/ \|==|  | \==\-/\ \    ");
+        Console.WriteLine(@"  |==|   `.-.|==| _ .=. ||==|  ||==|-   |  .        |==|-   |  . |==|  | |==|-  \|  | |==|   `.-.|==|,|  / - | /==/-|_\ |   ");
+        Console.WriteLine(@" /==/_ ,    /|==| , '=',||==|- ||==|_   `-' \       |==|_   `-' \|==|- | |==| ,  | -|/==/_ ,    /|==|  \/  , | \==\,   - \  ");
+        Console.WriteLine(@" |==|    .-' |==|-  '..' |==| ,||==|   _  , |       |==|   _  , ||==| ,| |==| -   _ ||==|    .-' |==|- ,   _ | /==/ -   ,|  ");
+        Console.WriteLine(@" |==|_  ,`-._|==|,  |    |==|- |\==\.       /       \==\.       /|==|- | |==|  /\ , ||==|_  ,`-._|==| _ /\   |/==/-  /\ - \ ");
+        Console.WriteLine(@" /==/ ,     //==/ - |    /==/. / `-.`.___.-'         `-.`.___.-' /==/. / /==/, | |- |/==/ ,     //==/  / / , /\==\ _.\=\.-' ");
+        Console.WriteLine(@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`         ");
+        Console.ResetColor();
     }
 }

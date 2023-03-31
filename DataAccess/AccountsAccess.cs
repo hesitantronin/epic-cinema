@@ -11,7 +11,7 @@ static class AccountsAccess
         string json = File.ReadAllText(path); 
 
         // Return the JSON data as a list if "json" is not null, else return an empty list
-        if(!string.IsNullOrEmpty(json)) 
+        if(!string.IsNullOrEmpty(json))
             return JsonSerializer.Deserialize<List<AccountModel>>(json!)!;
         else
             return new List<AccountModel>();
