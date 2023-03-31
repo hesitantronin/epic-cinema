@@ -15,7 +15,7 @@ static class OptionsMenu
 
         // Prints some instructions for the user
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter to select:");
+        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter to select:\n");
         Console.ResetColor();
 
         // gets the cursor position and sets option to 1

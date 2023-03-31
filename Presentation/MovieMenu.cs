@@ -11,13 +11,11 @@ class MovieMenu
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
 
+        OptionsMenu.Logo();
         // writes header for movies
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("MOVIES\n");
+        Console.WriteLine("\nMOVIES\n");
         Console.ResetColor();
-
-        // Prints some instructions for the user
-        Console.WriteLine("Would you like to sort, filter or search? Or would you like to see the entire movie list?");
 
         // gets the cursor position and sets option to 1
         (int left, int top) = Console.GetCursorPosition();
@@ -100,12 +98,15 @@ class MovieMenu
         // makes a new movielogic to work with
         MovieLogic movielogic = new MovieLogic();
 
+        OptionsMenu.Logo();
+        // writes header for movies
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("\nSORT MOVIES\n");
+        Console.ResetColor();
+
         //Some settings for how the menu will look/act
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
-
-        // Prints some instructions for the user
-        Console.WriteLine("What would you like to sort by?");
 
         // gets the cursor position and sets option to 1
         (int left, int top) = Console.GetCursorPosition();
@@ -209,14 +210,17 @@ class MovieMenu
             "Thriller"
         };
 
+        OptionsMenu.Logo();
+        // writes header for movies
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("\nFILTER MOVIES\n");
+        Console.ResetColor();
+
         //Some settings for how the menu will look/act
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
 
-        // Prints some instructions for the user
-        Console.WriteLine("What would you like to filter by?");
-
-        // gets the cursor position and sets option to 1
+         // gets the cursor position and sets option to 1
         (int left, int top) = Console.GetCursorPosition();
         var option = 1;
 
@@ -279,10 +283,17 @@ class MovieMenu
         {
             Console.Clear();
 
-            // Prints some instructions for the user
-            Console.WriteLine("Would you like to see movies with a mature rating?");
+            OptionsMenu.Logo();
+            // writes header for movies
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\nFILTER MOVIES\n");
+            Console.ResetColor();
 
-            // sets option2 to 1
+            // Prints some instructions for the user
+            Console.WriteLine("Show movies with mature rating:");
+
+            //  gets the cursor position and sets option2 to 1
+            (left, top) = Console.GetCursorPosition();
             var option2 = 1;
 
             // the loop in which an option is chosen from a list
@@ -345,8 +356,14 @@ class MovieMenu
         MovieLogic movielogic = new MovieLogic();
         Console.CursorVisible = true;
 
+        OptionsMenu.Logo();
+        // writes header for movies
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("\nSEARCH MOVIES\n");
+        Console.ResetColor();
+
         // asks for an input to search for and searches
-        Console.WriteLine("What would you like to search for?\n");
+        Console.WriteLine("Search: ");
         string? query = Console.ReadLine();
         Console.Clear();
         movielogic.PrintMovies(movielogic.SearchBy(query));

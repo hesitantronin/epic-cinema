@@ -55,8 +55,11 @@ class MovieLogic
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
 
-        // Prints some instructions for the user
-        Console.WriteLine("Would you like to sort ascending or descending?");
+        OptionsMenu.Logo();
+        // writes header for movies
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("\nSORT MOVIES\n");
+        Console.ResetColor();
 
         // gets the cursor position and sets option to 1
         (int left, int top) = Console.GetCursorPosition();
@@ -126,9 +129,10 @@ class MovieLogic
 
     public void PrintMovies(List<MovieModel> to_print)
     {
+        OptionsMenu.Logo();
         // writes header for movies
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("MOVIES\n");
+        Console.WriteLine("\nMOVIES\n");
         Console.ResetColor();
 
         // prints an error message if nothing was found
@@ -272,8 +276,10 @@ class MovieLogic
  
     public void MovieInfo(MovieModel movie)
     {
+        OptionsMenu.Logo();
+
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine($"{movie.Title.ToUpper()}\n");
+        Console.WriteLine($"\n{movie.Title.ToUpper()}\n");
         Console.ResetColor();
 
         Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -352,7 +358,7 @@ class MovieLogic
         if (option == 1)
         {
             Console.Clear();
-            Console.WriteLine("This option will lead to the catering page");
+            Console.WriteLine("This option will lead to the seating page");
         }
         else if (option == 2)
         {
