@@ -1,21 +1,22 @@
 static class UserLogin
 {
-    static private AccountsLogic accountsLogic = new AccountsLogic();
-
+    private static AccountsLogic accountsLogic = new AccountsLogic();
 
     public static void Start()
     {
         Console.WriteLine("Welcome to the login page");
 
-        while (true)
+        while (true) 
         {
             Console.WriteLine("Please enter your email address");
             string email = Console.ReadLine() + "";
             string password = accountsLogic.GetMaskedPassword();
 
             AccountModel currentAccount = accountsLogic.Auth(email, password);
-            if(currentAccount.Authorized == true)
+            if(currentAccount.Authorized == true) {
+                accountsLogic.SetCurrentAccount(currentAccount);
                 break;
+            }
         }
     }
 
@@ -57,7 +58,13 @@ static class UserLogin
         AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, password, fullName);
         accountsLogic.UpdateList(acc);
 
-        Console.WriteLine("Account created successfully!");
+        accountsLogic.SetCurrentAccount(acc);
+
+        Console.WriteLine("\nAccount created successfully!");
         Console.WriteLine($"Welcome, {fullName}.");
+
+        Thread.Sleep(7000);
+
+        OptionsMenu.GoBack();
     }
 }

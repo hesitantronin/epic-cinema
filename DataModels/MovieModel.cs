@@ -27,15 +27,17 @@ class MovieModel
     public DateTime PublishDate { get; set; }
     
 
-    public MovieModel(int id, string title, string genre, double rating, string description)
+    public MovieModel(int id, string title, string genre, double rating, string description, int age, DateTime viewingdate, DateTime publishdate)
     {
         Id = id;
         Title = title;
         Genre = genre;
         Rating = rating;
         Description = description;
+        Age = age;
+        ViewingDate = viewingdate;
+        PublishDate = publishdate;
     }
-
 }
 
 

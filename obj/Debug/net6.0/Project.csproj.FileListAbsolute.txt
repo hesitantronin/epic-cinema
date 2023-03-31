@@ -58,3 +58,33 @@ C:\Users\alysh\OneDrive\documenten\GitHub\Project-B\obj\Debug\net6.0\refint\Proj
 C:\Users\alysh\OneDrive\documenten\GitHub\Project-B\obj\Debug\net6.0\Project.pdb
 C:\Users\alysh\OneDrive\documenten\GitHub\Project-B\obj\Debug\net6.0\Project.genruntimeconfig.cache
 C:\Users\alysh\OneDrive\documenten\GitHub\Project-B\obj\Debug\net6.0\ref\Project.dll
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\bin\Debug\net6.0\Project.exe
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\bin\Debug\net6.0\Project.deps.json
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\bin\Debug\net6.0\Project.runtimeconfig.json
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\bin\Debug\net6.0\Project.dll
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\bin\Debug\net6.0\Project.pdb
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.csproj.AssemblyReference.cache
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.AssemblyInfoInputs.cache
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.AssemblyInfo.cs
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.csproj.CoreCompileInputs.cache
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.dll
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\refint\Project.dll
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.pdb
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\Project.genruntimeconfig.cache
+C:\Users\kingd\OneDrive\Documenten\School\C#\Project_B\Project-B\obj\Debug\net6.0\ref\Project.dll
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\bin\Debug\net6.0\Project.exe
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\bin\Debug\net6.0\Project.deps.json
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\bin\Debug\net6.0\Project.runtimeconfig.json
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\bin\Debug\net6.0\Project.dll
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\bin\Debug\net6.0\Project.pdb
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.csproj.AssemblyReference.cache
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.AssemblyInfoInputs.cache
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.AssemblyInfo.cs
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.csproj.CoreCompileInputs.cache
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.dll
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\refint\Project.dll
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.pdb
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.genruntimeconfig.cache
+C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\ref\Project.dll

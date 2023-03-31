@@ -12,11 +12,15 @@ class AccountsLogic
     //Static properties are shared across all instances of the class
     //This can be used to get the current logged in account from anywhere in the program
     //private set, so this can only be set by the class itself
-    static public AccountModel? CurrentAccount { get; private set; }
+    private static AccountModel? CurrentAccount;
 
     public AccountsLogic()
     {
         _accounts = AccountsAccess.LoadAll();
+    }
+
+    public void SetCurrentAccount(AccountModel account) {
+        CurrentAccount = account;
     }
 
 
@@ -74,7 +78,7 @@ class AccountsLogic
     // Return true if an account with this email is found in the JSON.
     public bool IsEmailInUse(string email) => (_accounts.Find(i => i.EmailAddress == email) != null);
 
-    public int GetNextId()
+    public int GetNextId() 
     {
         int maxId = 0;
 
