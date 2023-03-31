@@ -7,25 +7,15 @@ static class UserLogin
     {
         Console.WriteLine("Welcome to the login page");
 
-        while (true)
+        while (true) 
         {
             Console.WriteLine("Please enter your email address");
-            string email = Console.ReadLine();
-
+            string email = Console.ReadLine() + "";
             string password = accountsLogic.GetMaskedPassword();
 
-            AccountModel acc = accountsLogic.CheckLogin(email, password);
-            if (acc != null)
-            {
-                Console.WriteLine("Welcome back " + acc.FullName);
-                Console.WriteLine("Your email address is " + acc.EmailAddress);
-
+            AccountModel currentAccount = accountsLogic.Auth(email, password);
+            if(currentAccount.Authorized == true)
                 break;
-            }
-            else
-            {
-                Console.WriteLine("No account found with these credentials");
-            }
         }
     }
 
@@ -33,44 +23,41 @@ static class UserLogin
     {
         Console.WriteLine("Welcome to the registration page");
 
-        string email;
+        string email = string.Empty;
         bool test = false;
-        AccountModel registerAcc = null; // Initialize to null
-        do
-        {
+
+        while(test == false) {
             Console.WriteLine("Please enter your email address");
-            email = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
-            {
-                Console.WriteLine($"Invalid email, please try again.");
-                continue;
-            }
-            registerAcc = accountsLogic.CheckEmailExists(email);
-            test = true;
+            email = Console.ReadLine() + "";
 
-        } while (test == false);
+            if (!accountsLogic.IsEmailValid(email)) 
+                Console.WriteLine("Invalid email, please try again.");
+            else if(accountsLogic.IsEmailInUse(email))
+                Console.WriteLine("This email is already in use, please try again.");
+            else
+                test = true;
+        }
 
-        string password;
-        string confirmedPassword;
-        do
-        {
+        string password = string.Empty;
+        string confirmedPassword = "no match";
+
+        while(password != confirmedPassword) {
             password = accountsLogic.GetMaskedPassword();
+
             Console.WriteLine("Please confirm your password");
             confirmedPassword = accountsLogic.GetMaskedPassword();
+
             if (password != confirmedPassword)
-            {
                 Console.WriteLine("Passwords do not match, please try again.");
-            }
-        } while (password != confirmedPassword);
+        }
 
         Console.WriteLine("Please enter your full name");
-        string fullName = Console.ReadLine();
+        string fullName = Console.ReadLine() + "";
 
-        int id = accountsLogic.GetNextId();
-        AccountModel acc = new AccountModel(id, email, password, fullName);
+        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, password, fullName);
         accountsLogic.UpdateList(acc);
 
         Console.WriteLine("Account created successfully!");
-        Console.WriteLine($"Welcome {fullName}");
+        Console.WriteLine($"Welcome, {fullName}.");
     }
 }

@@ -7,13 +7,15 @@ class AccountModel
     public int Id { get; set; }
 
     [JsonPropertyName("emailAddress")]
-    public string EmailAddress { get; set; }
+    public string EmailAddress { get; set; } 
 
     [JsonPropertyName("password")]
     public string Password { get; set; }
 
     [JsonPropertyName("fullName")]
     public string FullName { get; set; }
+
+    public bool Authorized = false;
 
     public AccountModel(int id, string emailAddress, string password, string fullName)
     {
@@ -23,8 +25,6 @@ class AccountModel
         FullName = fullName;
     }
 
+    public void Authorize() => Authorized = true;
+
 }
-
-
-
-
