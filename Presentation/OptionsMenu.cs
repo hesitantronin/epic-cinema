@@ -97,4 +97,9 @@ static class OptionsMenu
         Console.WriteLine(@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`         ");
         Console.ResetColor();
     }
+
+    static public void GoBack()
+    {
+        OptionsMenu.Start();
+    }
 }

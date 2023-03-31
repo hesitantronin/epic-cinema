@@ -39,6 +39,7 @@ class MovieMenu
             Console.WriteLine($"{(option == 2 ? decorator : "   ")}Filter\u001b[0m");
             Console.WriteLine($"{(option == 3 ? decorator : "   ")}Search\u001b[0m");
             Console.WriteLine($"{(option == 4 ? decorator : "   ")}Show All Movies\u001b[0m");
+            Console.WriteLine($"\n{(option == 5 ? decorator : "   ")}Return\u001b[0m");
 
             // sees what key has been pressed
             key = Console.ReadKey(false);
@@ -48,12 +49,12 @@ class MovieMenu
             {
                 // moves one up
                 case ConsoleKey.UpArrow:
-                    option = option == 1 ? 4 : option - 1;
+                    option = option == 1 ? 5 : option - 1;
                     break;
                     
                 // moves one down
                 case ConsoleKey.DownArrow:
-                    option = option == 4 ? 1 : option + 1;
+                    option = option == 5 ? 1 : option + 1;
                     break;
 
                 // if enter is pressed, breaks out of the while loop
@@ -83,6 +84,12 @@ class MovieMenu
         {
             Console.Clear();
             movielogic.PrintMovies();
+        }
+
+        else if (option == 5)
+        {
+            Console.Clear();
+            OptionsMenu.GoBack();
         }
     }
 

@@ -16,5 +16,17 @@
     "emailAddress": "email@hmal.nl",
     "password": "wewew",
     "fullName": "Ally"
+  },
+  {
+    "id": 4,
+    "emailAddress": "beh@test.com",
+    "password": "beh",
+    "fullName": "Ronin"
+  },
+  {
+    "id": 5,
+    "emailAddress": "kaasje@test.nl",
+    "password": "kaasje",
+    "fullName": "egberts"
   }
 ]

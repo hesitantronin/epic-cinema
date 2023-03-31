@@ -2,7 +2,6 @@ static class UserLogin
 {
     static private AccountsLogic accountsLogic = new AccountsLogic();
 
-
     public static void Start()
     {
         Console.WriteLine("Welcome to the login page");
@@ -57,7 +56,11 @@ static class UserLogin
         AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, password, fullName);
         accountsLogic.UpdateList(acc);
 
-        Console.WriteLine("Account created successfully!");
+        Console.WriteLine("\nAccount created successfully!");
         Console.WriteLine($"Welcome, {fullName}.");
+
+        Thread.Sleep(7000);
+
+        OptionsMenu.GoBack();
     }
 }
