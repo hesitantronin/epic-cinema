@@ -1,10 +1,10 @@
 [
     {
 		"id": 1,
-		"title": "punch",
-		"genre": "action",
-        "rating": 4.0,
-		"description": "Nikol"
+		"title": "Jackass: The Movie",
+		"genre": "Comedy/Action",
+        "rating": 6.6,
+		"description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time."
 	},
     {
 		"id": 2,
