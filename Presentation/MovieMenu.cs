@@ -89,7 +89,7 @@ class MovieMenu
         else if (option == 5)
         {
             Console.Clear();
-            OptionsMenu.GoBack();
+            OptionsMenu.Start();
         }
     }
 
@@ -210,69 +210,8 @@ class MovieMenu
             "Thriller"
         };
 
-        OptionsMenu.Logo();
-        // writes header for movies
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nFILTER MOVIES\n");
-        Console.ResetColor();
-
-        //Some settings for how the menu will look/act
-        Console.OutputEncoding = Encoding.UTF8;
-        Console.CursorVisible = false;
-
-         // gets the cursor position and sets option to 1
-        (int left, int top) = Console.GetCursorPosition();
-        var option = 1;
-
-        // this is the decorator that will help you see where the cursor is at
-        var decorator = " > \u001b[32m";
-
-        // sets a variable for 'key' that will be used later
-        ConsoleKeyInfo key;
-
-        // the loop in which an option is chosen from a list
-        bool isSelected = false;
-        while (!isSelected)
-        {
-            // sets the cursor to the right position
-            Console.SetCursorPosition(left, top);
-
-            // prints the options and uses the decorator depending on what value 'option' has
-            Console.WriteLine($"{(option == 1 ? decorator : "   ")}Action\u001b[0m");
-            Console.WriteLine($"{(option == 2 ? decorator : "   ")}Adventure\u001b[0m");
-            Console.WriteLine($"{(option == 3 ? decorator : "   ")}Comedy\u001b[0m");
-            Console.WriteLine($"{(option == 4 ? decorator : "   ")}Crime\u001b[0m");
-            Console.WriteLine($"{(option == 5 ? decorator : "   ")}Mystery\u001b[0m");
-            Console.WriteLine($"{(option == 6 ? decorator : "   ")}Fantasy\u001b[0m");
-            Console.WriteLine($"{(option == 7 ? decorator : "   ")}Historical\u001b[0m");
-            Console.WriteLine($"{(option == 8 ? decorator : "   ")}Horror\u001b[0m");
-            Console.WriteLine($"{(option == 9 ? decorator : "   ")}Romance\u001b[0m");
-            Console.WriteLine($"{(option == 10 ? decorator : "   ")}SciFi\u001b[0m");
-            Console.WriteLine($"{(option == 11 ? decorator : "   ")}Thriller\u001b[0m");
-            Console.WriteLine($"\n{(option == 12 ? decorator : "   ")}Return\u001b[0m");
-
-            // sees what key has been pressed
-            key = Console.ReadKey(false);
-
-            // a switch case that changes the value from 'option', depending on the key input
-            switch (key.Key)
-            {
-                // moves one up
-                case ConsoleKey.UpArrow:
-                    option = option == 1 ? 12 : option - 1;
-                    break;
-                    
-                // moves one down
-                case ConsoleKey.DownArrow:
-                    option = option == 12 ? 1 : option + 1;
-                    break;
-
-                // if enter is pressed, breaks out of the while loop
-                case ConsoleKey.Enter:
-                    isSelected = true;
-                    break;
-            }
-        }
+        // the necessary info gets used in the display method
+        int option = OptionsMenu.DisplaySystem(Genres, "FILTER MOVIES");
 
         if (option == 12)
         {
@@ -283,53 +222,15 @@ class MovieMenu
         {
             Console.Clear();
 
-            OptionsMenu.Logo();
-            // writes header for movies
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\nFILTER MOVIES\n");
-            Console.ResetColor();
-
-            // Prints some instructions for the user
-            Console.WriteLine("Show movies with mature rating:");
-
-            //  gets the cursor position and sets option2 to 1
-            (left, top) = Console.GetCursorPosition();
-            var option2 = 1;
-
-            // the loop in which an option is chosen from a list
-            bool isSelected2 = false;
-            while (!isSelected2)
+            // list of options that will be displayed
+            List<string> YesNoList = new List<string>()
             {
-                // sets the cursor to the right position
-                Console.SetCursorPosition(left, top);
+                "Yes",
+                "No"
+            };
 
-                // prints the options and uses the decorator depending on what value 'option' has
-                Console.WriteLine($"{(option2 == 1 ? decorator : "   ")}Yes\u001b[0m");
-                Console.WriteLine($"{(option2 == 2 ? decorator : "   ")}No\u001b[0m");
-                Console.WriteLine($"\n{(option2 == 3 ? decorator : "   ")}Return\u001b[0m");
-
-                // sees what key has been pressed
-                key = Console.ReadKey(false);
-
-                // a switch case that changes the value from 'option', depending on the key input
-                switch (key.Key)
-                {
-                    // moves one up
-                    case ConsoleKey.UpArrow:
-                        option2 = option2 == 1 ? 3 : option2 - 1;
-                        break;
-                        
-                    // moves one down
-                    case ConsoleKey.DownArrow:
-                        option2 = option2 == 3 ? 1 : option2 + 1;
-                        break;
-
-                    // if enter is pressed, breaks out of the while loop
-                    case ConsoleKey.Enter:
-                        isSelected2 = true;
-                        break;
-                }
-            }
+            // the necessary info gets used in the display method
+            int option2 = OptionsMenu.DisplaySystem(YesNoList, "FILTER MOVIES", "Show movies with mature rating:");
 
             // depending on the option that was chosen, it will clear the console and call the right function
             if (option2 == 1)
@@ -356,11 +257,8 @@ class MovieMenu
         MovieLogic movielogic = new MovieLogic();
         Console.CursorVisible = true;
 
-        OptionsMenu.Logo();
-        // writes header for movies
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nSEARCH MOVIES\n");
-        Console.ResetColor();
+        // shows banner and title
+        OptionsMenu.Logo("SEARCH MOVIES");
 
         // asks for an input to search for and searches
         Console.WriteLine("Search: ");

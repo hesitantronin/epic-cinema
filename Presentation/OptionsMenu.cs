@@ -6,63 +6,17 @@ static class OptionsMenu
     {
         Console.Clear();
 
-        // logo gets printed
-        OptionsMenu.Logo();
-
-        //Some settings for how the menu will look/act
-        Console.OutputEncoding = Encoding.UTF8;
-        Console.CursorVisible = false;
-
-        // Prints some instructions for the user
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter to select:\n");
-        Console.ResetColor();
-
-        // gets the cursor position and sets option to 1
-        (int left, int top) = Console.GetCursorPosition();
-        var option = 1;
-
-        // this is the decorator that will help you see where the cursor is at
-        var decorator = " > \u001b[32m";
-
-        // sets a variable for 'key' that will be used later
-        ConsoleKeyInfo key;
-
-        // the loop in which an option is chosen from a list
-        bool isSelected = false;
-        while (!isSelected)
+        // list of options that will be displayed
+        List<string> StartList = new List<string>()
         {
-            // sets the cursor to the right position
-            Console.SetCursorPosition(left, top);
+            "Login",
+            "Register",
+            "Guest"
+        };
 
-            // prints the options and uses the decorator depending on what value 'option' has
-            Console.WriteLine($"{(option == 1 ? decorator : "   ")}Login\u001b[0m");
-            Console.WriteLine($"{(option == 2 ? decorator : "   ")}Register\u001b[0m");
-            Console.WriteLine($"{(option == 3 ? decorator : "   ")}Guest\u001b[0m");
-
-            // sees what key has been pressed
-            key = Console.ReadKey(false);
-
-            // a switch case that changes the value from 'option', depending on the key input
-            switch (key.Key)
-            {
-                // moves one up
-                case ConsoleKey.UpArrow:
-                    option = option == 1 ? 3 : option - 1;
-                    break;
-                    
-                // moves one down
-                case ConsoleKey.DownArrow:
-                    option = option == 3 ? 1 : option + 1;
-                    break;
-
-                // if enter is pressed, breaks out of the while loop
-                case ConsoleKey.Enter:
-                    isSelected = true;
-                    break;
-            }
-        }
-
+        // the necessary info gets used in the display method
+        int option = OptionsMenu.DisplaySystem(StartList, "", "\nUse ⬆ and ⬇ to navigate and press Enter to select:", true, false);
+        
         // depending on the option that was chosen, it will clear the console and call the right function
         if (option == 1)
         {
@@ -83,7 +37,7 @@ static class OptionsMenu
         MovieMenu.Start();
     }
 
-    static public void Logo()
+    static public void Logo(string title = "")
     {
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine(@"      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.      ");
@@ -96,10 +50,164 @@ static class OptionsMenu
         Console.WriteLine(@" /==/ ,     //==/ - |    /==/. / `-.`.___.-'         `-.`.___.-' /==/. / /==/, | |- |/==/ ,     //==/  / / , /\==\ _.\=\.-' ");
         Console.WriteLine(@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`         ");
         Console.ResetColor();
+
+        if (title != "")
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"\n{title.ToUpper()}\n");
+            Console.ResetColor();
+        }
     }
 
-    static public void GoBack()
+    static public int DisplaySystem(List<string> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
     {
-        OptionsMenu.Start();
+        // makes the cursor invisible
+        Console.CursorVisible = false;
+        Console.OutputEncoding = Encoding.UTF8;
+
+        // prints the banner and the title
+        if (showlogo)
+        {
+            OptionsMenu.Logo(title);
+        }
+
+        // adds extra info if provided
+        if (question != "")
+        {
+            Console.WriteLine($"{question}\n");
+        }
+
+        // gets the cursor position and sets option to 1
+        (int left, int top) = Console.GetCursorPosition();
+        int option = 1;
+        int returncount = 0;
+
+        // this is the decorator that will help you see where the cursor is at
+        var decorator = " > \u001b[32m";
+
+        // sets a variable for 'key' that will be used later
+        ConsoleKeyInfo key;
+
+        // the loop in which an option is chosen from a list
+        bool isSelected = false;
+        while (!isSelected)
+        {
+            // sets the cursor to the previously determined location
+            Console.SetCursorPosition(left, top);
+
+            // prints the options one by one
+            for (int i = 0; i < list.Count(); i++)
+            {
+                //writes the option and gives it a number
+                Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i]}\u001b[0m");
+            }
+
+            if (showreturn)
+            {
+                Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
+                returncount = 1;
+            }
+            // sees what key has been pressed
+            key = Console.ReadKey(false);
+
+            // a switch case that changes the value from 'option', depending on the key input
+            switch (key.Key)
+            {
+                // moves one up
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? list.Count() + returncount : option - 1;
+                    break;
+                    
+                // moves one down
+                case ConsoleKey.DownArrow:
+                    option = option == list.Count() + returncount ? 1 : option + 1;
+                    break;
+
+                // if enter is pressed, breaks out of the while loop
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
+            }
+        }
+        return option;
+    }
+
+    static public int DisplaySystem(List<MovieModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
+    {
+        // makes the cursor invisible
+        Console.CursorVisible = false;
+        Console.OutputEncoding = Encoding.UTF8;
+
+        // prints the banner and the title
+        if (showlogo)
+        {
+            OptionsMenu.Logo(title);
+        }
+
+        // adds extra info if provided
+        if (question != "")
+        {
+            Console.WriteLine($"{question}\n");
+        }
+
+        // gets the cursor position and sets option to 1
+        (int left, int top) = Console.GetCursorPosition();
+        int option = 1;
+        int returncount = 0;
+
+        // this is the decorator that will help you see where the cursor is at
+        var decorator = " > \u001b[32m";
+
+        // sets a variable for 'key' that will be used later
+        ConsoleKeyInfo key;
+
+        // the loop in which an option is chosen from a list
+        bool isSelected = false;
+        while (!isSelected)
+        {
+            // sets the cursor to the right position
+            Console.SetCursorPosition(left, top);
+
+            // prints the movies one by one
+            for (int i = 0; i < list.Count(); i++)
+            {
+                // writes movie title in red
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i].Title}\u001b[0m");
+                Console.ResetColor();
+
+                // prints the description
+                Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}\n");
+            }
+
+            if (showreturn)
+            {
+                Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
+                returncount = 1;
+            }
+
+            // sees what key has been pressed
+            key = Console.ReadKey(false);
+
+            // a switch case that changes the value from 'option', depending on the key input
+            switch (key.Key)
+            {
+                // moves one up
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? list.Count() + returncount : option - 1;
+                    break;
+                    
+                // moves one down
+                case ConsoleKey.DownArrow:
+                    option = option == list.Count() + returncount ? 1 : option + 1;
+                    break;
+
+                // if enter is pressed, breaks out of the while loop
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
+            }
+        }
+        return option;
     }
 }
