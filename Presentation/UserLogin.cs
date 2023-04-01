@@ -92,6 +92,6 @@ static class UserLogin
         Console.CursorVisible = false;
         Thread.Sleep(7000);
 
-        OptionsMenu.GoBack();
+        OptionsMenu.Start();
     }
 }
