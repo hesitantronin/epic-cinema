@@ -58,16 +58,33 @@ class AccountsLogic
             AccountModel? accountModel = _accounts.Find(a => a.EmailAddress == email && a.Password == password);
             if(accountModel == null) 
             {
-                Console.WriteLine("No account found with these credentials");
+                List<string> EList = new List<string>(){"Continue"};
+
+                OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials", false, false);
+                
+                Console.Clear();
+                
                 return new AccountModel(0, email, password, string.Empty);
             } 
             else 
             {
-                Console.WriteLine($"Welcome back {accountModel.FullName}.");
-                Console.WriteLine($"Your email address is {accountModel.EmailAddress}.");
+                Console.Clear();
+                
+                List<string> EList = new List<string>(){"Continue"};
+
+                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}.", true, false);
+                
                 accountModel.Authorize();
                 return accountModel;
             }
+        }
+        else
+        {
+            List<string> EList = new List<string>(){"Continue"};
+
+            OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials", false, false);
+                
+            Console.Clear();
         }
         return new AccountModel(0, email, password, string.Empty);
     } 

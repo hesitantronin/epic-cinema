@@ -52,5 +52,11 @@
     "emailAddress": "poopie@funnie.test",
     "password": "u\u00A4\u00AE\u00DF\u00CA\u00B6\\\u00CC\u00B7S",
     "fullName": "Ronindeponin"
+  },
+  {
+    "id": 10,
+    "emailAddress": "ally@hotmail.vl",
+    "password": "Weekend1$",
+    "fullName": "Ally"
   }
 ]

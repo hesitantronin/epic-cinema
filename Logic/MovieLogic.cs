@@ -48,34 +48,6 @@ class MovieLogic
         return _movies.Find(i => i.Id == id);
     }
 
-    private SortOrder GetOrder()
-    {
-        // list of options that will be displayed
-        List<string> AscDescList = new List<string>()
-        {
-            "Ascending",
-            "Descending"
-        };
-
-        // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(AscDescList, "SORT MOVIES");
-
-        // depending on the option that was chosen, it will clear the console and call the right function
-        if (option == 1)
-        {
-            Console.Clear();
-            return SortOrder.ASCENDING;
-        }
-        else if (option == 2)
-        {
-            Console.Clear();
-            return SortOrder.DESCENDING;
-        }
-
-        // failsafe so code always returns something
-        return SortOrder.ASCENDING;
-    }
-
     enum SortOrder    
     {
         ASCENDING,
@@ -169,9 +141,8 @@ class MovieLogic
         }
     }
 
-    public List<MovieModel> SortBy(string input)
+    public List<MovieModel> SortBy(string input, bool ascending)
     {
-        SortOrder order = GetOrder();
         List<MovieModel> unsorted = _movies;
 
         // Check what to sort by per subject
@@ -180,26 +151,26 @@ class MovieLogic
         {
             //This is if the user is a customer, they cannot see movies that have already played anymore.
             DateTime currentDateTime = DateTime.Now;
-            if (order == SortOrder.ASCENDING)
+            if (ascending)
                 return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderBy(m => m.PublishDate).ToList();
-            if (order == SortOrder.DESCENDING)
+            if (!ascending)
                 return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderByDescending(m => m.PublishDate).ToList();
         }
         else if (input.ToUpper() == "GENRE")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.Genre).ToList() : unsorted.OrderByDescending(m => m.Genre).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.Genre).ToList() : unsorted.OrderByDescending(m => m.Genre).ToList();
         }
         else if (input.ToUpper() == "NAME")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.Title).ToList() : unsorted.OrderByDescending(m => m.Title).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.Title).ToList() : unsorted.OrderByDescending(m => m.Title).ToList();
         }
         else if (input.ToUpper() == "RATING")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.Rating).ToList() : unsorted.OrderByDescending(m => m.Rating).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.Rating).ToList() : unsorted.OrderByDescending(m => m.Rating).ToList();
         }
         else if (input.ToUpper() == "PUBLISH")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.PublishDate).ToList() : unsorted.OrderByDescending(m => m.PublishDate).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.PublishDate).ToList() : unsorted.OrderByDescending(m => m.PublishDate).ToList();
         }
         return unsorted;
     }

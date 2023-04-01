@@ -6,18 +6,16 @@ static class UserLogin
     {
         Console.CursorVisible = true;
 
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("Welcome to the login page\n");
-        Console.ResetColor();
-
         string email = "";
         string password = "";
 
         while (true)
         {
+            OptionsMenu.Logo("login");
+
             Console.WriteLine("Please enter your email address: ");
             email = Console.ReadLine() + "";
-            Console.WriteLine("Please enter your password: ");
+            Console.WriteLine("\nPlease enter your password: ");
             password = accountsLogic.GetMaskedPassword();
 
             AccountModel currentAccount = accountsLogic.Auth(email, password);
@@ -29,15 +27,14 @@ static class UserLogin
         }
 
         Console.CursorVisible = false;
+        Console.Clear();
     }
 
     public static void Register()
     {
-        Console.CursorVisible = true;
+        OptionsMenu.Logo("registration");
 
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("Welcome to the registration page\n");
-        Console.ResetColor();
+        Console.CursorVisible = true;
 
         string email = string.Empty;
         bool test = false;

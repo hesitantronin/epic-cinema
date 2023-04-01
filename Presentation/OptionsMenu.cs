@@ -15,7 +15,7 @@ static class OptionsMenu
         };
 
         // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(StartList, "", "\nUse ⬆ and ⬇ to navigate and press Enter to select:", true, false);
+        int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, false);
         
         // depending on the option that was chosen, it will clear the console and call the right function
         if (option == 1)
