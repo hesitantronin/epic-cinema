@@ -119,4 +119,32 @@ class AccountsLogic
         Console.WriteLine();
         return password;
     }
+
+    public string EncryptPassword(string plainTextPassword)
+    {
+        Random random = new(42069);
+
+        string encryptedPassword = string.Empty;
+
+        foreach (char c in plainTextPassword)
+        {
+            encryptedPassword += (char)(c + random.Next(1, 128));            
+        }
+
+        return encryptedPassword;
+    }
+
+    public string DecryptPassword(string encryptedPassword)
+    {
+        Random random = new(42069);
+
+        string decryptedPassword = string.Empty;
+
+        foreach (char c in encryptedPassword)
+        {
+            encryptedPassword += (char)(c - random.Next(1, 128));             
+        }
+
+        return decryptedPassword;
+    }
 }

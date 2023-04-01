@@ -40,5 +40,17 @@
     "emailAddress": "bleh@werkpls.c",
     "password": "$BeverBram1",
     "fullName": "HOLY SHIT HET WERKT"
+  },
+  {
+    "id": 8,
+    "emailAddress": "mail@encrypt.test",
+    "password": "u\u00A4\u00B4\u00D3\u00C3\u00AD\u008C\u00CC\u00BDg\u00CC\u009Af=",
+    "fullName": "pls werk"
+  },
+  {
+    "id": 9,
+    "emailAddress": "poopie@funnie.test",
+    "password": "u\u00A4\u00AE\u00DF\u00CA\u00B6\\\u00CC\u00B7S",
+    "fullName": "Ronindeponin"
   }
 ]
