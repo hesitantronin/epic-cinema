@@ -2,7 +2,7 @@ static class UserLogin
 {
     private static AccountsLogic accountsLogic = new AccountsLogic();
 
-    public static void Start()
+    public static void Login()
     {
         Console.CursorVisible = true;
 
@@ -10,17 +10,22 @@ static class UserLogin
         Console.WriteLine("Welcome to the login page\n");
         Console.ResetColor();
 
+        string email = "";
+        string password = "";
+
         while (true)
         {
-            Console.WriteLine("Please enter your email address:");
-            string email = Console.ReadLine() + "";
-            string password = accountsLogic.GetMaskedPassword();
+            Console.WriteLine("Please enter your email address: ");
+            email = Console.ReadLine() + "";
+            Console.WriteLine("Please enter your password: ");
+            password = accountsLogic.GetMaskedPassword();
 
             AccountModel currentAccount = accountsLogic.Auth(email, password);
-            if(currentAccount.Authorized == true) {
+            if(currentAccount.Authorized == true) 
+            {
                 accountsLogic.SetCurrentAccount(currentAccount);
                 break;
-            }
+            }  
         }
 
         Console.CursorVisible = false;
@@ -52,17 +57,25 @@ static class UserLogin
         string password = string.Empty;
         string confirmedPassword = "no match";
 
-        while(password != confirmedPassword) 
+        while (true)
         {
+            Console.Write("\nEnter password:\n");
             password = accountsLogic.GetMaskedPassword();
-                    
-            Console.WriteLine("Please confirm your password");
-            confirmedPassword = accountsLogic.GetMaskedPassword();
-
-            if (password != confirmedPassword)
+            if (accountsLogic.IsPasswordValid(password))
             {
-                Console.WriteLine("Passwords do not match, please try again.");
-            }
+                while(password != confirmedPassword) 
+                {           
+                    Console.WriteLine("Please confirm your password");
+                    confirmedPassword = accountsLogic.GetMaskedPassword();
+
+                    if (password != confirmedPassword)
+                    {
+                        Console.WriteLine("Passwords do not match, please try again.");
+                    }
+                }
+                break;
+            }            
+            Console.WriteLine("\nPassword must be between 8 and 32 characters long and contain atleast one number, uppercase character and special character");
         }
 
         Console.WriteLine("Please enter your full name");

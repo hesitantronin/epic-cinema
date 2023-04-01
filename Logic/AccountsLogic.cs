@@ -94,7 +94,6 @@ class AccountsLogic
     }
     public string GetMaskedPassword()
     {
-        Console.Write("\nEnter password:\n");
         string password = "";
 
         while (true)
@@ -103,11 +102,7 @@ class AccountsLogic
 
             if (keyInfo.Key == ConsoleKey.Enter)
             {            
-                if (IsPasswordValid(password))
-                    {
-                        break;
-                    }
-                Console.WriteLine("\nPassword must be between 8 and 32 characters long and contain one number, uppercase character and special character");
+                break;
             }
             else if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
             {

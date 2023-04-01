@@ -67,7 +67,7 @@ static class OptionsMenu
         if (option == 1)
         {
             Console.Clear();
-            UserLogin.Start();
+            UserLogin.Login();
         }
         else if (option == 2)
         {

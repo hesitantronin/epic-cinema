@@ -34,5 +34,11 @@
     "emailAddress": "kaaske@bleh.com",
     "password": "kees",
     "fullName": "jan"
+  },
+  {
+    "id": 7,
+    "emailAddress": "bleh@werkpls.c",
+    "password": "$BeverBram1",
+    "fullName": "HOLY SHIT HET WERKT"
   }
 ]
