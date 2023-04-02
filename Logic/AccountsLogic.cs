@@ -96,8 +96,13 @@ class AccountsLogic
     public bool IsEmailInUse(string email) => (_accounts.Find(i => i.EmailAddress == email) != null);
 
     // Return true if the given password matches the criteria
-    public bool IsPasswordValid(string password) => (password.Length > 8 && password.Length < 32 && password.Any(char.IsDigit) 
-                    && password.Any(char.IsUpper) && password.Any(char.IsSymbol));
+    public bool IsPasswordValid(string password)
+    {
+        return (password.Length > 8 && password.Length < 32
+                && password.Any(char.IsDigit)
+                && password.Any(char.IsUpper)
+                && password.Any(c => !char.IsLetterOrDigit(c)));
+    }
 
     public int GetNextId() 
     {

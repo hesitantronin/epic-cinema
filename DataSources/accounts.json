@@ -58,5 +58,11 @@
     "emailAddress": "ally@hotmail.vl",
     "password": "Weekend1$",
     "fullName": "Ally"
+  },
+  {
+    "id": 11,
+    "emailAddress": "@.",
+    "password": "Testing1.",
+    "fullName": "Yes"
   }
 ]
