@@ -18,7 +18,7 @@ static class SeatAccess
             // Print the column names
             foreach (var column in columns)
             {
-                Console.Write("{0,5}", column);
+                Console.Write("{0,3}", column);
             }
             Console.WriteLine();
 
@@ -29,7 +29,7 @@ static class SeatAccess
                 var values = line.Split(',');
                 foreach (var value in values)
                 {
-                    Console.Write("{0,5}", value);
+                    Console.Write("{0,3}", value);
                 }
                 Console.WriteLine();
             }

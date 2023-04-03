@@ -1,9 +1,7 @@
-﻿using System.Data;
-
-public class Program
+﻿public class Program
 {
     public static void Main()
     {
-        SeatAccess.LoadAuditorium();
+        OptionsMenu.Start();
     }
 }
