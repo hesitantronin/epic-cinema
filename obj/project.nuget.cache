@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "4E3RwuumT3WuKnmngcFTBWEaOa7SAKh+nA14Vvq13sRRQkAXrzUqtzW4iynYjTxCcs8h686yT/gMZqQP2x2xdg==",
+  "dgSpecHash": "oNzkPiJ+d2aM/5LhCgAykyh157W/OqwdHXp6jdi1Fg5wRFSX+7gp1uEKftlsOP5PKDYaZjp2TgigPDNe/BNXYg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\Project.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\Project.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Redux Gamer\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512"
+  ],
   "logs": []
 }

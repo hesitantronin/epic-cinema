@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\Project.csproj": {}
+    "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\Project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\Project.csproj": {
+    "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\Project.csproj",
+        "projectUniqueName": "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\Project.csproj",
         "projectName": "Project",
-        "projectPath": "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\Project.csproj",
-        "packagesPath": "C:\\Users\\kingd\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kingd\\OneDrive\\Documenten\\School\\C#\\Project_B\\Project-B\\obj\\",
+        "projectPath": "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\Project.csproj",
+        "packagesPath": "C:\\Users\\Redux Gamer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Redux Gamer\\Documents\\GitHub\\Project-B\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\kingd\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Redux Gamer\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -37,6 +37,12 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[30.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
