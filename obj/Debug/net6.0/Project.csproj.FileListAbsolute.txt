@@ -88,3 +88,18 @@ C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\refint\Project.
 C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.pdb
 C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\Project.genruntimeconfig.cache
 C:\Users\Redux Gamer\Documents\GitHub\Project-B\obj\Debug\net6.0\ref\Project.dll
+D:\Users\Lucas\Source\Repos\Project-B\bin\Debug\net6.0\Project.exe
+D:\Users\Lucas\Source\Repos\Project-B\bin\Debug\net6.0\Project.deps.json
+D:\Users\Lucas\Source\Repos\Project-B\bin\Debug\net6.0\Project.runtimeconfig.json
+D:\Users\Lucas\Source\Repos\Project-B\bin\Debug\net6.0\Project.dll
+D:\Users\Lucas\Source\Repos\Project-B\bin\Debug\net6.0\Project.pdb
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.csproj.AssemblyReference.cache
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.AssemblyInfoInputs.cache
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.AssemblyInfo.cs
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.csproj.CoreCompileInputs.cache
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.dll
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\refint\Project.dll
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.pdb
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\Project.genruntimeconfig.cache
+D:\Users\Lucas\Source\Repos\Project-B\obj\Debug\net6.0\ref\Project.dll

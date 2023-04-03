@@ -64,5 +64,11 @@
     "emailAddress": "@.",
     "password": "Testing1.",
     "fullName": "Yes"
+  },
+  {
+    "id": 12,
+    "emailAddress": "ice@water.no",
+    "password": "7c9a729d2ed3c881f821f798edd9582e9ce807ed869c7b7550ec4a39b5f1d3f1",
+    "fullName": "peopeop"
   }
 ]
