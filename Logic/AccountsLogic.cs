@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 
 //This class is not static so later on we can use inheritance and interfaces
@@ -55,12 +57,12 @@ class AccountsLogic
     {
         if(IsLoginValid(email, password)) 
         {
-            AccountModel? accountModel = _accounts.Find(a => a.EmailAddress == email && a.Password == password);
+            AccountModel? accountModel = _accounts.Find(a => a.EmailAddress == email && a.Password == HashPassword(password));
             if(accountModel == null) 
             {
                 List<string> EList = new List<string>(){"Continue"};
 
-                OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials", false, false);
+                OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, false);
                 
                 Console.Clear();
                 
@@ -82,8 +84,8 @@ class AccountsLogic
         {
             List<string> EList = new List<string>(){"Continue"};
 
-            OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials", false, false);
-                
+            OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, false);
+            
             Console.Clear();
         }
         return new AccountModel(0, email, password, string.Empty);
@@ -98,7 +100,7 @@ class AccountsLogic
     // Return true if the given password matches the criteria
     public bool IsPasswordValid(string password)
     {
-        return (password.Length > 8 && password.Length < 32
+        return ((password.Length >= 8) && (password.Length <= 32)
                 && password.Any(char.IsDigit)
                 && password.Any(char.IsUpper)
                 && password.Any(c => !char.IsLetterOrDigit(c)));
@@ -142,31 +144,14 @@ class AccountsLogic
         return password;
     }
 
-    public string EncryptPassword(string plainTextPassword)
+    public string HashPassword(string raw) 
     {
-        Random random = new(42069);
-
-        string encryptedPassword = string.Empty;
-
-        foreach (char c in plainTextPassword)
+        // Create SHA256 instance to generate hash
+        using (SHA256 hash = SHA256.Create()) 
         {
-            encryptedPassword += (char)(c + random.Next(1, 128));            
+            // Combine the hash bytes into a single string, compute the hash of the input ('raw')
+            // And convert each byte to a string representation of its hex value.
+            return String.Concat(hash.ComputeHash(Encoding.UTF8.GetBytes(raw)).Select(i => i.ToString("x2")));
         }
-
-        return encryptedPassword;
-    }
-
-    public string DecryptPassword(string encryptedPassword)
-    {
-        Random random = new(42069);
-
-        string decryptedPassword = string.Empty;
-
-        foreach (char c in encryptedPassword)
-        {
-            encryptedPassword += (char)(c - random.Next(1, 128));             
-        }
-
-        return decryptedPassword;
     }
 }

@@ -11,7 +11,8 @@ static class OptionsMenu
         {
             "Login",
             "Register",
-            "Guest"
+            "Guest",
+            "Exit"
         };
 
         // the necessary info gets used in the display method
@@ -34,7 +35,10 @@ static class OptionsMenu
         }
 
         // starts up the movie menu
-        MovieMenu.Start();
+        if (option != 4)
+        {
+            MovieMenu.Start();
+        }
     }
 
     static public void Logo(string title = "")
@@ -129,6 +133,8 @@ static class OptionsMenu
                     break;
             }
         }
+        Console.CursorVisible = true;
+
         return option;
     }
 
@@ -208,6 +214,8 @@ static class OptionsMenu
                     break;
             }
         }
+        Console.CursorVisible = true;
+
         return option;
     }
 }
