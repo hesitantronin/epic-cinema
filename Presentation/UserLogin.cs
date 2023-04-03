@@ -13,9 +13,9 @@ static class UserLogin
         {
             OptionsMenu.Logo("login");
 
-            Console.WriteLine("Please enter your email address: ");
+            Console.WriteLine("Email address: ");
             email = Console.ReadLine() + "";
-            Console.WriteLine("\nPlease enter your password: ");
+            Console.WriteLine("\nPassword: ");
             password = accountsLogic.GetMaskedPassword();
 
             AccountModel currentAccount = accountsLogic.Auth(email, password);
@@ -32,63 +32,97 @@ static class UserLogin
 
     public static void Register()
     {
-        OptionsMenu.Logo("registration");
-
         Console.CursorVisible = true;
 
         string email = string.Empty;
         bool test = false;
 
-        while(test == false) {
-            Console.WriteLine("Please enter your email address:");
+        while(test == false) 
+        {
+            OptionsMenu.Logo("registration");
+
+            Console.WriteLine("Email Address:");
             email = Console.ReadLine() + "";
 
-            if (!accountsLogic.IsEmailValid(email)) 
-                Console.WriteLine("Invalid email, please try again.");
+            if (!accountsLogic.IsEmailValid(email))
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                OptionsMenu.DisplaySystem(EList, "", "\nInvalid email, please try again.", false, false);
+                
+                Console.Clear();
+            }
             else if(accountsLogic.IsEmailInUse(email))
-                Console.WriteLine("This email is already in use, please try again.");
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                OptionsMenu.DisplaySystem(EList, "", "\nThis email is already in use, please try again.", false, false);
+                
+                Console.Clear();
+            }
             else
+            {
                 test = true;
+            }
         }
 
         string password = string.Empty;
         string confirmedPassword = "no match";
 
+        Console.Clear();
+
         while (true)
         {
-            Console.Write("\nEnter password:\n");
+            OptionsMenu.Logo("registration");
+            Console.WriteLine("Password:");
+
             password = accountsLogic.GetMaskedPassword();
             if (accountsLogic.IsPasswordValid(password))
             {
                 while(password != confirmedPassword) 
-                {           
-                    Console.WriteLine("Please confirm your password");
+                {    
+                    Console.Clear();
+                    OptionsMenu.Logo("registration");
+       
+                    Console.WriteLine("Confirm Password:");
                     confirmedPassword = accountsLogic.GetMaskedPassword();
 
                     if (password != confirmedPassword)
                     {
-                        Console.WriteLine("Passwords do not match, please try again.");
+                        List<string> BList = new List<string>(){"Continue"};
+
+                        OptionsMenu.DisplaySystem(BList, "", "\nPasswords do not match, please try again.", false, false);
+                
+                        Console.Clear(); 
                     }
                 }
                 break;
-            }            
-            Console.WriteLine("\nPassword must be between 8 and 32 characters long and contain atleast one number, uppercase character and special character");
+            }   
+            List<string> CList = new List<string>(){"Continue"};
+
+            OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, uppercase character and special character", false, false);
+                
+            Console.Clear();         
         }
 
-        Console.WriteLine("Please enter your full name");
+        Console.Clear();
+        OptionsMenu.Logo("registration");
+        Console.WriteLine("Name:");
         string fullName = Console.ReadLine() + "";
 
-        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, password, fullName);
+        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, accountsLogic.HashPassword(password), fullName);
         accountsLogic.UpdateList(acc);
 
         accountsLogic.SetCurrentAccount(acc);
 
-        Console.WriteLine("\nAccount created successfully!");
-        Console.WriteLine($"Welcome, {fullName}.");
+        Console.Clear();
 
+        List<string> DList = new List<string>(){"Continue"};
+
+        OptionsMenu.DisplaySystem(DList, "welcome page", $"Account created successfully!\nWelcome, {fullName}.", true, false);
+                
         Console.CursorVisible = false;
-        Thread.Sleep(7000);
 
-        OptionsMenu.Start();
+        Console.Clear();
     }
 }

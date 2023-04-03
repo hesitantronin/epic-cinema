@@ -62,7 +62,7 @@ class AccountsLogic
             {
                 List<string> EList = new List<string>(){"Continue"};
 
-                OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials", false, false);
+                OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, false);
                 
                 Console.Clear();
                 
@@ -84,8 +84,8 @@ class AccountsLogic
         {
             List<string> EList = new List<string>(){"Continue"};
 
-            OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials", false, false);
-                
+            OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, false);
+            
             Console.Clear();
         }
         return new AccountModel(0, email, password, string.Empty);
