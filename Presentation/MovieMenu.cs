@@ -223,7 +223,7 @@ class MovieMenu
 
         // asks for an input to search for and searches
         Console.WriteLine("Search: ");
-        string? query = Console.ReadLine();
+        string query = Console.ReadLine() + "";
         Console.Clear();
         movielogic.PrintMovies(movielogic.SearchBy(query));
 
