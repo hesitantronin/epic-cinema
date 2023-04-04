@@ -32,9 +32,9 @@ class AccountModel
     public void Authorize() => Authorized = true;
 
     public enum AccountType {
-        ADMIN,
+        CUSTOMER,
         EMPLOYEE,
-        CUSTOMER
+        ADMIN
     }
 
 }

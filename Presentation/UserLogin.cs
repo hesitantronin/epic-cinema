@@ -76,33 +76,36 @@ static class UserLogin
             OptionsMenu.Logo("registration");
             Console.WriteLine("Password:");
 
-            password = accountsLogic.GetMaskedPassword();
-            if (accountsLogic.IsPasswordValid(password))
+            while (password != confirmedPassword)
             {
-                while(password != confirmedPassword) 
-                {    
+                OptionsMenu.Logo("registration");
+                Console.WriteLine("Password:");
+                password = accountsLogic.GetMaskedPassword();
+                if (accountsLogic.IsPasswordValid(password))
+                {
                     Console.Clear();
                     OptionsMenu.Logo("registration");
-       
+
                     Console.WriteLine("Confirm Password:");
                     confirmedPassword = accountsLogic.GetMaskedPassword();
 
                     if (password != confirmedPassword)
                     {
-                        List<string> BList = new List<string>(){"Continue"};
+                        List<string> BList = new List<string>() { "Continue" };
 
                         OptionsMenu.DisplaySystem(BList, "", "\nPasswords do not match, please try again.", false, false);
-                
-                        Console.Clear(); 
+
+                        Console.Clear();
                     }
                 }
-                break;
-            }   
-            List<string> CList = new List<string>(){"Continue"};
-
-            OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, uppercase character and special character", false, false);
-                
-            Console.Clear();         
+                else
+                {
+                    List<string> CList = new List<string>() { "Continue" };
+                    OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, uppercase character and special character", false, false);
+                    Console.Clear();
+                }
+            }
+            break;
         }
 
         Console.Clear();
