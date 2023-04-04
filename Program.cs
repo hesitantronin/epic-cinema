@@ -2,7 +2,7 @@
 {
     public static void Main()
     {
-        SeatAccess.LoadAuditorium();
-        // OptionsMenu.Start();
+        // SeatAccess.LoadAuditorium();
+        OptionsMenu.Start();
     }
 }

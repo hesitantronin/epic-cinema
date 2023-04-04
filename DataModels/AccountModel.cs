@@ -6,6 +6,9 @@ class AccountModel
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
+    [JsonPropertyName("accountType")]
+    public string AccountType { get; set; }
+
     [JsonPropertyName("emailAddress")]
     public string EmailAddress { get; set; } 
 
