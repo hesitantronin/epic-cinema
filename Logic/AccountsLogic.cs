@@ -149,6 +149,7 @@ class AccountsLogic
 
     public string HashPassword(string raw) 
     {
+        // Using statement to ensure proper disposal of SHA256 instance.
         // Create SHA256 instance to generate hash
         using (SHA256 hash = SHA256.Create()) 
         {
