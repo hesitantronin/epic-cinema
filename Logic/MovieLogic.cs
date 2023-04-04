@@ -132,7 +132,9 @@ class MovieLogic
         if (option == 1)
         {
             Console.Clear();
-            Console.WriteLine("This option will lead to the seating page");
+
+            OptionsMenu.Logo("Seat selection");
+            SeatAccess.LoadAuditorium();
         }
         else if (option == 2)
         {

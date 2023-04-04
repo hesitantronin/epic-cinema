@@ -29,7 +29,7 @@ static class SeatAccess
             {
                 var line = reader.ReadLine();
                 var values = line.Split(',');
-                
+
                 for (int i = 0; i < values.Count();i ++)
                 {
                     if (linecounter == 17)
