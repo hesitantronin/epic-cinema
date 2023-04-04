@@ -7,7 +7,7 @@ class AccountModel
     public int Id { get; set; }
 
     [JsonPropertyName("accountType")]
-    public string AccountType { get; set; }
+    public AccountType Type { get; set; }
 
     [JsonPropertyName("emailAddress")]
     public string EmailAddress { get; set; } 
@@ -20,14 +20,21 @@ class AccountModel
 
     public bool Authorized = false;
 
-    public AccountModel(int id, string emailAddress, string password, string fullName)
+    public AccountModel(int id, string emailAddress, string password, string fullName, AccountType type = AccountType.CUSTOMER)
     {
         Id = id;
         EmailAddress = emailAddress;
         Password = password;
         FullName = fullName;
+        Type = type;
     }
 
     public void Authorize() => Authorized = true;
+
+    public enum AccountType {
+        ADMIN,
+        EMPLOYEE,
+        CUSTOMER
+    }
 
 }
