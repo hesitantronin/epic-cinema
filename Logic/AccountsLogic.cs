@@ -105,7 +105,7 @@ class AccountsLogic
                 && password.Any(char.IsUpper)
                 && password.Any(c => !char.IsLetterOrDigit(c)));
     }
-
+    // Returns the nextID
     public int GetNextId() 
     {
         int maxId = 0;
@@ -116,6 +116,7 @@ class AccountsLogic
 
         return maxId + 1;
     }
+    // Masks passwords in the terminal
     public string GetMaskedPassword()
     {
         string password = "";
@@ -123,16 +124,18 @@ class AccountsLogic
         while (true)
         {
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-
+            // This code checks on the user input including space, and special symbols and converts them to asterisks in the terminal
             if (keyInfo.Key == ConsoleKey.Enter)
             {            
                 break;
             }
+            // This code block removes the asterisks if backspace is used in the code
             else if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
             {
                 password = password.Substring(0, password.Length - 1);
                 Console.Write("\b \b");
             }
+            // This code checks the ascii table for special characters and converts them to asterisks
             else if (keyInfo.KeyChar >= 32 && keyInfo.KeyChar <= 126)
             {
                 password += keyInfo.KeyChar;
@@ -146,6 +149,7 @@ class AccountsLogic
 
     public string HashPassword(string raw) 
     {
+        // Using statement to ensure proper disposal of SHA256 instance.
         // Create SHA256 instance to generate hash
         using (SHA256 hash = SHA256.Create()) 
         {
