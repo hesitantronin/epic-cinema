@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 
 class MovieLogic
 {
@@ -223,5 +224,88 @@ class MovieLogic
             finalString += $"\n{spacing}";
         }
         return finalString;
+    }
+
+    public static void AddMultipleMoviesJSON(string filename)
+    {
+        // read file with new movies 
+        string jsonstring = ReadJSON(filename);
+        List<MovieModel> newMovieData = new();
+
+        // 
+        if(!string.IsNullOrEmpty(jsonstring))
+        {
+            newMovieData = JsonSerializer.Deserialize<List<MovieModel>>(jsonstring!)!;
+        }
+
+        // get the original movies that were already in the json file
+        List<MovieModel> originalMovieData = MovieAccess.LoadAll();
+
+        // add new movies to list containing old movies
+        foreach(MovieModel newMovie in newMovieData)
+        {
+            originalMovieData.Add(newMovie);
+        }
+
+        // write new + old movies to file
+        MovieAccess.WriteAll(originalMovieData);
+    }
+
+    public static string ReadJSON(string filename)
+    {
+        StreamReader? reader = null;
+
+        try
+        {
+            // get new movie data from new json file
+            reader = new StreamReader(filename);
+            return(reader.ReadToEnd());
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("File not found");
+            return "";
+        }
+        finally
+        {
+            reader?.Close();
+            reader?.Dispose();
+        }
+    }
+
+    public static void AddMultipleMoviesCSV(string filename)
+    {
+        var csvMovies = new List<MovieModel>();
+        var filePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filename));
+
+        // read lines from csv file using the filepath
+        // skip(1) is so that the header line will be skipped
+        foreach (var line in File.ReadLines(filePath).Skip(1))
+        {
+            // create new MovieModels for each movie in the csv and add to csvMovies list
+            csvMovies.Add(new MovieModel
+            (
+                Convert.ToInt32(line.Split(",")[0]), // id
+                line.Split(",")[1], // title
+                line.Split(",")[2], // genre
+                Convert.ToDouble(line.Split(",")[3]), // rating
+                line.Split(",")[4], // description
+                Convert.ToInt32(line.Split(",")[5]), // age
+                DateTime.Parse(line.Split(",")[6]), // viewing date
+                DateTime.Parse(line.Split(",")[7]) // publish date
+            ));
+        }
+
+        // load movies that were already in the file
+        List<MovieModel> originalMovies = MovieAccess.LoadAll();
+
+        // add each new movie to the original list of movies
+        foreach(MovieModel movie in csvMovies)
+        {
+            originalMovies.Add(movie);
+        }
+
+        // write original movies + new movies back to file
+        MovieAccess.WriteAll(originalMovies);
     }
 }
