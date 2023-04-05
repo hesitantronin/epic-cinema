@@ -19,5 +19,12 @@
     "emailAddress": "customer@customer.customer",
     "password": "0b5b4ad7b3655f2a7fa5a0d41857b8dfbb514ff4292785cc0062dd8bf8b49ef6",
     "fullName": "Customer"
+  },
+  {
+    "id": 4,
+    "accountType": 0,
+    "emailAddress": "ally@ew.w",
+    "password": "9aca7ce0b2339c384904a7fbcc0f58ae530f1f9cd2ad320bc74d9929c45d5c1c",
+    "fullName": "Ally"
   }
 ]

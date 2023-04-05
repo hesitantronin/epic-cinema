@@ -69,12 +69,10 @@ static class UserLogin
         string password = string.Empty;
         string confirmedPassword = "no match";
 
-        Console.Clear();
 
         while (true)
         {
-            OptionsMenu.Logo("registration");
-            Console.WriteLine("Password:");
+            Console.Clear();
 
             while (password != confirmedPassword)
             {
