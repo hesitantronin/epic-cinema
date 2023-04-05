@@ -99,7 +99,7 @@ static class UserLogin
                 else
                 {
                     List<string> CList = new List<string>() { "Continue" };
-                    OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, uppercase character and special character", false, false);
+                    OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, one capital letter and one special character", false, false);
                     Console.Clear();
                 }
             }

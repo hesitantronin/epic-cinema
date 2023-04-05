@@ -74,7 +74,7 @@ class AccountsLogic
                 
                 List<string> EList = new List<string>(){"Continue"};
 
-                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}.", true, false);
+                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}", true, false);
                 
                 accountModel.Authorize();
                 return accountModel;
