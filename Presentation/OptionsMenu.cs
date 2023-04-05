@@ -32,6 +32,13 @@ static class OptionsMenu
         else if (option == 3)
         {
             Console.Clear();
+            AccountsLogic accountsLogic = new AccountsLogic();
+            AccountModel guestAccount = new AccountModel(accountsLogic.GetNextId(), "", "", "", AccountModel.AccountType.CUSTOMER);
+            guestAccount.isGuest = true;
+
+            List<AccountModel> accounts = AccountsAccess.LoadAll();
+            accounts.Add(guestAccount);
+            AccountsAccess.WriteAll(accounts);
         }
 
         // starts up the movie menu
