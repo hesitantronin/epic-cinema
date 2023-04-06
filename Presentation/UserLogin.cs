@@ -19,7 +19,13 @@ static class UserLogin
             password = accountsLogic.GetMaskedPassword();
 
             AccountModel currentAccount = accountsLogic.Auth(email, password);
-            if(currentAccount.Authorized == true) 
+            if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
+            {
+                accountsLogic.SetCurrentAccount(currentAccount);
+                AdminMenu.Start();
+                
+            }
+            else
             {
                 accountsLogic.SetCurrentAccount(currentAccount);
                 break;

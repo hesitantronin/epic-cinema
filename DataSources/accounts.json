@@ -26,5 +26,12 @@
     "emailAddress": "ally@ew.w",
     "password": "9aca7ce0b2339c384904a7fbcc0f58ae530f1f9cd2ad320bc74d9929c45d5c1c",
     "fullName": "Ally"
+  },
+  {
+    "id": 5,
+    "accountType": 0,
+    "emailAddress": "@.",
+    "password": "df0c094ed3591747dacd3def36fa9a38ec2bcc9afbbdce18e7918e3504a089f3",
+    "fullName": "MYNAMA JEFFF"
   }
 ]
