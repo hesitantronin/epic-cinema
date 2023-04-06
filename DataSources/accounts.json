@@ -1,32 +1,30 @@
 [
   {
     "id": 1,
-    "emailAddress": "n@b.c",
-    "password": "xyz",
-    "fullName": "Nikola Tesla"
+    "accountType": 2,
+    "emailAddress": "admin@admin.admin",
+    "password": "ddace1170200a8694efb7b4bb73807bee70db599d7f65a5c6edb0ea5d6a7d79d",
+    "fullName": "Admin"
   },
   {
     "id": 2,
-    "emailAddress": "t@b.c",
-    "password": "xyz",
-    "fullName": "Thomas Edison"
+    "accountType": 1,
+    "emailAddress": "employee@employee.employee",
+    "password": "d859604d5d763d92edf5d5a48703ee794ec5b20b045952c1fdd83fe9b5142945",
+    "fullName": "Employee"
   },
   {
     "id": 3,
-    "emailAddress": "email@hmal.nl",
-    "password": "wewew",
-    "fullName": "Ally"
+    "accountType": 0,
+    "emailAddress": "customer@customer.customer",
+    "password": "0b5b4ad7b3655f2a7fa5a0d41857b8dfbb514ff4292785cc0062dd8bf8b49ef6",
+    "fullName": "Customer"
   },
   {
     "id": 4,
-    "emailAddress": "beh@test.com",
-    "password": "beh",
-    "fullName": "Ronin"
-  },
-  {
-    "id": 5,
-    "emailAddress": "kaasje@test.nl",
-    "password": "kaasje",
-    "fullName": "egberts"
+    "accountType": 0,
+    "emailAddress": "ally@ew.w",
+    "password": "9aca7ce0b2339c384904a7fbcc0f58ae530f1f9cd2ad320bc74d9929c45d5c1c",
+    "fullName": "Ally"
   }
 ]

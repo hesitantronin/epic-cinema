@@ -2,22 +2,49 @@
     {
 		"id": 1,
 		"title": "Jackass: The Movie",
-		"genre": "Comedy/Action",
+		"genre": "Action",
         "rating": 6.6,
-		"description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time."
+		"description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time.",
+		"age": 18
 	},
     {
 		"id": 2,
-		"title": "murder",
-		"genre": "horror",
-        "rating": 4.5,
-		"description": "Nikola Tes"
+		"title": "Creed",
+		"genre": "Action",
+        "rating": 7.6,
+		"description": "The former World Heavyweight Champion Rocky Balboa serves as a trainer and mentor to Adonis Johnson, the son of his late friend and former rival Apollo Creed.",
+		"age": 16
 	},
 	{
 		"id": 3,
-		"title": "alysha's big adventure",
-		"genre": "documentary",
-        "rating": 0.1,
-		"description": "Tikola nes"
+		"title": "Alita: Battle Angel",
+		"genre": "Action",
+        "rating": 7.3,
+		"description": "A deactivated cyborg's revived, but can't remember anything of her past and goes on a quest to find out who she is.",
+		"age": 13
+	},
+	{
+		"id": 4,
+		"title": "Princess Mononoke",
+		"genre": "Adventure",
+        "rating": 8.3,
+		"description": "On a journey to find the cure for a Tatarigami's curse, Ashitaka finds himself in the middle of a war between the forest gods and Tatara, a mining colony. In this quest he also meets San, the Mononoke Hime.",
+		"age": 13
+	},
+	{
+		"id": 5,
+		"title": "Atlantis: The Lost Empire",
+		"genre": "Adventure",
+        "rating": 6.9,
+		"description": "A young linguist named Milo Thatch joins an intrepid group of explorers to find the mysterious lost continent of Atlantis.",
+		"age": 12
+	},
+	{
+		"id": 6,
+		"title": "The Age of Adaline",
+		"genre": "Romance",
+        "rating": 7.2,
+		"description": "A young woman, born at the turn of the 20th century, is rendered ageless after an accident. After many solitary years, she meets a man who complicates the eternal life she has settled into.",
+		"age": 13
 	}
 ]

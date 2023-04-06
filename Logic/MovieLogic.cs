@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 
 class MovieLogic
 {
@@ -10,7 +11,6 @@ class MovieLogic
         // uses the loadall function to load the json to the list
         _movies = MovieAccess.LoadAll();
     }
-
 
     public void UpdateList(MovieModel mov)
     {
@@ -49,141 +49,131 @@ class MovieLogic
         return _movies.Find(i => i.Id == id);
     }
 
-    private SortOrder GetOrder()
-    {
-        //Some settings for how the menu will look/act
-        Console.OutputEncoding = Encoding.UTF8;
-        Console.CursorVisible = false;
-
-        // Prints some instructions for the user
-        Console.WriteLine("Would you like to sort ascending or descending?");
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nUse ⬆ and ⬇ to navigate and press Enter to select:");
-        Console.ResetColor();
-
-        // gets the cursor position and sets option to 1
-        (int left, int top) = Console.GetCursorPosition();
-        var option = 1;
-
-        // this is the decorator that will help you see where the cursor is at
-        var decorator = " > \u001b[32m";
-
-        // sets a variable for 'key' that will be used later
-        ConsoleKeyInfo key;
-
-        // the loop in which an option is chosen from a list
-        bool isSelected = false;
-        while (!isSelected)
-        {
-            // sets the cursor to the right position
-            Console.SetCursorPosition(left, top);
-
-            // prints the options and uses the decorator depending on what value 'option' has
-            Console.WriteLine($"{(option == 1 ? decorator : "   ")}Ascending\u001b[0m");
-            Console.WriteLine($"{(option == 2 ? decorator : "   ")}Descending\u001b[0m");
-
-            // sees what key has been pressed
-            key = Console.ReadKey(false);
-
-            // a switch case that changes the value from 'option', depending on the key input
-            switch (key.Key)
-            {
-                // moves one up
-                case ConsoleKey.UpArrow:
-                    option = option == 1 ? 2 : option - 1;
-                    break;
-                    
-                // moves one down
-                case ConsoleKey.DownArrow:
-                    option = option == 2 ? 1 : option + 1;
-                    break;
-
-                // if enter is pressed, breaks out of the while loop
-                case ConsoleKey.Enter:
-                    isSelected = true;
-                    break;
-            }
-        }
-
-        // depending on the option that was chosen, it will clear the console and call the right function
-        if (option == 1)
-        {
-            Console.Clear();
-            return SortOrder.ASCENDING;
-        }
-        else if (option == 2)
-        {
-            Console.Clear();
-            return SortOrder.DESCENDING;
-        }
-
-        // failsafe so code always returns something
-        return SortOrder.ASCENDING;
-    }
-
     enum SortOrder    
     {
         ASCENDING,
         DESCENDING
     }
 
-    public void PrintMovies(List<MovieModel> to_print)
+    public void PrintMovies(List<MovieModel> MovieList)
     {
-        // writes header for movies
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\nMOVIES\n");
-        Console.ResetColor();
-        
-        // prints the movies one by one
-        foreach (MovieModel movie in to_print)
+        // prints an error message if nothing was found
+        if (MovieList.Count() == 0)
         {
-            // writes movie title in red
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine(movie.Title);
-            Console.ResetColor();
+            // list of options that will be displayed
+            List<string> ReturnList = new List<string>();
 
-            // prints the rest of the data
-            Console.WriteLine($"* Genre:\n   {movie.Genre}");
-            Console.WriteLine($"* Rating:\n   {movie.Rating}");
-            Console.WriteLine($"* Description:\n   {MovieLogic.SpliceText(movie.Description)}");
+            // the necessary info gets used in the display method
+            int option = OptionsMenu.DisplaySystem(ReturnList, "MOVIES", "No movies were found that matched the criteria.");
+
+            // depending on the option that was chosen, it will clear the console and call the right function
+            if (option == 1)
+            {
+                Console.Clear();
+                MovieMenu.Start();
+            }
+        }
+        else
+        {      
+            // the necessary info gets used in the display method
+            int option = OptionsMenu.DisplaySystem(MovieList, "MOVIES");
+
+            // depending on the option that was chosen, it will clear the console and call the right function     
+            if (option == MovieList.Count() + 1)
+            {
+                Console.Clear();
+                MovieMenu.Start();
+            } 
+            else
+            {
+                Console.Clear();
+                MovieInfo(MovieList[option - 1]);
+            }
         }
     }
 
     public void PrintMovies() => PrintMovies(_movies);
-
-
-//-------------------------------------------------------------------------------------------------
-
-    public List<MovieModel> SortBy(string input)
+ 
+    public void MovieInfo(MovieModel movie)
     {
-        SortOrder order = GetOrder();
+        // shows the banner and title
+        OptionsMenu.Logo(movie.Title);
+
+        // shows all other info
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Genre");
+        Console.ResetColor();
+        Console.WriteLine($" {movie.Genre}\n");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Rating");
+        Console.ResetColor();
+        Console.WriteLine($" {movie.Rating}\n");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Age Restriction");
+        Console.ResetColor();
+        Console.WriteLine($" {movie.Age}\n");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine($"Description");
+        Console.ResetColor();
+        Console.WriteLine($" {MovieLogic.SpliceText(movie.Description, " ")}\n");
+
+        // list of options that will be displayed
+        List<string> ReturnList = new List<string>()
+        {
+            "Yes",
+        };
+
+        // the necessary info gets used in the display method
+        int option = OptionsMenu.DisplaySystem(ReturnList, "", "\nDo you want to select this movie?", false);
+
+        // depending on the option that was chosen, it will clear the console and call the right function
+        if (option == 1)
+        {
+            Console.Clear();
+
+            OptionsMenu.Logo("Seat selection");
+            SeatAccess.LoadAuditorium();
+        }
+        else if (option == 2)
+        {
+            Console.Clear();
+            MovieMenu.Start();
+        }
+    }
+
+    public List<MovieModel> SortBy(string input, bool ascending)
+    {
         List<MovieModel> unsorted = _movies;
 
         // Check what to sort by per subject
         if (input.ToUpper() == "DATE")
+        
         {
             //This is if the user is a customer, they cannot see movies that have already played anymore.
             DateTime currentDateTime = DateTime.Now;
-            if (order == SortOrder.ASCENDING)
+            if (ascending)
                 return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderBy(m => m.PublishDate).ToList();
-            if (order == SortOrder.DESCENDING)
+            if (!ascending)
                 return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderByDescending(m => m.PublishDate).ToList();
         }
         else if (input.ToUpper() == "GENRE")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.Genre).ToList() : unsorted.OrderByDescending(m => m.Genre).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.Genre).ToList() : unsorted.OrderByDescending(m => m.Genre).ToList();
         }
         else if (input.ToUpper() == "NAME")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.Title).ToList() : unsorted.OrderByDescending(m => m.Title).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.Title).ToList() : unsorted.OrderByDescending(m => m.Title).ToList();
         }
         else if (input.ToUpper() == "RATING")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.Rating).ToList() : unsorted.OrderByDescending(m => m.Rating).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.Rating).ToList() : unsorted.OrderByDescending(m => m.Rating).ToList();
         }
         else if (input.ToUpper() == "PUBLISH")
         {
-            return (order == SortOrder.ASCENDING) ? unsorted.OrderBy(m => m.PublishDate).ToList() : unsorted.OrderByDescending(m => m.PublishDate).ToList();
+            return (ascending) ? unsorted.OrderBy(m => m.PublishDate).ToList() : unsorted.OrderByDescending(m => m.PublishDate).ToList();
         }
         return unsorted;
     }
@@ -195,8 +185,8 @@ class MovieLogic
 
         if (genre != null)
             filtered = _movies.Where(movie => movie.Genre == genre).ToList();
-        if (mature == true)
-            filtered = filtered.Where(movie => movie.Age >= 18).ToList();
+        if (mature == false)
+            filtered = filtered.Where(movie => movie.Age < 18).ToList();
 
         return filtered;
     }
@@ -211,7 +201,7 @@ class MovieLogic
         return searched;
     }
 
-    public static string SpliceText(string inputText) 
+    public static string SpliceText(string inputText, string spacing) 
     {
         int lineLength = 50;
         string[] stringSplit = inputText.Split(' ');
@@ -225,14 +215,97 @@ class MovieLogic
     
             if(charCounter > lineLength)
             {
-                finalString += "\n   ";
+                finalString += $"\n{spacing}";
                 charCounter = 0;
             }
         }
         if (inputText.Length < lineLength)
         {
-            finalString += "\n   ";
+            finalString += $"\n{spacing}";
         }
         return finalString;
+    }
+
+    public static void AddMultipleMoviesJSON(string filename)
+    {
+        // read file with new movies 
+        string jsonstring = ReadJSON(filename);
+        List<MovieModel> newMovieData = new();
+
+        // 
+        if(!string.IsNullOrEmpty(jsonstring))
+        {
+            newMovieData = JsonSerializer.Deserialize<List<MovieModel>>(jsonstring!)!;
+        }
+
+        // get the original movies that were already in the json file
+        List<MovieModel> originalMovieData = MovieAccess.LoadAll();
+
+        // add new movies to list containing old movies
+        foreach(MovieModel newMovie in newMovieData)
+        {
+            originalMovieData.Add(newMovie);
+        }
+
+        // write new + old movies to file
+        MovieAccess.WriteAll(originalMovieData);
+    }
+
+    public static string ReadJSON(string filename)
+    {
+        StreamReader? reader = null;
+
+        try
+        {
+            // get new movie data from new json file
+            reader = new StreamReader(filename);
+            return(reader.ReadToEnd());
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("File not found");
+            return "";
+        }
+        finally
+        {
+            reader?.Close();
+            reader?.Dispose();
+        }
+    }
+
+    public static void AddMultipleMoviesCSV(string filename)
+    {
+        var csvMovies = new List<MovieModel>();
+        var filePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filename));
+
+        // read lines from csv file using the filepath
+        // skip(1) is so that the header line will be skipped
+        foreach (var line in File.ReadLines(filePath).Skip(1))
+        {
+            // create new MovieModels for each movie in the csv and add to csvMovies list
+            csvMovies.Add(new MovieModel
+            (
+                Convert.ToInt32(line.Split(",")[0]), // id
+                line.Split(",")[1], // title
+                line.Split(",")[2], // genre
+                Convert.ToDouble(line.Split(",")[3]), // rating
+                line.Split(",")[4], // description
+                Convert.ToInt32(line.Split(",")[5]), // age
+                DateTime.Parse(line.Split(",")[6]), // viewing date
+                DateTime.Parse(line.Split(",")[7]) // publish date
+            ));
+        }
+
+        // load movies that were already in the file
+        List<MovieModel> originalMovies = MovieAccess.LoadAll();
+
+        // add each new movie to the original list of movies
+        foreach(MovieModel movie in csvMovies)
+        {
+            originalMovies.Add(movie);
+        }
+
+        // write original movies + new movies back to file
+        MovieAccess.WriteAll(originalMovies);
     }
 }
