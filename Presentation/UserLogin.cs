@@ -21,7 +21,8 @@ static class UserLogin
             AccountModel currentAccount = accountsLogic.Auth(email, password);
             if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
             {
-                accountsLogic.SetCurrentAccount(currentAccount);                
+                accountsLogic.SetCurrentAccount(currentAccount);
+                AdminMenu.Start();
             }
             else
             {
