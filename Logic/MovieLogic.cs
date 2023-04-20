@@ -135,7 +135,7 @@ class MovieLogic
             Console.Clear();
 
             OptionsMenu.Logo("Seat selection");
-            SeatAccess.LoadAuditorium();
+            SeatLogic.SeatSelection();
         }
         else if (option == 2)
         {

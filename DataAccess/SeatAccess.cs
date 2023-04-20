@@ -1,5 +1,3 @@
-
-
 static class SeatAccess
 {
     public static void LoadAuditorium()
