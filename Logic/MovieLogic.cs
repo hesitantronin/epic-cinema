@@ -133,8 +133,6 @@ class MovieLogic
         if (option == 1)
         {
             Console.Clear();
-
-            OptionsMenu.Logo("Seat selection");
             SeatLogic.SeatSelection();
         }
         else if (option == 2)
