@@ -81,4 +81,11 @@ static class SeatAccess
             }
         }
     }
+
+    public static void NewAuditorium(MovieModel movie)
+    {
+        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
+
+        File.Copy(path, $@"DataSources/MovieAuditoriums/{movie.Id}.csv");
+    }
 }
