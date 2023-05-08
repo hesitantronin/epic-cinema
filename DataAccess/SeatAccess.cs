@@ -143,7 +143,6 @@ static class SeatAccess
         return data;
     }
 
-
     public static void UpdateSeatValue(string[][] seatArray, string ID, string newValue)
     {
         // Split ID into the letter and the number
@@ -151,7 +150,7 @@ static class SeatAccess
         int numberOfID = Convert.ToInt32(ID[1..]);
 
         // Find the column index corresponding to the letter in the ID
-        int columnIndex = Array.IndexOf(seatArray[0], letterOfID);
+        int columnIndex = -1;
 
         for (int i = 0; i < seatArray[0].Length; i++)
         {
@@ -185,8 +184,6 @@ static class SeatAccess
             Console.WriteLine("Seat not found");
             return;
         }
-        Console.WriteLine(rowIndex);
-        Console.WriteLine(columnIndex);
 
         // Update the value at the corresponding row and column index
         seatArray[rowIndex][columnIndex] = newValue;
