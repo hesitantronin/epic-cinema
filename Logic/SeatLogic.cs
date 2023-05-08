@@ -14,7 +14,7 @@ static class SeatLogic
         {
             OptionsMenu.Logo("Seat selection");
 
-            SeatAccess.LoadAuditorium();
+            SeatAccess.PrintAuditorium();
 
             bool validID = false;
             while (true)
