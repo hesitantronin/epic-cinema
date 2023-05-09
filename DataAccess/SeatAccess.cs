@@ -189,12 +189,24 @@ static class SeatAccess
         seatArray[rowIndex][columnIndex] = newValue;
     }
 
+    public static void WriteToCSV(string[][] arrayData, string CSVToWriteTo)
+    {
+        using (StreamWriter writer = new StreamWriter(CSVToWriteTo, false))
+        {
+            foreach (string[] row in arrayData)
+            {
+                writer.WriteLine(string.Join(",", row));
+            }
+        }
+    }
 
 
-    public static void NewAuditorium(MovieModel movie)
+    public static string NewAuditorium(MovieModel movie)
     {
         string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
 
         File.Copy(path, $@"DataSources/MovieAuditoriums/{movie.Id}.csv");
+
+        return $@"DataSources/MovieAuditoriums/{movie.Id}.csv";
     }
 }
