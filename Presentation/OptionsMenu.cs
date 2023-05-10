@@ -12,11 +12,11 @@ static class OptionsMenu
             "Login",
             "Register",
             "Guest",
-            "Exit"
+            "Info",
         };
 
         // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, false);
+        int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
         
         // depending on the option that was chosen, it will clear the console and call the right function
         if (option == 1)
@@ -40,9 +40,15 @@ static class OptionsMenu
             accounts.Add(guestAccount);
             AccountsAccess.WriteAll(accounts);
         }
+        else if (option == 4)
+        {
+            Console.Clear();
+            InfoPage();
+            Start();
+        }
 
         // starts up the movie menu
-        if (option != 4)
+        if (option != 5 && option != 4)
         {
             MovieMenu.Start();
         }
@@ -72,7 +78,43 @@ static class OptionsMenu
         }
     }
 
-    static public int DisplaySystem(List<string> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
+    static public void InfoPage()
+    {
+        Console.CursorVisible = false;
+
+        Logo("CINEMA INFO");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine("Location");
+        Console.ResetColor();
+        Console.WriteLine("Wijnhaven 107, 3011WN, Rotterdam");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine("\nContact");
+        Console.ResetColor();
+        Console.WriteLine("06 56745873, info@epic.cinema.nl");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine("\nOpening Hours");
+        Console.ResetColor();
+
+        Console.WriteLine("Monday: Closed");
+        Console.WriteLine("Tuesday: 3:00 to 3:00.0001");
+        Console.WriteLine("Wednesday: Closed");
+        Console.WriteLine("Thursday: Closed");
+        Console.WriteLine("Friday: Closed");
+        Console.WriteLine("Saturday: Closed");
+        Console.WriteLine("Sunday: Closed");
+
+
+        Console.WriteLine("\n > \u001b[32mReturn\u001b[0m");
+        
+        Console.ReadLine();
+
+        Console.CursorVisible = true;
+    }
+
+    static public int DisplaySystem(List<string> list, string title, string question = "", bool showlogo = true, bool showreturn = true, string returntext = "Return")
     {
         // makes the cursor invisible
         Console.CursorVisible = false;
@@ -117,7 +159,7 @@ static class OptionsMenu
 
             if (showreturn)
             {
-                Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
+                Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}{returntext}\u001b[0m");
                 returncount = 1;
             }
             // sees what key has been pressed
