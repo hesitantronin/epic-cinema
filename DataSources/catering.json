@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Popcorn",
+    "type": "Snack",
+    "price": 2.99,
+    "description": "Salty popcorn"
+  },
+  {
+    "id": 2,
+    "name": "Coca cola",
+    "type": "Beverage",
+    "price": 1.99,
+    "description": "Carbonated soft drink"
+  },
+  {
+    "id": 3,
+    "name": "Potato chips",
+    "type": "Snack",
+    "price": 0.99,
+    "description": "Plain potato chips"
+  },
+  {
+    "id": 99,
+    "name": "test",
+    "type": "test",
+    "price": 1,
+    "description": "test"
+  }
+]

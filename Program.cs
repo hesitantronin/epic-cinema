@@ -3,7 +3,7 @@
     public static void Main()
     {
         OptionsMenu.Start();
-        
+
 
         //string[][] data = SeatAccess.LoadAuditorium();
         //SeatAccess.PrintAuditorium(data);
