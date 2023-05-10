@@ -1,8 +1,10 @@
+using System.Text.RegularExpressions;
+
 static class SeatAccess
 {
-    public static void PrintAuditorium()
+    public static void PrintAuditorium(string auditoriumPath)
     {
-        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
+        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, auditoriumPath));
 
         // Open the CSV file using a StreamReader
         using (var reader = new StreamReader(path))
@@ -102,9 +104,9 @@ static class SeatAccess
         }
     }
 
-    public static string[][] LoadAuditorium()
+    public static string[][] LoadAuditorium(string auditoriumPath)
     {
-        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
+        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, auditoriumPath));
 
         // Initialize the jagged array with the header row
         string[][] data = new string[1][];
@@ -204,9 +206,14 @@ static class SeatAccess
     public static string NewAuditorium(MovieModel movie)
     {
         string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
+        string templatePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
+        
+        // Remove all spaces and special characters from the movie title to avoid conflict with names
+        string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
 
-        File.Copy(path, $@"DataSources/MovieAuditoriums/{movie.Id}.csv");
+        // Copy the template auditorium into a new file named after the movie
+        File.Copy(templatePath, $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}.csv");
 
-        return $@"DataSources/MovieAuditoriums/{movie.Id}.csv";
+        return $@"DataSources/MovieAuditoriums/{movie.Title}{movie.Id}.csv";
     }
 }

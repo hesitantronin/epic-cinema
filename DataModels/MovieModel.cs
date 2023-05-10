@@ -38,11 +38,6 @@ class MovieModel
         ViewingDate = viewingdate;
         PublishDate = publishdate;
     }
-
-    public MovieModel(int id)
-    {
-        Id = id;
-    }
 }
 
 
