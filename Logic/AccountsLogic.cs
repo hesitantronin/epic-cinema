@@ -93,9 +93,9 @@ class AccountsLogic
 
     // Returns true if the email is not empty, contains an '@', contains a '.' and does not contain any white space.
     public bool IsEmailValid(string email) => (!string.IsNullOrWhiteSpace(email) && email.Contains("@") && email.Contains(".") && !email.Contains(" "));
-    
+
     // Return true if an account with this email is found in the JSON.
-    public bool IsEmailInUse(string email) => (_accounts.Find(i => i.EmailAddress == email) != null);
+    public bool IsEmailInUse(string email) => _accounts.Any(i => string.Equals(i.EmailAddress, email, StringComparison.OrdinalIgnoreCase));
 
     // Return true if the given password matches the criteria
     public bool IsPasswordValid(string password)

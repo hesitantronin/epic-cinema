@@ -22,20 +22,24 @@ static class UserLogin
             if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
             {
                 accountsLogic.SetCurrentAccount(currentAccount);
-                AdminMenu.Start();
+                AdminMenu.StartAdmin();
             }
-            else
+            else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.EMPLOYEE)
             {
                 accountsLogic.SetCurrentAccount(currentAccount);
-                break;
-            }  
+                EmployeeMenu.StartEmployee();
+            }
+            else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
+            {
+                accountsLogic.SetCurrentAccount(currentAccount);
+                MovieMenu.Start();
+            }
         }
-
         Console.CursorVisible = false;
         Console.Clear();
     }
 
-    public static void Register()
+    public static void Register(bool isEmployeeRegistration = false, bool isAdminRegistration = false)
     {
         Console.CursorVisible = true;
 
@@ -44,7 +48,7 @@ static class UserLogin
 
         while(test == false) 
         {
-            OptionsMenu.Logo("registration");
+            OptionsMenu.Logo(isEmployeeRegistration ? "Employee account registration" : isAdminRegistration ? "Admin account registration" : "Registration");
 
             Console.WriteLine("Email Address:");
             email = Console.ReadLine() + "";
@@ -116,7 +120,8 @@ static class UserLogin
         Console.WriteLine("Name:");
         string fullName = Console.ReadLine() + "";
 
-        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, accountsLogic.HashPassword(password), fullName);
+        AccountModel.AccountType accountType = isEmployeeRegistration ? AccountModel.AccountType.EMPLOYEE : isAdminRegistration ? AccountModel.AccountType.ADMIN : AccountModel.AccountType.CUSTOMER;
+        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, accountsLogic.HashPassword(password), fullName, accountType);
         accountsLogic.UpdateList(acc);
 
         accountsLogic.SetCurrentAccount(acc);

@@ -35,7 +35,6 @@ static class OptionsMenu
             AccountsLogic accountsLogic = new AccountsLogic();
             AccountModel guestAccount = new AccountModel(accountsLogic.GetNextId(), "", "", "", AccountModel.AccountType.CUSTOMER);
             guestAccount.isGuest = true;
-
             List<AccountModel> accounts = AccountsAccess.LoadAll();
             accounts.Add(guestAccount);
             AccountsAccess.WriteAll(accounts);
