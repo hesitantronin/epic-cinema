@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 
 class MovieLogic
@@ -76,7 +75,7 @@ class MovieLogic
         else
         {      
             // the necessary info gets used in the display method
-            int option = OptionsMenu.DisplaySystem(MovieList, "MOVIES");
+            int option = OptionsMenu.MovieDisplaySystem(MovieList, "MOVIES");
 
             // depending on the option that was chosen, it will clear the console and call the right function     
             if (option == MovieList.Count() + 1)

@@ -4,71 +4,65 @@ static class OptionsMenu
 { 
     public static void Start()
     {
-        Console.Clear();
+        while (true)
+        {
+            Console.Clear();
 
-        // list of options that will be displayed
-        List<string> StartList = new List<string>()
-        {
-            "Login",
-            "Register",
-            "Guest",
-            "Info",
-        };
+            // list of options that will be displayed
+            List<string> StartList = new List<string>()
+            {
+                "Login",
+                "Register",
+                "Guest",
+                "Info",
+            };
 
-        // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
-        
-        // depending on the option that was chosen, it will clear the console and call the right function
-        if (option == 1)
-        {
-            Console.Clear();
-            UserLogin.Login();
-        }
-        else if (option == 2)
-        {
-            Console.Clear();
-            UserLogin.Register();
-        }
-        else if (option == 3)
-        {
-            Console.Clear();
-            AccountsLogic accountsLogic = new AccountsLogic();
-            AccountModel guestAccount = new AccountModel(accountsLogic.GetNextId(), "", "", "", AccountModel.AccountType.CUSTOMER);
-            guestAccount.isGuest = true;
-            List<AccountModel> accounts = AccountsAccess.LoadAll();
-            accounts.Add(guestAccount);
-            AccountsAccess.WriteAll(accounts);
-        }
-        else if (option == 4)
-        {
-            Console.Clear();
-            InfoPage();
-            Start();
-        }
-
-        // starts up the movie menu
-        if (option != 5 && option != 4)
-        {
-            MovieMenu.Start();
+            // the necessary info gets used in the display method
+            int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
+            
+            // depending on the option that was chosen, it will clear the console and call the right function
+            if (option == 1)
+            {
+                UserLogin.Login();
+                MovieMenu.Start();
+            }
+            else if (option == 2)
+            {
+                UserLogin.Register();
+                MovieMenu.Start();
+            }
+            else if (option == 3)
+            {
+                UserLogin.Guest();
+                MovieMenu.Start();
+            }
+            else if (option == 4)
+            {
+                InfoPage();
+            }
+            else if (option == 5)
+            {
+                break;
+            }
         }
     }
 
     static public void Logo(string title = "")
     {
+        // prints logo in red
         Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine($@"
-      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.  ™
-   ,-.--` , \  .-`.' ,`.  /==/_ /.' .' -   \         .' .' -   \  /==/_ //==/ \  .-._  ,-.--` , \ .-._ .'=.'\  .--.'  \
-  |==|-  _.-` /==/, -   \|==|, |/==/  ,  ,-'        /==/  ,  ,-' |==|, | |==|, \/ /, /|==|-  _.-`/==/ \|==|  | \==\-/\ \
-  |==|   `.-.|==| _ .=. ||==|  ||==|-   |  .        |==|-   |  . |==|  | |==|-  \|  | |==|   `.-.|==|,|  / - | /==/-|_\ |
- /==/_ ,    /|==| , '=',||==|- ||==|_   `-' \       |==|_   `-' \|==|- | |==| ,  | -|/==/_ ,    /|==|  \/  , | \==\,   - \
- |==|    .-' |==|-  '..' |==| ,||==|   _  , |       |==|   _  , ||==| ,| |==| -   _ ||==|    .-' |==|- ,   _ | /==/ -   ,|
- |==|_  ,`-._|==|,  |    |==|- |\==\.       /       \==\.       /|==|- | |==|  /\ , ||==|_  ,`-._|==| _ /\   |/==/-  /\ - \
- /==/ ,     //==/ - |    /==/. / `-.`.___.-'         `-.`.___.-' /==/. / /==/, | |- |/==/ ,     //==/  / / , /\==\ _.\=\.-'
- `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`
-");
+        Console.WriteLine($@"      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.  ™");
+        Console.WriteLine($@"   ,-.--` , \  .-`.' ,`.  /==/_ /.' .' -   \         .' .' -   \  /==/_ //==/ \  .-._  ,-.--` , \ .-._ .'=.'\  .--.'  \");
+        Console.WriteLine($@"  |==|-  _.-` /==/, -   \|==|, |/==/  ,  ,-'        /==/  ,  ,-' |==|, | |==|, \/ /, /|==|-  _.-`/==/ \|==|  | \==\-/\ \");
+        Console.WriteLine($@"  |==|   `.-.|==| _ .=. ||==|  ||==|-   |  .        |==|-   |  . |==|  | |==|-  \|  | |==|   `.-.|==|,|  / - | /==/-|_\ |");
+        Console.WriteLine($@" /==/_ ,    /|==| , '=',||==|- ||==|_   `-' \       |==|_   `-' \|==|- | |==| ,  | -|/==/_ ,    /|==|  \/  , | \==\,   - \");
+        Console.WriteLine($@" |==|    .-' |==|-  '..' |==| ,||==|   _  , |       |==|   _  , ||==| ,| |==| -   _ ||==|    .-' |==|- ,   _ | /==/ -   ,|");
+        Console.WriteLine($@" |==|_  ,`-._|==|,  |    |==|- |\==\.       /       \==\.       /|==|- | |==|  /\ , ||==|_  ,`-._|==| _ /\   |/==/-  /\ - \");
+        Console.WriteLine($@" /==/ ,     //==/ - |    /==/. / `-.`.___.-'         `-.`.___.-' /==/. / /==/, | |- |/==/ ,     //==/  / / , /\==\ _.\=\.-'");
+        Console.WriteLine($@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`");
         Console.ResetColor();
 
+        // prints a title if one is given
         if (title != "")
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -79,20 +73,25 @@ static class OptionsMenu
 
     static public void InfoPage()
     {
+        Console.Clear();
         Console.CursorVisible = false;
 
+        // prints logo & title
         Logo("CINEMA INFO");
 
+        // location info
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Location");
         Console.ResetColor();
         Console.WriteLine("Wijnhaven 107, 3011WN, Rotterdam");
 
+        // contact info
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("\nContact");
         Console.ResetColor();
         Console.WriteLine("06 56745873, info@epic.cinema.nl");
 
+        // opening hours
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("\nOpening Hours");
         Console.ResetColor();
@@ -105,9 +104,10 @@ static class OptionsMenu
         Console.WriteLine("Saturday: Closed");
         Console.WriteLine("Sunday: Closed");
 
-
+        // prints a fake return option hehe
         Console.WriteLine("\n > \u001b[32mReturn\u001b[0m");
         
+        // actually returns you to the main menu
         Console.ReadLine();
 
         Console.CursorVisible = true;
@@ -156,11 +156,13 @@ static class OptionsMenu
                 Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i]}\u001b[0m");
             }
 
+            // this will show the return button
             if (showreturn)
             {
                 Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}{returntext}\u001b[0m");
                 returncount = 1;
             }
+
             // sees what key has been pressed
             key = Console.ReadKey(false);
 
@@ -183,12 +185,12 @@ static class OptionsMenu
                     break;
             }
         }
-        Console.CursorVisible = true;
 
+        Console.CursorVisible = true;
         return option;
     }
 
-    static public int DisplaySystem(List<MovieModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
+    static public int MovieDisplaySystem(List<MovieModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
     {
         // makes the cursor invisible
         Console.CursorVisible = false;
@@ -236,6 +238,7 @@ static class OptionsMenu
                 Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}\n");
             }
 
+            // this will show the return button
             if (showreturn)
             {
                 Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
@@ -264,12 +267,12 @@ static class OptionsMenu
                     break;
             }
         }
-        Console.CursorVisible = true;
 
+        Console.CursorVisible = true;
         return option;
     }
 
-    static public int DisplaySystem(List<CateringModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
+    static public int CateringDisplaySystem(List<CateringModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
     {
         // makes the cursor invisible
         Console.CursorVisible = false;
@@ -318,6 +321,7 @@ static class OptionsMenu
                 Console.WriteLine($"    Price:\n    ${(list[i].Price)}\n");
             }
 
+            // this will show the return button
             if (showreturn)
             {
                 Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
@@ -346,8 +350,8 @@ static class OptionsMenu
                     break;
             }
         }
-        Console.CursorVisible = true;
 
+        Console.CursorVisible = true;
         return option;
     }
 }

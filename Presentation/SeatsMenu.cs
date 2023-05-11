@@ -1,4 +1,4 @@
-static class SeatMenu
+static class SeatsMenu
 {
     public static void SeatLegend()
     {                        

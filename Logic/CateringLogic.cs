@@ -25,7 +25,7 @@ class CateringLogic
         }
         else
         {
-            int option = OptionsMenu.DisplaySystem(FoodList, "CATERING");
+            int option = OptionsMenu.CateringDisplaySystem(FoodList, "CATERING");
                         // depending on the option that was chosen, it will clear the console and call the right function     
             if (option == FoodList.Count() + 1)
             {

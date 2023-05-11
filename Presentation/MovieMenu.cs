@@ -1,48 +1,47 @@
-using System.Text;
-
 class MovieMenu
 {
     public static MovieLogic movielogic = new MovieLogic();
     static public void Start()
     {
-        // list of options to display
-        List<string> OptionList = new List<string>()
+        while (true)
         {
-            "Sort",
-            "Filter",
-            "Search",
-            "Show All Movies"
-        };
+            Console.Clear();
 
-        // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(OptionList, "MOVIES");  
+            // list of options to display
+            List<string> OptionList = new List<string>()
+            {
+                "Sort",
+                "Filter",
+                "Search",
+                "Show All Movies"
+            };
 
-        // depending on the option that was chosen, it will clear the console and call the right function
-        if (option == 1)
-        {
-            Console.Clear();
-            Sort();
-        }
-        else if (option == 2)
-        {
-            Console.Clear();
-            Filter();
-        }
-        else if (option == 3)
-        {
-            Console.Clear();
-            Search();
-        }
-        else if (option == 4)
-        {
-            Console.Clear();
-            movielogic.PrintMovies();
-        }
+            // the necessary info gets used in the display method
+            int option = OptionsMenu.DisplaySystem(OptionList, "MOVIES");  
 
-        else if (option == 5)
-        {
-            Console.Clear();
-            OptionsMenu.Start();
+            // depending on the option that was chosen, it will call the right function
+            if (option == 1)
+            {
+                Sort();
+            }
+            else if (option == 2)
+            {
+                Filter();
+            }
+            else if (option == 3)
+            {
+                Search();
+            }
+            else if (option == 4)
+            {
+                movielogic.PrintMovies();
+            }
+
+            // breaks out of the while loop if return is selected
+            else if (option == 5)
+            {
+                break;
+            }
         }
     }
 
