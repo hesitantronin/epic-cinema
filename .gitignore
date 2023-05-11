@@ -14,3 +14,4 @@
 bin
 obj
 project
+obj/Debug/net6.0/Project.GeneratedMSBuildEditorConfig.editorconfig
