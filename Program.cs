@@ -2,8 +2,8 @@
 {
     public static void Main()
     {
-        // OptionsMenu.Start();
+        OptionsMenu.Start();
 
-        SeatMenu.SeatLegend();
+        // SeatMenu.SeatLegend();
     }
 }

@@ -8,8 +8,8 @@ public class AdminMenu : EmployeeMenu
         List<string> startList = new List<string>()
         {
             "Change Cinema font",
-            // "Create admin account" (Optional if needed),
             "Create employee account",
+            "Create admin account",
             "Remove accounts"
         };
 
@@ -29,17 +29,13 @@ public class AdminMenu : EmployeeMenu
         {
             UserLogin.Register(true);
         }
-        // else if (option == 3)
-        // {
-        //     UserLogin.Register(false, true);
-        // }
         else if (option == 3)
         {
-            RemoveEmployeeAccount();
+            UserLogin.Register(false, true);
         }
         else if (option == 4)
         {
-            Console.WriteLine("Not yet implemented");
+            RemoveEmployeeAccount();
         }
         else if (option == 5)
         {
@@ -51,9 +47,13 @@ public class AdminMenu : EmployeeMenu
         }
         else if (option == 7)
         {
-            StartEmployee();
+            Console.WriteLine("Not yet implemented");
         }
         else if (option == 8)
+        {
+            StartEmployee();
+        }
+        else if (option == 9)
         {
             Console.WriteLine("Exiting...");
         }
@@ -71,10 +71,9 @@ public class AdminMenu : EmployeeMenu
         List<string> employeeList = new List<string>();
         foreach (AccountModel account in accounts)
         {
-            // if (account.Type == AccountModel.AccountType.EMPLOYEE || account.Type == AccountModel.AccountType.ADMIN)
-            if (account.Type == AccountModel.AccountType.EMPLOYEE)
+            if (account.Type == AccountModel.AccountType.EMPLOYEE || account.Type == AccountModel.AccountType.ADMIN)
             {
-                string employeeInfo = $"ID: {account.Id}\nName: {account.FullName}\nEmail: {account.EmailAddress}\n";
+                string employeeInfo = $"ID: {account.Id}\nName: {account.FullName}\nEmail: {account.EmailAddress}\nAccount Type: {account.Type}\n";
                 employeeList.Add(employeeInfo);
             }
         }
