@@ -2,67 +2,101 @@ class AdminMenu : EmployeeMenu
 {
     public static new void StartAdmin()
     {
-        Console.Clear();
-
-        // Combine the StartList from AdminMenu and EmployeeMenu
-        List<string> startList = new List<string>()
+        while (true)
         {
-            "Change Cinema font",
-            "Create employee account",
-            "Create admin account",
-            "Remove accounts"
+            Console.Clear();
+
+            // Combine the StartList from AdminMenu and EmployeeMenu
+            List<string> startList = new List<string>()
+            {
+                "Change Cinema font",
+                "Create admin/ employee account",
+                "Remove accounts"
+            };
+            
+            
+
+
+            startList.AddRange(StartList); // Add the options from EmployeeMenu
+
+            // Display the menu and get the selected option
+            int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Logout");
+
+            Console.Clear();
+
+            // Handle the selected option
+            if (option == 1)
+            {
+                Console.WriteLine("Not yet implemented");
+            }
+            else if (option == 2)
+            {
+                AccountCreator();
+            }
+            else if (option == 3)
+            {
+                RemoveEmployeeAccount();
+            }
+            else if (option == 4)
+            {
+                //movies
+            }
+            else if (option == 5)
+            {
+                //catering
+            }
+            else if (option == 6)
+            {
+                //Seats
+            }
+            else if (option == 7)
+            {
+                List<string> Confirmation = new List<string>()
+                {
+                    "Yes",
+                    "No"
+                };
+                int LogoutConfirmation = OptionsMenu.DisplaySystem(Confirmation, "Are you sure you want to logout?", "Use ⬆ and ⬇ to navigate and press Enter to select", false, false);
+                if (LogoutConfirmation == 2)
+                {
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid option");
+            }
+        }
+    }
+
+    private static void AccountCreator()
+    {
+        List<string> account = new List<string>()
+        {
+            "Create Admin account",
+            "Create Employee account",
         };
-
-        startList.AddRange(StartList); // Add the options from EmployeeMenu
-
-        // Display the menu and get the selected option
-        int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, false);
-
+        int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "Use ⬆ and ⬇ to navigate and press Enter to select account type to create:", true, true);
         Console.Clear();
 
         // Handle the selected option
         if (option == 1)
         {
-            Console.WriteLine("Not yet implemented");
+            UserLogin.Register(true);
         }
         else if (option == 2)
         {
-            UserLogin.Register(true);
+            UserLogin.Register(false, true);
         }
         else if (option == 3)
         {
-            UserLogin.Register(false, true);
-        }
-        else if (option == 4)
-        {
-            RemoveEmployeeAccount();
-        }
-        else if (option == 5)
-        {
-            Console.WriteLine("Not yet implemented");
-        }
-        else if (option == 6)
-        {
-            Console.WriteLine("Not yet implemented");
-        }
-        else if (option == 7)
-        {
-            Console.WriteLine("Not yet implemented");
-        }
-        else if (option == 8)
-        {
-            StartEmployee();
-        }
-        else if (option == 9)
-        {
-            Console.WriteLine("Exiting...");
-        }
-        else
-        {
-            Console.WriteLine("Invalid option");
+            //return option
         }
     }
-
     private static void RemoveEmployeeAccount()
     {
         List<AccountModel> accounts = AccountsAccess.LoadAll();
@@ -78,7 +112,7 @@ class AdminMenu : EmployeeMenu
             }
         }
 
-        int option = OptionsMenu.DisplaySystem(employeeList, "Employee accounts", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected account:", true, false);
+        int option = OptionsMenu.DisplaySystem(employeeList, "Employee accounts", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected account:", true, true);
 
         if (option >= 1 && option <= employeeList.Count)
         {

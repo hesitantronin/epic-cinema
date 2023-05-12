@@ -5,36 +5,31 @@ class EmployeeMenu
     {
         "Movies",
         "Catering",
-        "Seats",
-        "Exit"
+        "Seats"
     };
     protected static List<string> MovieEditorList = new List<string>()
     {
         "Current movies",
         "Edit movies",
-        "Remove movies",
-        "Exit"
+        "Remove movies"
     };
     protected static List<string> MovieAdd = new List<string>()
     {
         "Current movies",
         "Edit movies",
-        "Remove movies",
-        "Exit"
+        "Remove movies"
     };
     protected static List<string> CateringEditorList = new List<string>()
     {
         "Menu",
         "Edit menu",
-        "Remove items",
-        "Exit"
+        "Remove items"
     };
     protected static List<string> SeatEditorList = new List<string>()
     {
         "Current seats",
         "Edit seat prices",
         "remove ?",
-        "Exit"
     };
 
     public static void StartEmployee()
@@ -42,7 +37,7 @@ class EmployeeMenu
         Console.Clear();
 
         // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(StartList, "Employee Editor menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, false);
+        int option = OptionsMenu.DisplaySystem(StartList, "Employee Editor menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
 
         // depending on the option that was chosen, it will clear the console and call the right function
         if (option == 1)
