@@ -34,36 +34,38 @@ class EmployeeMenu
 
     public static void StartEmployee()
     {
-        Console.Clear();
+        while (true)
+        {
+            Console.Clear();
 
-        // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(StartList, "Employee Editor menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
+            // the necessary info gets used in the display method
+            int option = OptionsMenu.DisplaySystem(StartList, "Editing", "Select what category you want to edit.", true, true);
 
-        // depending on the option that was chosen, it will clear the console and call the right function
-        if (option == 1)
-        {
-            Console.Clear();
-            Movies();
-        }
-        else if (option == 2)
-        {
-            Console.Clear();
-        }
-        else if (option == 3)
-        {
-            Console.Clear();
-            Console.WriteLine("Not yet implemented");
-        }
-        if (option != 4)
-        {
-            Console.Clear();
-            Console.WriteLine("Not yet implemented");
+            // depending on the option that was chosen, it will clear the console and call the right function
+            if (option == 1)
+            {
+                Console.Clear();
+                Movies();
+            }
+            else if (option == 2)
+            {
+                Console.Clear();
+            }
+            else if (option == 3)
+            {
+                Console.Clear();
+                Console.WriteLine("Not yet implemented");
+            }
+            if (option == 4)
+            {
+                break;
+            }
         }
     }
     private static void Movies()
     {
         Console.Clear();
-        int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "Movie menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, false);
+        int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "Movies", "", true, true);
         if (MovieOptions == 1)
         {
             Console.Clear();

@@ -1,7 +1,9 @@
 static class SeatsMenu
 {
     public static void SeatLegend()
-    {                        
+    {
+        Console.WriteLine();
+
         Console.ForegroundColor = ConsoleColor.DarkGray;
         Console.Write("■");
         Console.ResetColor();
@@ -25,6 +27,6 @@ static class SeatsMenu
         Console.ForegroundColor = ConsoleColor.DarkGreen;
         Console.Write("■");
         Console.ResetColor();
-        Console.Write(" - SELECTED SEATS\n");
+        Console.Write(" - SELECTED SEATS\n\n");
     }
 }

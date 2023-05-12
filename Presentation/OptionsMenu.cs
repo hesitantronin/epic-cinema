@@ -74,7 +74,18 @@ static class OptionsMenu
                 }
                 else if (option == 2)
                 {
-                    MovieMenu.Start();
+                    if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                    {
+                        MovieMenu.Start();
+                    }
+                    else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                    {
+                        EmployeeMenu.StartEmployee();
+                    }
+                    else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.ADMIN)
+                    {
+                        AdminMenu.StartAdmin();
+                    }
                 }
                 else if (option == 3)
                 {
@@ -201,7 +212,10 @@ static class OptionsMenu
 
     static public int DisplaySystem(List<string> list, string title, string question = "", bool showlogo = true, bool showreturn = true, string returntext = "Return")
     {
-        Console.Clear();
+        if (showlogo)
+        {
+            Console.Clear();
+        }
         
         // makes the cursor invisible
         Console.CursorVisible = false;

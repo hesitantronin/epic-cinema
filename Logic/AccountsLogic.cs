@@ -100,7 +100,7 @@ class AccountsLogic
                     accountsLogic.SetCurrentAccount(currentAccount);
                 }
 
-                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}", true, false);
+                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back, {accountModel.FullName}.\nYour email address is: {accountModel.EmailAddress}", true, false);
                 
                 if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
                 {
