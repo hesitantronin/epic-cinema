@@ -70,18 +70,66 @@ class MovieLogic
                 }
             }
             else
-            {      
-                // the necessary info gets used in the display method
-                int option = OptionsMenu.MovieDisplaySystem(MovieList, "MOVIES");
+            {   
+                int BaseLine = 0;
+                int MaxItems = 5;
+                int pageNr = 1;
 
-                // depending on the option that was chosen, it will clear the console and call the right function     
-                if (option == MovieList.Count() + 1)
+                bool previousButton = false;
+                bool nextButton = true;
+
+                while (BaseLine < MovieList.Count() - 1)
                 {
-                    break;
-                } 
-                else
-                {
-                    MovieInfo(MovieList[option - 1]);
+                    if (BaseLine + 5 > MovieList.Count() - 1)
+                    {
+                        MaxItems = (MovieList.Count() - 1) % 5;
+                        nextButton = false;
+                    }
+                    else
+                    {
+                        MaxItems = 5;
+                        nextButton = true;
+                    }
+                    
+                    if (BaseLine < 0)
+                    {
+                        BaseLine = 0;
+                        pageNr = 0;
+                    }
+
+                    if (BaseLine != 0)
+                    {
+                        previousButton = true;
+                    }
+                    else
+                    {
+                        previousButton = false;
+                    }
+
+                    // the necessary info gets used in the display method
+                    List<MovieModel> subList = MovieList.GetRange(BaseLine, MaxItems);
+
+                    int option = OptionsMenu.MovieDisplaySystem(subList, "MOVIES", $"Page {pageNr}", true, previousButton, nextButton);
+
+                    // depending on the option that was chosen, it will clear the console and call the right function  
+                    if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && previousButton && !nextButton) || (option == subList.Count() + 1 && previousButton && nextButton))
+                    {
+                        BaseLine -= 5;
+                        pageNr -= 1;
+                    }                     
+                    else if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && nextButton))
+                    {
+                        BaseLine += 5;
+                        pageNr += 1;
+                    }
+                    else if (option == subList.Count() + 1 + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton))
+                    {
+                        return;
+                    } 
+                    else
+                    {
+                        MovieInfo(subList[option - 1]);
+                    }
                 }
             }
         }
