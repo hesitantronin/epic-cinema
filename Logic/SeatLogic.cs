@@ -13,20 +13,19 @@ static class SeatLogic
         // Check for a valid ID
         string pattern = @"^[a-l]([1-9]|1[0-4])$";
 
-
-        Console.Clear();
-        OptionsMenu.Logo("Seat selection");
-
         if (!File.Exists(pathToCsv))
         {
             SeatAccess.NewAuditorium(movie);
         }
 
-        SeatAccess.PrintAuditorium(pathToCsv);
-        string[][] auditoriumArray = SeatAccess.LoadAuditorium(pathToCsv);
-
         while (true)
         {
+            // Visualisation of the menu
+            Console.Clear();
+            OptionsMenu.Logo("Seat selection");
+            SeatAccess.PrintAuditorium(pathToCsv);
+            string[][] auditoriumArray = SeatAccess.LoadAuditorium(pathToCsv);
+
             Console.WriteLine("Please select a seat");
             currentlySelectedChair = Console.ReadLine();
 
@@ -34,6 +33,10 @@ static class SeatLogic
             {
                 if (Regex.IsMatch(currentlySelectedChair, pattern, RegexOptions.IgnoreCase))
                 {
+                    if (!selectedChairs.Contains(currentlySelectedChair))
+                    {
+
+                    }
                     selectedChairs.Add(currentlySelectedChair.ToUpper());
                     Console.WriteLine($"You've Selected seat(s) {String.Join(", ", selectedChairs)}, do you wish to select any more?");
                     Console.WriteLine("Yes/No");
@@ -53,17 +56,20 @@ static class SeatLogic
 
             else
             {
-                Console.WriteLine("Please fill in the ID of a chair");  
+                Console.WriteLine("Please fill in the ID of a chair");
             }
-            
+
+            // Update CSV with selected seats to show which seats are selected during the process
+            foreach (string seat in selectedChairs)
+            {
+                SeatAccess.UpdateSeatValue(auditoriumArray, seat, "4");
+            }
+
+            SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
         }
 
-        foreach (string seat in selectedChairs)
-        {
-            SeatAccess.UpdateSeatValue(auditoriumArray, seat, "0");
-        }
+        Console.WriteLine("Are you ok with the current seat selection");
 
-        SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
-
+        // Going to food reservations
     }
 }

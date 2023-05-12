@@ -40,7 +40,7 @@ static class SeatAccess
                     {
                         if (i % 14 != 0)
                         {
-                            Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
                         }
                     }
                     if (values[i] == "1")
@@ -62,6 +62,13 @@ static class SeatAccess
                         if (i % 14 != 0)
                         {
                             Console.ForegroundColor = ConsoleColor.DarkRed;
+                        }
+                    }
+                    else if (values[i] == "4")
+                    {
+                        if (i % 14 != 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
                         }
                     }
                     if (values[i] != "")
@@ -191,6 +198,57 @@ static class SeatAccess
         seatArray[rowIndex][columnIndex] = newValue;
     }
 
+    public static bool FindSeatValueArray(string[][] seatArray, string ID)
+    {
+        // Split ID into the letter and the number
+        char letterOfID = ID[0];
+        int numberOfID = Convert.ToInt32(ID[1..]);
+
+        // Find the column index corresponding to the letter in the ID
+        int columnIndex = -1;
+
+        for (int i = 0; i < seatArray[0].Length; i++)
+        {
+            if (seatArray[0][i] == Convert.ToString(letterOfID))
+            {
+                columnIndex = i;
+                break;
+            }
+        }
+
+        // Find the row index corresponding to the number in the ID
+        int rowIndex = -1;
+
+        for (int i = 1; i < seatArray.Length; i++)
+        {
+            for (int j = 0; j < seatArray[i].Length; j++)
+            {
+                if (!string.IsNullOrEmpty(seatArray[j][0]))
+                {
+                    if (Convert.ToInt32(seatArray[j][0]) == numberOfID)
+                    {
+                        rowIndex = j;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If the row index is still -1, the ID was not found in the array
+        if (rowIndex == -1)
+        {
+            return false;
+        }
+
+        if (seatArray[rowIndex][columnIndex] != "")
+        {
+            return true;
+        }
+
+        return false;
+
+    }
+
     public static void WriteToCSV(string[][] arrayData, string CSVToWriteTo)
     {
         using (StreamWriter writer = new StreamWriter(CSVToWriteTo, false))
@@ -207,7 +265,7 @@ static class SeatAccess
     {
         string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
         string templatePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
-        
+
         // Remove all spaces and special characters from the movie title to avoid conflict with names
         string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
 
