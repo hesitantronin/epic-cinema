@@ -6,41 +6,94 @@ static class OptionsMenu
     {
         while (true)
         {
-            Console.Clear();
+            if (AccountsLogic.CurrentAccount == null)
+            {
+                Console.Clear();
 
-            // list of options that will be displayed
-            List<string> StartList = new List<string>()
-            {
-                "Login",
-                "Register",
-                "Guest",
-                "Info",
-            };
+                // list of options that will be displayed
+                List<string> StartList = new List<string>()
+                {
+                    "Login",
+                    "Register",
+                    "Guest",
+                    "Info",
+                };
 
-            // the necessary info gets used in the display method
-            int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
-            
-            // depending on the option that was chosen, it will clear the console and call the right function
-            if (option == 1)
-            {
-                AccountsLogic accLogic = new AccountsLogic();
-                accLogic.Login();
+                // the necessary info gets used in the display method
+                int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
+                
+                // depending on the option that was chosen, it will clear the console and call the right function
+                if (option == 1)
+                {
+                    AccountsLogic accLogic = new AccountsLogic();
+                    accLogic.Login();
+                }
+                else if (option == 2)
+                {
+                    AccountsLogic.Register();
+                }
+                else if (option == 3)
+                {
+                    AccountsLogic.Guest();
+                }
+                else if (option == 4)
+                {
+                    InfoPage();
+                }
+                else if (option == 5)
+                {
+                    if (AccountsLogic.CurrentAccount != null)
+                    {
+                        if (LogOut())
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
             }
-            else if (option == 2)
+            else
             {
-                AccountsLogic.Register();
-            }
-            else if (option == 3)
-            {
-                AccountsLogic.Guest();
-            }
-            else if (option == 4)
-            {
-                InfoPage();
-            }
-            else if (option == 5)
-            {
-                break;
+                Console.Clear();
+
+                List<string> StartList = new List<string>()
+                {
+                    "Logout",
+                    "Continue",
+                    "Info",
+                };
+
+                int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
+
+                if (option == 1)
+                {
+                    LogOut();
+                }
+                else if (option == 2)
+                {
+                    MovieMenu.Start();
+                }
+                else if (option == 3)
+                {
+                    InfoPage();
+                }
+                else if (option == 4)
+                {
+                    if (AccountsLogic.CurrentAccount != null)
+                    {
+                        if (LogOut())
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
             }
         }
     }
@@ -63,28 +116,30 @@ static class OptionsMenu
         // prints acc name and acc type
         Console.ForegroundColor = ConsoleColor.DarkGray;
 
-
         string accType = "";
         if (AccountsLogic.CurrentAccount != null)
         {
             if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
             {
-                accType = "Guest";
+                Console.WriteLine("\n(Logged in as Guest)");
             }
-            else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
+            else
             {
-                accType = "Customer";
-            }            
-            else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
-            {
-                accType = "Employee";
-            }            
-            else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.ADMIN)
-            {
-                accType = "Admin";
-            }
+                if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                {
+                    accType = "Customer";
+                }            
+                else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                {
+                    accType = "Employee";
+                }            
+                else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.ADMIN)
+                {
+                    accType = "Admin";
+                }
 
-            Console.Write($"\n{AccountsLogic.CurrentAccount.FullName} ({accType})\n");
+                Console.Write($"\n{AccountsLogic.CurrentAccount.FullName} ({accType})\n");
+            }
         }
         else
         {
@@ -383,5 +438,37 @@ static class OptionsMenu
 
         Console.CursorVisible = true;
         return option;
+    }
+
+    public static bool LogOut()
+    {
+        if (AccountsLogic.CurrentAccount != null)
+        {
+            Console.Clear();
+
+            List<string> YNList = new List<string>()
+            {
+                "Yes",
+                "No"
+            };
+
+            int opt = OptionsMenu.DisplaySystem(YNList, "LOGOUT", "Are you sure you want to log out?", true, false);  
+
+            if (opt == 1)
+            {
+                if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+                {
+                    AccountsLogic accLog = new AccountsLogic();
+                    accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
+                }
+                AccountsLogic.CurrentAccount = null;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

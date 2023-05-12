@@ -36,6 +36,16 @@ class AccountsLogic
 
     }
 
+    public void RemoveAcc(int id)
+    {
+        // finds if there is a movie with the same id
+        int index = _accounts.FindIndex(s => s.Id == id);
+
+        // removes the movie with that id, and updates the json file
+        _accounts.Remove(_accounts[index]);
+        AccountsAccess.WriteAll(_accounts);
+    }
+
     public AccountModel? GetById(int id)
     {
        return _accounts.Find(i => i.Id == id);
@@ -80,20 +90,30 @@ class AccountsLogic
                 if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
                 {
                     accountsLogic.SetCurrentAccount(currentAccount);
-                    AdminMenu.StartAdmin();
                 }
                 else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.EMPLOYEE)
                 {
                     accountsLogic.SetCurrentAccount(currentAccount);
-                    EmployeeMenu.StartEmployee();
                 }
                 else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
                 {
                     accountsLogic.SetCurrentAccount(currentAccount);
-                    MovieMenu.Start();
                 }
 
                 OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}", true, false);
+                
+                if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
+                {
+                    AdminMenu.StartAdmin();
+                }
+                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                {
+                    EmployeeMenu.StartEmployee();
+                }
+                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                {
+                    MovieMenu.Start();
+                }
 
                 break;
             }
@@ -159,7 +179,6 @@ class AccountsLogic
 
         string password = string.Empty;
         string confirmedPassword = "no match";
-
 
         while (password != confirmedPassword)
         {
@@ -236,6 +255,7 @@ class AccountsLogic
                 && password.Any(char.IsUpper)
                 && password.Any(c => !char.IsLetterOrDigit(c)));
     }
+
     // Returns the nextID
     public int GetNextId() 
     {
@@ -247,6 +267,7 @@ class AccountsLogic
 
         return maxId + 1;
     }
+
     // Masks passwords in the terminal
     public string GetMaskedPassword()
     {
@@ -288,14 +309,13 @@ class AccountsLogic
             // And convert each byte to a string representation of its hex value.
             return String.Concat(hash.ComputeHash(Encoding.UTF8.GetBytes(raw)).Select(i => i.ToString("x2")));
         }
-    }
-    
-    
+    }   
 
     public static void Guest()
     {
         AccountsLogic accountsLogic = new AccountsLogic();
         AccountModel guestAccount = new AccountModel(accountsLogic.GetNextId(), "", "", "", AccountModel.AccountType.GUEST);
+        CurrentAccount = guestAccount;
 
         List<AccountModel> accounts = AccountsAccess.LoadAll();
         accounts.Add(guestAccount);
