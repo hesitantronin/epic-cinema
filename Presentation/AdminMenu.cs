@@ -20,7 +20,7 @@ class AdminMenu : EmployeeMenu
             startList.AddRange(StartList); // Add the options from EmployeeMenu
 
             // Display the menu and get the selected option
-            int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Logout");
+            int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Return");
 
             Console.Clear();
 
@@ -51,20 +51,21 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 7)
             {
-                List<string> Confirmation = new List<string>()
-                {
-                    "Yes",
-                    "No"
-                };
-                int LogoutConfirmation = OptionsMenu.DisplaySystem(Confirmation, "Are you sure you want to logout?", "Use ⬆ and ⬇ to navigate and press Enter to select", false, false);
-                if (LogoutConfirmation == 2)
-                {
-                    continue;
-                }
-                else
-                {
-                    break;
-                }
+                // List<string> Confirmation = new List<string>()
+                // {
+                //     "Yes",
+                //     "No"
+                // };
+                // int LogoutConfirmation = OptionsMenu.DisplaySystem(Confirmation, "LOGOUT", "Are you sure you want to log out?", true, false);
+                // if (LogoutConfirmation == 2)
+                // {
+                //     continue;
+                // }
+                // else
+                // {
+                //     break;
+                // }
+                break;
             }
             else
             {
@@ -91,10 +92,6 @@ class AdminMenu : EmployeeMenu
         else if (option == 2)
         {
             AccountsLogic.Register(false, true);
-        }
-        else if (option == 3)
-        {
-            //return option
         }
     }
     private static void RemoveEmployeeAccount()
