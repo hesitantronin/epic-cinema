@@ -23,18 +23,16 @@ static class OptionsMenu
             // depending on the option that was chosen, it will clear the console and call the right function
             if (option == 1)
             {
-                UserLogin.Login();
-                MovieMenu.Start();
+                AccountsLogic accLogic = new AccountsLogic();
+                accLogic.Login();
             }
             else if (option == 2)
             {
-                UserLogin.Register();
-                MovieMenu.Start();
+                AccountsLogic.Register();
             }
             else if (option == 3)
             {
-                UserLogin.Guest();
-                MovieMenu.Start();
+                AccountsLogic.Guest();
             }
             else if (option == 4)
             {

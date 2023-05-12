@@ -86,11 +86,11 @@ class AdminMenu : EmployeeMenu
         // Handle the selected option
         if (option == 1)
         {
-            UserLogin.Register(true);
+            AccountsLogic.Register(true);
         }
         else if (option == 2)
         {
-            UserLogin.Register(false, true);
+            AccountsLogic.Register(false, true);
         }
         else if (option == 3)
         {

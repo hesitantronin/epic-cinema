@@ -42,51 +42,47 @@ class MovieLogic
         MovieAccess.WriteAll(_movies);
     }
 
-    public MovieModel GetById(int id)
+    public MovieModel? GetById(int id)
     {
         // returns the movie data that matches the id
         return _movies.Find(i => i.Id == id);
     }
 
-    enum SortOrder    
-    {
-        ASCENDING,
-        DESCENDING
-    }
-
     public void PrintMovies(List<MovieModel> MovieList)
     {
-        // prints an error message if nothing was found
-        if (MovieList.Count() == 0)
+        while (true)
         {
-            // list of options that will be displayed
-            List<string> ReturnList = new List<string>();
+            Console.Clear();
 
-            // the necessary info gets used in the display method
-            int option = OptionsMenu.DisplaySystem(ReturnList, "MOVIES", "No movies were found that matched the criteria.");
-
-            // depending on the option that was chosen, it will clear the console and call the right function
-            if (option == 1)
+            // prints an error message if nothing was found
+            if (MovieList.Count() == 0)
             {
-                Console.Clear();
-                MovieMenu.Start();
+                // list of options that will be displayed
+                List<string> ReturnList = new List<string>();
+
+                // the necessary info gets used in the display method
+                int option = OptionsMenu.DisplaySystem(ReturnList, "MOVIES", "No movies were found that matched the criteria.");
+
+                // depending on the option that was chosen, it will clear the console and call the right function
+                if (option == 1)
+                {
+                    break;
+                }
             }
-        }
-        else
-        {      
-            // the necessary info gets used in the display method
-            int option = OptionsMenu.MovieDisplaySystem(MovieList, "MOVIES");
-
-            // depending on the option that was chosen, it will clear the console and call the right function     
-            if (option == MovieList.Count() + 1)
-            {
-                Console.Clear();
-                MovieMenu.Start();
-            } 
             else
-            {
-                Console.Clear();
-                MovieInfo(MovieList[option - 1]);
+            {      
+                // the necessary info gets used in the display method
+                int option = OptionsMenu.MovieDisplaySystem(MovieList, "MOVIES");
+
+                // depending on the option that was chosen, it will clear the console and call the right function     
+                if (option == MovieList.Count() + 1)
+                {
+                    break;
+                } 
+                else
+                {
+                    MovieInfo(MovieList[option - 1]);
+                }
             }
         }
     }
@@ -95,49 +91,53 @@ class MovieLogic
  
     public void MovieInfo(MovieModel movie)
     {
-        // shows the banner and title
-        OptionsMenu.Logo(movie.Title);
-
-        // shows all other info
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine($"Genre");
-        Console.ResetColor();
-        Console.WriteLine($" {movie.Genre}\n");
-
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine($"Rating");
-        Console.ResetColor();
-        Console.WriteLine($" {movie.Rating}\n");
-
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine($"Age Restriction");
-        Console.ResetColor();
-        Console.WriteLine($" {movie.Age}\n");
-
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine($"Description");
-        Console.ResetColor();
-        Console.WriteLine($" {MovieLogic.SpliceText(movie.Description, " ")}\n");
-
-        // list of options that will be displayed
-        List<string> ReturnList = new List<string>()
-        {
-            "Yes",
-        };
-
-        // the necessary info gets used in the display method
-        int option = OptionsMenu.DisplaySystem(ReturnList, "", "\nDo you want to select this movie?", false);
-
-        // depending on the option that was chosen, it will clear the console and call the right function
-        if (option == 1)
+        while (true)
         {
             Console.Clear();
-            SeatLogic.SeatSelection(movie);
-        }
-        else if (option == 2)
-        {
-            Console.Clear();
-            MovieMenu.Start();
+
+            // shows the banner and title
+            OptionsMenu.Logo(movie.Title);
+
+            // shows all other info
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Genre");
+            Console.ResetColor();
+            Console.WriteLine($" {movie.Genre}\n");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Rating");
+            Console.ResetColor();
+            Console.WriteLine($" {movie.Rating}\n");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Age Restriction");
+            Console.ResetColor();
+            Console.WriteLine($" {movie.Age}\n");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Description");
+            Console.ResetColor();
+            Console.WriteLine($" {MovieLogic.SpliceText(movie.Description, " ")}\n");
+
+            // list of options that will be displayed
+            List<string> ReturnList = new List<string>()
+            {
+                "Yes",
+                "No"
+            };
+
+            // the necessary info gets used in the display method
+            int option = OptionsMenu.DisplaySystem(ReturnList, "", "\nDo you want to select this movie?", false, false);
+
+            // depending on the option that was chosen, it will clear the console and call the right function
+            if (option == 1)
+            {
+                SeatLogic.SeatSelection(movie);
+            }
+            else if (option == 2)
+            {
+                break;
+            }
         }
     }
 
@@ -147,14 +147,17 @@ class MovieLogic
 
         // Check what to sort by per subject
         if (input.ToUpper() == "DATE")
-        
         {
             //This is if the user is a customer, they cannot see movies that have already played anymore.
             DateTime currentDateTime = DateTime.Now;
             if (ascending)
+            {
                 return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderBy(m => m.PublishDate).ToList();
+            }
             if (!ascending)
+            {
                 return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderByDescending(m => m.PublishDate).ToList();
+            }
         }
         else if (input.ToUpper() == "GENRE")
         {
