@@ -4,72 +4,159 @@ static class SeatLogic
 {
     public static void SeatSelection(MovieModel movie)
     {
+        List<string> answerList = new List<string>()
+        {
+            "Yes",
+            "Add more seats",
+            "Remove seats"
+        };
+
+        // Regex pattern for checking the validity of the input ID later in the selection process
+        string pattern = @"^[a-l]([1-9]|1[0-4])$";
+
         List<string> selectedChairs = new();
         string currentlySelectedChair = string.Empty;
-
+        
         string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
         string pathToCsv = $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}.csv";
-
-        // Check for a valid ID
-        string pattern = @"^[a-l]([1-9]|1[0-4])$";
 
         if (!File.Exists(pathToCsv))
         {
             SeatAccess.NewAuditorium(movie);
         }
 
+        string[][] auditoriumArray = SeatAccess.LoadAuditorium(pathToCsv); // Initialise array for searching and updating values
+
+        bool removingMode = false;
+        
+        // Looping the selection of the seats until the user has selected all seats they'd want
         while (true)
         {
             // Visualisation of the menu
             Console.Clear();
             OptionsMenu.Logo("Seat selection");
-            SeatAccess.PrintAuditorium(pathToCsv);
-            string[][] auditoriumArray = SeatAccess.LoadAuditorium(pathToCsv);
+            SeatAccess.PrintAuditorium(auditoriumArray);
+            SeatsMenu.SeatLegend();
 
-            Console.WriteLine("Please select a seat");
+            // Ask user for id of the seat 
+            Console.WriteLine($"Type in the ID of the seat you want to {(removingMode ? "remove from your selection" : "select")} (I.E. - A6)");
             currentlySelectedChair = Console.ReadLine();
 
+            // Checking the validity of the input ID and preventing any crashes 
             if (!string.IsNullOrEmpty(currentlySelectedChair))
             {
                 if (Regex.IsMatch(currentlySelectedChair, pattern, RegexOptions.IgnoreCase))
                 {
-                    if (!selectedChairs.Contains(currentlySelectedChair))
+                    if (SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "0" && 
+                        SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "4" && 
+                        SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "")
                     {
 
-                    }
-                    selectedChairs.Add(currentlySelectedChair.ToUpper());
-                    Console.WriteLine($"You've Selected seat(s) {String.Join(", ", selectedChairs)}, do you wish to select any more?");
-                    Console.WriteLine("Yes/No");
-                    string answer = Console.ReadLine().ToUpper();
-                    bool no = "NO".Equals(answer);
+                        // Check if the user selected the option to remove a movie and change the logic based on that
+                        if (!removingMode)
+                        {
+                            selectedChairs.Add(currentlySelectedChair.ToUpper()); 
 
-                    if (no)
-                    {
-                        break;
+                            // Update array to show which chairs are currently selected in the selection process
+                            foreach (string seat in selectedChairs)
+                            {
+                                SeatAccess.UpdateSeatValue(auditoriumArray, seat, "4");
+                            } 
+                        }
+                        
+                        else if (removingMode)
+                        {
+                            SeatAccess.UpdateSeatValue(auditoriumArray, currentlySelectedChair.ToUpper(), SeatAccess.FindDefaultSeatValueArray(currentlySelectedChair.ToUpper()));
+                            selectedChairs.Remove(currentlySelectedChair.ToUpper());
+                        }
+
+                        Console.Clear();
+                        OptionsMenu.Logo("Seat selection");
+                        SeatAccess.PrintAuditorium(auditoriumArray);
+                        SeatsMenu.SeatLegend();
+
+                        int optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) {String.Join(", ", selectedChairs)}, are you satisfied with these selections?", false, true);
+                        
+                        if (optionInLoop == 1)
+                        {
+                            break;
+                        }
+
+                        else if (optionInLoop == 2)
+                        {
+                            removingMode = false;
+                        }
+
+                        else if (optionInLoop == 3)
+                        {
+                            removingMode = true;
+                        }
+
+                        else if (optionInLoop == 4)
+                        {
+                            return;
+                        }
                     }
+
+                    else
+                    {
+                        List<string> EList = new List<string>(){"Continue"}; 
+                        int option = OptionsMenu.DisplaySystem(EList, "", "\nYou may not interact with that seat", false, true); 
+
+                        if (option == 1)
+                        {
+                            continue;
+                        }
+
+                        if (option == 2)
+                        {
+                            return;
+                        }
+                    }
+
                 }
+
                 else
                 {
-                    Console.WriteLine("That chair is not available");
+                    List<string> EList = new List<string>(){"Continue"}; 
+                    int option = OptionsMenu.DisplaySystem(EList, "", "\nThat seat is not available", false, true); 
+
+                    if (option == 1)
+                    {
+                        continue;
+                    }
+
+                    if (option == 2)
+                    {
+                        return;
+                    }
                 }
             }
 
             else
             {
-                Console.WriteLine("Please fill in the ID of a chair");
+                List<string> EList = new List<string>(){"Continue"}; 
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nPlease fill in the ID of a seat", false, true); 
+
+                if (option == 1)
+                {
+                    continue;
+                }
+
+                if (option == 2)
+                {
+                    return;
+                }
             }
 
-            // Update CSV with selected seats to show which seats are selected during the process
-            foreach (string seat in selectedChairs)
-            {
-                SeatAccess.UpdateSeatValue(auditoriumArray, seat, "4");
-            }
-
-            SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
         }
+        Console.Clear();
+        OptionsMenu.Logo("Seat selection");
 
-        Console.WriteLine("Are you ok with the current seat selection");
+        // Going to food reservations and saving the data to the CSV
 
-        // Going to food reservations
+        //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
+        CateringMenu.Start();
+        
     }
 }

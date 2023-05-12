@@ -2,111 +2,83 @@ using System.Text.RegularExpressions;
 
 static class SeatAccess
 {
-    public static void PrintAuditorium(string auditoriumPath)
+    public static void PrintAuditorium(string[][] auditorium)
     {
-        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, auditoriumPath));
-
-        // Open the CSV file using a StreamReader
-        using (var reader = new StreamReader(path))
+        // Print the column names
+        foreach (var column in auditorium[0])
         {
-            // Read the header line
-            var header = reader.ReadLine();
+            Console.Write("{0,3}", column);
+        }
+        Console.WriteLine();
 
-            // Split the header line into column names
-            var columns = header.Split(',');
+        int linecounter = 0;
 
-            // Print the column names
-            foreach (var column in columns)
+        // Read and print each data row
+        foreach (var row in auditorium.Skip(1))
+        {
+            for (int i = 0; i < row.Length; i++)
             {
-                Console.Write("{0,3}", column);
-            }
-            Console.WriteLine();
-
-            int linecounter = 0;
-
-            // Read and print each data row
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                var values = line.Split(',');
-
-                for (int i = 0; i < values.Count();i ++)
+                if (linecounter == 17)
                 {
-                    if (linecounter == 17)
+                    Console.BackgroundColor = ConsoleColor.DarkGray;
+                }
+                if (row[i] == "0")
+                {
+                    if (i % 14 != 0)
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
                     }
-                    if (values[i] == "0")
+                }
+                if (row[i] == "1")
+                {
+                    if (i % 14 != 0)
                     {
-                        if (i % 14 != 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                        }
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
                     }
-                    if (values[i] == "1")
+                }
+                else if (row[i] == "2")
+                {
+                    if (i % 14 != 0)
                     {
-                        if (i % 14 != 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkCyan;
-                        }
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                     }
-                    else if (values[i] == "2")
+                }
+                else if (row[i] == "3")
+                {
+                    if (i % 14 != 0)
                     {
-                        if (i % 14 != 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                        }
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
                     }
-                    else if (values[i] == "3")
+                }
+                else if (row[i] == "4")
+                {
+                    if (i % 14 != 0)
                     {
-                        if (i % 14 != 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkRed;
-                        }
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
                     }
-                    else if (values[i] == "4")
+                }
+                if (row[i] != "")
+                {
+                    if (i == 0 || linecounter > 14)
                     {
-                        if (i % 14 != 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        }
-                    }
-                    if (values[i] != "")
-                    {
-                        if (i == 0 || linecounter > 14)
-                        {
-                            Console.Write("{0,3}", values[i]);
-                        }
-                        else
-                        {
-                            Console.Write("{0,3}", "■");
-                        }
+                        Console.Write("{0,3}", row[i]);
                     }
                     else
                     {
-                        Console.Write("{0,3}", " ");
+                        Console.Write("{0,3}", "■");
                     }
-                    Console.ResetColor();
                 }
-                if (linecounter > 17)
+                else
                 {
-                    break;
+                    Console.Write("{0,3}", " ");
                 }
-                linecounter += 1;
-                Console.WriteLine();
+                Console.ResetColor();
             }
-        }
-    }
-
-    public static void PrintAuditorium(string[][] data)
-    {
-        // Loop through each row of data and print it to the console
-        for (int i = 0; i < data.Length; i++)
-        {
-            for (int j = 0; j < data[i].Length; j++)
+            if (linecounter > 17)
             {
-                Console.Write("{0,3}", data[i][j]);
+                break;
             }
+            linecounter += 1;
             Console.WriteLine();
         }
     }
@@ -198,8 +170,56 @@ static class SeatAccess
         seatArray[rowIndex][columnIndex] = newValue;
     }
 
-    public static bool FindSeatValueArray(string[][] seatArray, string ID)
+    public static string FindSeatValueInArray(string[][] seatArray, string ID)
     {
+        // Split ID into the letter and the number
+        char letterOfID = ID[0];
+        int numberOfID = Convert.ToInt32(ID[1..]);
+
+        // Find the column index corresponding to the letter in the ID
+        int columnIndex = -1;
+
+        for (int i = 0; i < seatArray[0].Length; i++)
+        {
+            if (seatArray[0][i] == Convert.ToString(letterOfID))
+            {
+                columnIndex = i;
+                break;
+            }
+        }
+
+        // Find the row index corresponding to the number in the ID
+        int rowIndex = -1;
+        for (int i = 1; i < seatArray.Length; i++)
+        {
+            for (int j = 0; j < seatArray[i].Length; j++)
+            {
+                if (!string.IsNullOrEmpty(seatArray[j][0]))
+                {
+                    if (Convert.ToInt32(seatArray[j][0]) == numberOfID)
+                    {
+                        rowIndex = j;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If the row index is still -1, the ID was not found in the array
+        if (rowIndex == -1)
+        {
+            Console.WriteLine("Seat not found");
+            return "0";
+        }
+
+        return seatArray[rowIndex][columnIndex];
+
+    }
+
+    public static string FindDefaultSeatValueArray(string ID)
+    {
+        string [][] seatArray = LoadAuditorium(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
+
         // Split ID into the letter and the number
         char letterOfID = ID[0];
         int numberOfID = Convert.ToInt32(ID[1..]);
@@ -237,15 +257,15 @@ static class SeatAccess
         // If the row index is still -1, the ID was not found in the array
         if (rowIndex == -1)
         {
-            return false;
+            return "";
         }
 
-        if (seatArray[rowIndex][columnIndex] != "")
+        else if (seatArray[rowIndex][columnIndex] != "")
         {
-            return true;
+            return seatArray[rowIndex][columnIndex];
         }
 
-        return false;
+        return "";
 
     }
 
