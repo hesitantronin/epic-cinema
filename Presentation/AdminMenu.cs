@@ -1,4 +1,4 @@
-public class AdminMenu : EmployeeMenu
+class AdminMenu : EmployeeMenu
 {
     public static new void StartAdmin()
     {
