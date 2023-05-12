@@ -3,7 +3,7 @@ using System.Text.Json;
 class MovieLogic
 {
     private List<MovieModel> _movies = new();
-    static public MovieModel CurrentMovie { get; private set; }
+    static public MovieModel? CurrentMovie { get; private set; }
 
     public MovieLogic()
     {

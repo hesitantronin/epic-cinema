@@ -4,7 +4,7 @@ using System.Text;
 class AccountsLogic
 {
     private List<AccountModel> _accounts;
-    private static AccountModel? CurrentAccount;
+    public static AccountModel? CurrentAccount = null;
     private static AccountsLogic accountsLogic = new AccountsLogic();
 
     public AccountsLogic()
@@ -74,8 +74,6 @@ class AccountsLogic
                 
                 List<string> EList = new List<string>(){"Continue"};
 
-                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}", true, false);
-                
                 accountModel.Authorize();
                 currentAccount = accountModel;
 
@@ -94,6 +92,9 @@ class AccountsLogic
                     accountsLogic.SetCurrentAccount(currentAccount);
                     MovieMenu.Start();
                 }
+
+                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}", true, false);
+
                 break;
             }
             else
@@ -294,8 +295,7 @@ class AccountsLogic
     public static void Guest()
     {
         AccountsLogic accountsLogic = new AccountsLogic();
-        AccountModel guestAccount = new AccountModel(accountsLogic.GetNextId(), "", "", "", AccountModel.AccountType.CUSTOMER);
-        guestAccount.isGuest = true;
+        AccountModel guestAccount = new AccountModel(accountsLogic.GetNextId(), "", "", "", AccountModel.AccountType.GUEST);
 
         List<AccountModel> accounts = AccountsAccess.LoadAll();
         accounts.Add(guestAccount);

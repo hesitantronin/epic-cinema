@@ -60,6 +60,38 @@ static class OptionsMenu
         Console.WriteLine($@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`");
         Console.ResetColor();
 
+        // prints acc name and acc type
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+
+
+        string accType = "";
+        if (AccountsLogic.CurrentAccount != null)
+        {
+            if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+            {
+                accType = "Guest";
+            }
+            else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
+            {
+                accType = "Customer";
+            }            
+            else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+            {
+                accType = "Employee";
+            }            
+            else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.ADMIN)
+            {
+                accType = "Admin";
+            }
+
+            Console.Write($"\n{AccountsLogic.CurrentAccount.FullName} ({accType})\n");
+        }
+        else
+        {
+            Console.WriteLine("\n(Not Logged in)");
+        }
+        Console.ResetColor();
+
         // prints a title if one is given
         if (title != "")
         {
