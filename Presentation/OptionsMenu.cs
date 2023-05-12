@@ -86,6 +86,7 @@ static class OptionsMenu
                     {
                         if (LogOut())
                         {
+
                             break;
                         }
                     }
@@ -200,6 +201,8 @@ static class OptionsMenu
 
     static public int DisplaySystem(List<string> list, string title, string question = "", bool showlogo = true, bool showreturn = true, string returntext = "Return")
     {
+        Console.Clear();
+        
         // makes the cursor invisible
         Console.CursorVisible = false;
         Console.OutputEncoding = Encoding.UTF8;
@@ -462,6 +465,11 @@ static class OptionsMenu
                     accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
                 }
                 AccountsLogic.CurrentAccount = null;
+
+                List<string> EList = new List<string>(){"Continue"};
+
+                OptionsMenu.DisplaySystem(EList, "logout", "You have been logged out.", true, false);
+
                 return true;
             }
             else
