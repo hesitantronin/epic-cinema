@@ -1,30 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
-
-//This class is not static so later on we can use inheritance and interfaces
 class AccountsLogic
 {
     private List<AccountModel> _accounts;
-
-    //Static properties are shared across all instances of the class
-    //This can be used to get the current logged in account from anywhere in the program
-    //private set, so this can only be set by the class itself
-    private static AccountModel? CurrentAccount;
+    public static AccountModel? CurrentAccount = null;
+    private static AccountsLogic accountsLogic = new AccountsLogic();
 
     public AccountsLogic()
     {
         _accounts = AccountsAccess.LoadAll();
     }
 
-    public void SetCurrentAccount(AccountModel account) {
+    public void SetCurrentAccount(AccountModel account) 
+    {
         CurrentAccount = account;
     }
-
 
     public void UpdateList(AccountModel acc)
     {
@@ -45,57 +36,216 @@ class AccountsLogic
 
     }
 
-    public AccountModel? GetById(int id) => _accounts.Find(i => i.Id == id);
+    public void RemoveAcc(int id)
+    {
+        // finds if there is a movie with the same id
+        int index = _accounts.FindIndex(s => s.Id == id);
+
+        // removes the movie with that id, and updates the json file
+        _accounts.Remove(_accounts[index]);
+        AccountsAccess.WriteAll(_accounts);
+    }
+
+    public AccountModel? GetById(int id)
+    {
+       return _accounts.Find(i => i.Id == id);
+    }
 
     // Return false if either of the parameters are empty or null
-    public bool IsLoginValid(string email, string password) => (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password));
-
-
-    //Return authorized accountmodel that matches both credentials
-    //If no matching account is found, return an empty unauthorized account
-    public AccountModel Auth(string email, string password) 
+    public bool IsLoginValid(string email, string password)
     {
-        if(IsLoginValid(email, password)) 
+        return (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password));
+    }
+
+    public void Login()
+    {
+        Console.CursorVisible = true;
+
+        string email = "";
+        string password = "";
+
+        while (true)
         {
+            Console.Clear();
+            OptionsMenu.Logo("login");
+
+            Console.WriteLine("Email address: ");
+            email = Console.ReadLine() + "";
+            Console.WriteLine("\nPassword: ");
+            password = accountsLogic.GetMaskedPassword();
+
+            //Return authorized accountmodel that matches both credentials. If no matching account is found, return an empty unauthorized account
+            AccountModel currentAccount;
             AccountModel? accountModel = _accounts.Find(a => a.EmailAddress == email && a.Password == HashPassword(password));
-            if(accountModel == null) 
-            {
-                List<string> EList = new List<string>(){"Continue"};
 
-                OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, false);
-                
-                Console.Clear();
-                
-                return new AccountModel(0, email, password, string.Empty);
-            } 
-            else 
-            {
+            if(IsLoginValid(email, password) && accountModel != null) 
+            { 
                 Console.Clear();
                 
                 List<string> EList = new List<string>(){"Continue"};
 
-                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back {accountModel.FullName}.\nYour email address is {accountModel.EmailAddress}", true, false);
-                
                 accountModel.Authorize();
-                return accountModel;
+                currentAccount = accountModel;
+
+                if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
+                {
+                    accountsLogic.SetCurrentAccount(currentAccount);
+                }
+                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                {
+                    accountsLogic.SetCurrentAccount(currentAccount);
+                }
+                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                {
+                    accountsLogic.SetCurrentAccount(currentAccount);
+                }
+
+                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back, {accountModel.FullName}.\nYour email address is: {accountModel.EmailAddress}", true, false);
+                
+                if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
+                {
+                    AdminMenu.StartAdmin();
+                }
+                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                {
+                    EmployeeMenu.StartEmployee();
+                }
+                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                {
+                    MovieMenu.Start();
+                }
+
+                break;
+            }
+            else
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, true);
+                
+                currentAccount = new AccountModel(0, email, password, string.Empty);
+
+                if (option == 2)
+                {
+                    break;
+                }
             }
         }
-        else
-        {
-            List<string> EList = new List<string>(){"Continue"};
+        Console.CursorVisible = false;
+    }
 
-            OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, false);
-            
+    public static void Register(bool isEmployeeRegistration = false, bool isAdminRegistration = false)
+    {
+        Console.CursorVisible = true;
+
+        string email = string.Empty;
+
+        while(true) 
+        {
             Console.Clear();
+
+            OptionsMenu.Logo(isEmployeeRegistration ? "Employee account registration" : isAdminRegistration ? "Admin account registration" : "Registration");
+
+            Console.WriteLine("Email Address:");
+            email = Console.ReadLine() + "";
+
+            if (!accountsLogic.IsEmailValid(email))
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nInvalid email, please try again.", false, true);
+
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+            else if(accountsLogic.IsEmailInUse(email))
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nThis email is already in use, please try again.", false, true);
+
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                break;
+            }
         }
-        return new AccountModel(0, email, password, string.Empty);
-    } 
+
+        string password = string.Empty;
+        string confirmedPassword = "no match";
+
+        while (password != confirmedPassword)
+        {
+            Console.Clear();
+
+            OptionsMenu.Logo("registration");
+            Console.WriteLine("Password:");
+
+            password = accountsLogic.GetMaskedPassword();
+            if (accountsLogic.IsPasswordValid(password))
+            {
+                Console.Clear();
+                OptionsMenu.Logo("registration");
+
+                Console.WriteLine("Confirm Password:");
+                confirmedPassword = accountsLogic.GetMaskedPassword();
+
+                if (password != confirmedPassword)
+                {
+                    List<string> BList = new List<string>() { "Continue" };
+
+                    int option = OptionsMenu.DisplaySystem(BList, "", "\nPasswords do not match, please try again.", false, true);
+
+                    if (option == 2)
+                    {
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                List<string> CList = new List<string>() { "Continue" };
+                int option = OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, one capital letter and one special character", false, true);
+            
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+        }
+
+        Console.Clear();
+        OptionsMenu.Logo("registration");
+        Console.WriteLine("Name:");
+        string fullName = Console.ReadLine() + "";
+
+        AccountModel.AccountType accountType = isEmployeeRegistration ? AccountModel.AccountType.EMPLOYEE : isAdminRegistration ? AccountModel.AccountType.ADMIN : AccountModel.AccountType.CUSTOMER;
+        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, accountsLogic.HashPassword(password), fullName, accountType);
+        accountsLogic.UpdateList(acc);
+
+        accountsLogic.SetCurrentAccount(acc);
+
+        Console.Clear();
+
+        List<string> DList = new List<string>(){"Continue"};
+
+        OptionsMenu.DisplaySystem(DList, "welcome page", $"Account created successfully!\nWelcome, {fullName}.", true, false);
+        MovieMenu.Start();     
+        
+        Console.CursorVisible = false;
+    }
 
     // Returns true if the email is not empty, contains an '@', contains a '.' and does not contain any white space.
     public bool IsEmailValid(string email) => (!string.IsNullOrWhiteSpace(email) && email.Contains("@") && email.Contains(".") && !email.Contains(" "));
-    
+
     // Return true if an account with this email is found in the JSON.
-    public bool IsEmailInUse(string email) => (_accounts.Find(i => i.EmailAddress == email) != null);
+    public bool IsEmailInUse(string email) => _accounts.Any(i => string.Equals(i.EmailAddress, email, StringComparison.OrdinalIgnoreCase));
 
     // Return true if the given password matches the criteria
     public bool IsPasswordValid(string password)
@@ -105,6 +255,7 @@ class AccountsLogic
                 && password.Any(char.IsUpper)
                 && password.Any(c => !char.IsLetterOrDigit(c)));
     }
+
     // Returns the nextID
     public int GetNextId() 
     {
@@ -116,6 +267,7 @@ class AccountsLogic
 
         return maxId + 1;
     }
+
     // Masks passwords in the terminal
     public string GetMaskedPassword()
     {
@@ -157,5 +309,18 @@ class AccountsLogic
             // And convert each byte to a string representation of its hex value.
             return String.Concat(hash.ComputeHash(Encoding.UTF8.GetBytes(raw)).Select(i => i.ToString("x2")));
         }
+    }   
+
+    public static void Guest()
+    {
+        AccountsLogic accountsLogic = new AccountsLogic();
+        AccountModel guestAccount = new AccountModel(accountsLogic.GetNextId(), "", "", "", AccountModel.AccountType.GUEST);
+        CurrentAccount = guestAccount;
+
+        List<AccountModel> accounts = AccountsAccess.LoadAll();
+        accounts.Add(guestAccount);
+        AccountsAccess.WriteAll(accounts);
+
+        MovieMenu.Start();
     }
 }

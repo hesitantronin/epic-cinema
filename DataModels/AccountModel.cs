@@ -18,7 +18,6 @@ class AccountModel
     public string FullName { get; set; }
 
     public bool Authorized = false;
-    public bool isGuest = false;
 
     public AccountModel(int id, string emailAddress, string password, string fullName, AccountType type = AccountType.CUSTOMER)
     {
@@ -31,7 +30,9 @@ class AccountModel
 
     public void Authorize() => Authorized = true;
 
-    public enum AccountType {
+    public enum AccountType 
+    {
+        GUEST,
         CUSTOMER,
         EMPLOYEE,
         ADMIN

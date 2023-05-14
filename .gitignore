@@ -2,7 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-*.cs
 *.cache
 *.editorconfig
 *.vsidx
@@ -14,3 +13,6 @@
 
 bin
 obj
+project
+obj/Debug/net6.0/Project.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/net6.0/Project.GeneratedMSBuildEditorConfig.editorconfig

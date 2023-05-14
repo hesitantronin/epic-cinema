@@ -1,197 +1,167 @@
-using System.Text;
+using System.Text.RegularExpressions;
 
 static class SeatLogic
 {
-    public static List<string> SeatsToList()
+    public static void SeatSelection(MovieModel movie)
     {
-        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
-        List<string> rows = new List<string>();
-
-        // Open the CSV file using a StreamReader
-        using (var reader = new StreamReader(path))
+        List<string> answerList = new List<string>()
         {
-            // Read the header line
-            var header = reader.ReadLine();
+            "Yes",
+            "Add more seats",
+            "Remove seats"
+        };
 
-            // Split the header line into column names
-            var columns = header.Split(',');
+        // Regex pattern for checking the validity of the input ID later in the selection process
+        string pattern = @"^[a-l]([1-9]|1[0-4])$";
 
-            string head = "";
-            // Print the column names
-            foreach (var column in columns)
+        List<string> selectedChairs = new();
+        string currentlySelectedChair = string.Empty;
+        
+        string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
+        string pathToCsv = $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}.csv";
+
+        if (!File.Exists(pathToCsv)) // Checks if a CSV already exists, if it does that CSV will be loaded, otherwise a new one will be made based on the template
+        {
+            SeatAccess.NewAuditorium(movie);
+        }
+
+        string[][] auditoriumArray = SeatAccess.LoadAuditorium(pathToCsv); // Initialise array for searching and updating values
+
+        bool removingMode = false;
+        string four = "4";
+        
+        // Looping the selection of the seats until the user has selected all seats they'd want
+        while (true)
+        {
+            // Visualisation of the menu
+            Console.Clear();
+            OptionsMenu.Logo("Seat selection");
+            SeatAccess.PrintAuditorium(auditoriumArray);
+            SeatsMenu.SeatLegend();
+
+            // Ask user for id of the seat 
+            Console.WriteLine($"Type in the ID of the seat you want to {(removingMode ? "remove from your selection" : "select")} (I.E. - A6)");
+            currentlySelectedChair = Console.ReadLine();
+
+            // If removing mode is on the 4 check in the csv will be negated so you can remove your own selections
+            // Otherwise if removing mode is off, the check will be on and you cannot select the seats you selected again
+            four = removingMode ? "" : "4";
+
+            // Checking the validity of the input ID and preventing any crashes 
+            if (!string.IsNullOrEmpty(currentlySelectedChair))
             {
-                head += $" {column} \u001b[0m";
-            }
-            rows.Add(head);
-            rows.Add(" ");
-            int linecounter = 0;
-
-            // Read and print each data row
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                var values = line.Split(',');
-                
-                string row = "";
-                for (int i = 0; i < values.Count();i ++)
+                if (Regex.IsMatch(currentlySelectedChair, pattern, RegexOptions.IgnoreCase))
                 {
-                    string color = "";
-                    string reset = "\u001b[0m";
-                    if (linecounter == 17)
+                    if (SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "0" && 
+                        SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != four && 
+                        SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "")
                     {
-                        color = "";
-                    }
-                    if (values[i] == "1")
-                    {
-                        if (i % 14 != 0)
+
+                        // Check if the user selected the option to remove a movie and change the logic based on that
+                        if (!removingMode)
                         {
-                            color = "\u001b[36m";
-                        }
-                    }
-                    else if (values[i] == "2")
-                    {
-                        if (i % 14 != 0)
-                        {
-                            color = "\u001b[33m";
-                        }
-                    }
-                    else if (values[i] == "3")
-                    {
-                        if (i % 14 != 0)
-                        {
-                            color = "\u001b[31m";
-                        }
-                    }
-                    else if (values[i] == "4")
-                    {
-                        if (i % 14 != 0)
-                        {
-                            color = "\u001b[32m";
-                        }
-                    }
-                    if (values[i] != "")
-                    {
-                        if (i == 0 || linecounter > 14)
-                        {
-                            if (values[i] == "10" || values[i] == "11" || values[i] == "12" || values[i] == "13" || values[i] == "14")
+                            selectedChairs.Add(currentlySelectedChair.ToUpper()); 
+
+                            // Update array to show which chairs are currently selected in the selection process
+                            foreach (string seat in selectedChairs)
                             {
-                                row += $"{color} {values[i]}{reset}";
-                            }
-                            else
-                            {
-                                row += $"{color} {values[i]} {reset}";
-                            }
+                                SeatAccess.UpdateSeatValue(auditoriumArray, seat, "4");
+                            } 
                         }
-                        else
+                        
+                        else 
                         {
-                            row += $"{color} ■ {reset}";
+                            SeatAccess.UpdateSeatValue(auditoriumArray, currentlySelectedChair.ToUpper(), SeatAccess.FindDefaultSeatValueArray(currentlySelectedChair.ToUpper()));
+                            selectedChairs.Remove(currentlySelectedChair.ToUpper());
+                        }
+
+                        Console.Clear();
+                        OptionsMenu.Logo("Seat selection");
+                        SeatAccess.PrintAuditorium(auditoriumArray);
+                        SeatsMenu.SeatLegend();
+
+                        int optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) {String.Join(", ", selectedChairs)}, are you satisfied with these selections?", false, true);
+                        
+                        if (optionInLoop == 1)
+                        {
+                            break;
+                        }
+
+                        else if (optionInLoop == 2)
+                        {
+                            removingMode = false;
+                        }
+
+                        else if (optionInLoop == 3)
+                        {
+                            removingMode = true;
+                        }
+
+                        else if (optionInLoop == 4)
+                        {
+                            return;
                         }
                     }
+
                     else
                     {
-                        row += "   ";
+                        List<string> EList = new List<string>(){"Continue"}; 
+                        int option = OptionsMenu.DisplaySystem(EList, "", "\nThat seat is already occupied or it does not exist", false, true); 
+
+                        if (option == 1)
+                        {
+                            continue;
+                        }
+
+                        if (option == 2)
+                        {
+                            return;
+                        }
                     }
-                    Console.ResetColor();
+
                 }
-                if (linecounter > 17)
+
+                else
                 {
-                    break;
+                    List<string> EList = new List<string>(){"Continue"}; 
+                    int option = OptionsMenu.DisplaySystem(EList, "", "\nThat is not a seat ID", false, true); 
+
+                    if (option == 1)
+                    {
+                        continue;
+                    }
+
+                    if (option == 2)
+                    {
+                        return;
+                    }
                 }
-                linecounter += 1;
-                rows.Add(row);
             }
+
+            else
+            {
+                List<string> EList = new List<string>(){"Continue"}; 
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nPlease fill in the ID of a seat", false, true); 
+
+                if (option == 1)
+                {
+                    continue;
+                }
+
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+
         }
-        return rows;
-    }
-
-    public static void PrintSeats()
-    {
-        List<string> rows = SeatsToList();
-
-        for (int i = 0; i < rows.Count(); i ++)
-        {
-            Console.WriteLine(rows[i]);
-        }
-    }
-
-    public static int SeatDisplay()
-    {
-        // makes the cursor invisible
         Console.Clear();
-        Console.CursorVisible = false;
-        Console.OutputEncoding = Encoding.UTF8;
+        OptionsMenu.Logo("Seat selection");
 
-        List<string> list = SeatsToList();
+        // Going to food reservations and saving the data to the CSV
 
-        // gets the cursor position and sets option to 1
-        (int left, int top) = Console.GetCursorPosition();
-        int option = 4;
-        int optionx = 1;
-        string spacing = new String(' ', 9);
-
-        // this is the decorator that will help you see where the cursor is at
-        var decorator = "\u001b[32m ■ \u001b[0m";
-
-        // sets a variable for 'key' that will be used later
-        ConsoleKeyInfo key;
-
-        // the loop in which an option is chosen from a list
-        bool isSelected = false;
-        while (!isSelected)
-        {
-            // sets the cursor to the previously determined location
-            Console.SetCursorPosition(left, top);
-
-            // prints the options one by one
-            for (int i = 0; i < list.Count(); i++)
-            {
-                //writes the option and gives it a number
-                Console.WriteLine($"{(option == i + 1 ? $"{spacing}{decorator}" : "   ")}{list[i]}\u001b[0m");
-            }
-
-            // sees what key has been pressed
-            key = Console.ReadKey(false);
-
-            // a switch case that changes the value from 'option', depending on the key input
-            switch (key.Key)
-            {
-                // moves one up
-                case ConsoleKey.UpArrow:
-                    option = option == 4 ? list.Count() - 3 : option - 1;
-                    break;
-                    
-                // moves one down
-                case ConsoleKey.DownArrow:
-                    option = option == list.Count() - 3 ? 4 : option + 1;
-                    break;
-
-                // if enter is pressed, breaks out of the while loop
-                case ConsoleKey.Enter:
-                    isSelected = true;
-                    break;
-            }
-
-            switch (key.Key)
-            {
-                // moves one up
-                case ConsoleKey.RightArrow:
-                    optionx = optionx == 1 ? list.Count() : optionx + 1;
-                    spacing = optionx == 1 ? "         " : spacing += "   ";
-                    break;
-                    
-                // moves one down
-                case ConsoleKey.LeftArrow:
-                    optionx = optionx == list.Count() ? 1 : optionx - 1;
-                    spacing = optionx == list.Count() ? "         " : spacing.Replace("   ", "");
-                    break;
-
-                // if enter is pressed, breaks out of the while loop
-                case ConsoleKey.Enter:
-                    isSelected = true;
-                    break;
-            }
-        }
-        Console.CursorVisible = true;
-        return option;
+        //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
+        CateringMenu.Start();
+        
     }
 }
