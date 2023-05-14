@@ -20,7 +20,7 @@ static class SeatLogic
         string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
         string pathToCsv = $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}.csv";
 
-        if (!File.Exists(pathToCsv))
+        if (!File.Exists(pathToCsv)) // Checks if a CSV already exists, if it does that CSV will be loaded, otherwise a new one will be made based on the template
         {
             SeatAccess.NewAuditorium(movie);
         }
@@ -28,6 +28,7 @@ static class SeatLogic
         string[][] auditoriumArray = SeatAccess.LoadAuditorium(pathToCsv); // Initialise array for searching and updating values
 
         bool removingMode = false;
+        string four = "4";
         
         // Looping the selection of the seats until the user has selected all seats they'd want
         while (true)
@@ -42,13 +43,17 @@ static class SeatLogic
             Console.WriteLine($"Type in the ID of the seat you want to {(removingMode ? "remove from your selection" : "select")} (I.E. - A6)");
             currentlySelectedChair = Console.ReadLine();
 
+            // If removing mode is on the 4 check in the csv will be negated so you can remove your own selections
+            // Otherwise if removing mode is off, the check will be on and you cannot select the seats you selected again
+            four = removingMode ? "" : "4";
+
             // Checking the validity of the input ID and preventing any crashes 
             if (!string.IsNullOrEmpty(currentlySelectedChair))
             {
                 if (Regex.IsMatch(currentlySelectedChair, pattern, RegexOptions.IgnoreCase))
                 {
                     if (SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "0" && 
-                        SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "4" && 
+                        SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != four && 
                         SeatAccess.FindSeatValueInArray(auditoriumArray, currentlySelectedChair.ToUpper()) != "")
                     {
 
@@ -64,7 +69,7 @@ static class SeatLogic
                             } 
                         }
                         
-                        else if (removingMode)
+                        else 
                         {
                             SeatAccess.UpdateSeatValue(auditoriumArray, currentlySelectedChair.ToUpper(), SeatAccess.FindDefaultSeatValueArray(currentlySelectedChair.ToUpper()));
                             selectedChairs.Remove(currentlySelectedChair.ToUpper());
@@ -101,7 +106,7 @@ static class SeatLogic
                     else
                     {
                         List<string> EList = new List<string>(){"Continue"}; 
-                        int option = OptionsMenu.DisplaySystem(EList, "", "\nYou may not interact with that seat", false, true); 
+                        int option = OptionsMenu.DisplaySystem(EList, "", "\nThat seat is already occupied or it does not exist", false, true); 
 
                         if (option == 1)
                         {
@@ -119,7 +124,7 @@ static class SeatLogic
                 else
                 {
                     List<string> EList = new List<string>(){"Continue"}; 
-                    int option = OptionsMenu.DisplaySystem(EList, "", "\nThat seat is not available", false, true); 
+                    int option = OptionsMenu.DisplaySystem(EList, "", "\nThat is not a seat ID", false, true); 
 
                     if (option == 1)
                     {
