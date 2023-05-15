@@ -1,7 +1,7 @@
 using System.Text;
 
 static class OptionsMenu
-{
+{ 
     public static void Start()
     {
         while (true)
@@ -20,8 +20,8 @@ static class OptionsMenu
                 };
 
                 // the necessary info gets used in the display method
-                int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Menu");
-
+                int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
+                
                 // depending on the option that was chosen, it will clear the console and call the right function
                 if (option == 1)
                 {
@@ -74,8 +74,18 @@ static class OptionsMenu
                 }
                 else if (option == 2)
                 {
-
-                    MovieMenu.Start();
+                    if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                    {
+                        MovieMenu.Start();
+                    }
+                    else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                    {
+                        EmployeeMenu.StartEmployee();
+                    }
+                    else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.ADMIN)
+                    {
+                        AdminMenu.StartAdmin();
+                    }
                 }
                 else if (option == 3)
                 {
@@ -87,6 +97,7 @@ static class OptionsMenu
                     {
                         if (LogOut())
                         {
+
                             break;
                         }
                     }
@@ -129,11 +140,11 @@ static class OptionsMenu
                 if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
                 {
                     accType = "Customer";
-                }
+                }            
                 else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
                 {
                     accType = "Employee";
-                }
+                }            
                 else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.ADMIN)
                 {
                     accType = "Admin";
@@ -192,7 +203,7 @@ static class OptionsMenu
 
         // prints a fake return option hehe
         Console.WriteLine("\n > \u001b[32mReturn\u001b[0m");
-
+        
         // actually returns you to the main menu
         Console.ReadLine();
 
@@ -201,6 +212,11 @@ static class OptionsMenu
 
     static public int DisplaySystem(List<string> list, string title, string question = "", bool showlogo = true, bool showreturn = true, string returntext = "Return")
     {
+        if (showlogo)
+        {
+            Console.Clear();
+        }
+        
         // makes the cursor invisible
         Console.CursorVisible = false;
         Console.OutputEncoding = Encoding.UTF8;
@@ -259,7 +275,7 @@ static class OptionsMenu
                 case ConsoleKey.UpArrow:
                     option = option == 1 ? list.Count() + returncount : option - 1;
                     break;
-
+                    
                 // moves one down
                 case ConsoleKey.DownArrow:
                     option = option == list.Count() + returncount ? 1 : option + 1;
@@ -276,8 +292,10 @@ static class OptionsMenu
         return option;
     }
 
-    static public int MovieDisplaySystem(List<MovieModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
+    static public int MovieDisplaySystem(List<MovieModel> list, string title, string question = "", bool showlogo = true, bool previousButton = false, bool nextButton = false)
     {
+        Console.Clear();
+        
         // makes the cursor invisible
         Console.CursorVisible = false;
         Console.OutputEncoding = Encoding.UTF8;
@@ -324,12 +342,22 @@ static class OptionsMenu
                 Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}\n");
             }
 
+            returncount = 1;
+
             // this will show the return button
-            if (showreturn)
+            if (previousButton)
             {
-                Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
-                returncount = 1;
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Previous\u001b[0m");
+                returncount += 1;
             }
+
+            if (nextButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Next\u001b[0m");
+                returncount += 1;
+            }
+
+            Console.WriteLine($"\n{(option == list.Count() + returncount ? decorator : "   ")}Return\u001b[0m");
 
             // sees what key has been pressed
             key = Console.ReadKey(false);
@@ -341,7 +369,7 @@ static class OptionsMenu
                 case ConsoleKey.UpArrow:
                     option = option == 1 ? list.Count() + returncount : option - 1;
                     break;
-
+                    
                 // moves one down
                 case ConsoleKey.DownArrow:
                     option = option == list.Count() + returncount ? 1 : option + 1;
@@ -424,7 +452,7 @@ static class OptionsMenu
                 case ConsoleKey.UpArrow:
                     option = option == 1 ? list.Count() + returncount : option - 1;
                     break;
-
+                    
                 // moves one down
                 case ConsoleKey.DownArrow:
                     option = option == list.Count() + returncount ? 1 : option + 1;
@@ -453,7 +481,7 @@ static class OptionsMenu
                 "No"
             };
 
-            int opt = OptionsMenu.DisplaySystem(YNList, "LOGOUT", "Are you sure you want to logout?", true, false);
+            int opt = OptionsMenu.DisplaySystem(YNList, "LOGOUT", "Are you sure you want to log out?", true, false);  
 
             if (opt == 1)
             {
@@ -463,6 +491,11 @@ static class OptionsMenu
                     accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
                 }
                 AccountsLogic.CurrentAccount = null;
+
+                List<string> EList = new List<string>(){"Continue"};
+
+                OptionsMenu.DisplaySystem(EList, "logout", "You have been logged out.", true, false);
+
                 return true;
             }
             else
