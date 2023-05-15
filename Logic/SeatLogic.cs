@@ -41,7 +41,7 @@ static class SeatLogic
 
             // Ask user for id of the seat 
             Console.WriteLine($"Type in the ID of the seat you want to {(removingMode ? "remove from your selection" : "select")} (I.E. - A6)");
-            currentlySelectedChair = Console.ReadLine();
+            currentlySelectedChair = Console.ReadLine() + "";
 
             // If removing mode is on the 4 check in the csv will be negated so you can remove your own selections
             // Otherwise if removing mode is off, the check will be on and you cannot select the seats you selected again

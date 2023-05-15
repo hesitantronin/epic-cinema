@@ -2,7 +2,7 @@
 {
     public static void Main()
     {
-        // OptionsMenu.Start();
-        EmployeeMenu.StartEmployee();
+        OptionsMenu.Start();
+        // EmployeeMenu.StartEmployee();
     }
 }
