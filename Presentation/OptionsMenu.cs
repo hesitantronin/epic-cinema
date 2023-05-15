@@ -4,6 +4,17 @@ static class OptionsMenu
 { 
     public static void Start()
     {
+        // a check that deletes any stray guest accounts
+        List<AccountModel> Accounts = AccountsAccess.LoadAll();
+        foreach (AccountModel acc in Accounts)
+        {
+            if (acc.Type == 0)
+            {
+                AccountsLogic accLog = new AccountsLogic();
+                accLog.RemoveAcc(acc.Id);
+            }
+        }
+
         while (true)
         {
             if (AccountsLogic.CurrentAccount == null)
