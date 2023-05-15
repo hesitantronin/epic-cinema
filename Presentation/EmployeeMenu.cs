@@ -39,7 +39,7 @@ class EmployeeMenu
             Console.Clear();
 
             // the necessary info gets used in the display method
-            int option = OptionsMenu.DisplaySystem(StartList, "Editing", "Select what category you want to edit.", true, true);
+            int option = OptionsMenu.DisplaySystem(StartList, "Edit menu", "Select what category you want to edit.", true, true);
 
             // depending on the option that was chosen, it will clear the console and call the right function
             if (option == 1)
@@ -49,12 +49,11 @@ class EmployeeMenu
             }
             else if (option == 2)
             {
-                Console.Clear();
+                //catering
             }
             else if (option == 3)
             {
-                Console.Clear();
-                Console.WriteLine("Not yet implemented");
+                //seats
             }
             if (option == 4)
             {
@@ -64,28 +63,29 @@ class EmployeeMenu
     }
     private static void Movies()
     {
-        Console.Clear();
-        int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "Movies", "", true, true);
-        if (MovieOptions == 1)
+        while (true)
         {
             Console.Clear();
-            movie.PrintMovies();
-        }
-        else if (MovieOptions == 2)
-        {
-            Console.Clear();
-            Console.WriteLine("Not yet implemented");
-        }
-        else if (MovieOptions == 3)
-        {
-            Console.Clear();
-            Console.WriteLine("Not yet implemented");
-        }
-        else if (MovieOptions != 4)
-        {
-            Console.Clear();
-            Console.WriteLine("Not yet implemented");
+            int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "Movies", "", true, true);
+            if (MovieOptions == 1)
+            {
+                Console.Clear();
+                movie.PrintMovies();
+            }
+            else if (MovieOptions == 2)
+            {
+                Console.Clear();
+                Console.WriteLine("Not yet implemented");
+            }
+            else if (MovieOptions == 3)
+            {
+                Console.Clear();
+                Console.WriteLine("Not yet implemented");
+            }
+            else if (MovieOptions == 4)
+            {
+                break;
+            }
         }
     }
-
 }
