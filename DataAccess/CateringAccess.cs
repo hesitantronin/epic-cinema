@@ -2,7 +2,7 @@ using System.Text.Json;
 
 class CateringAccess
 {
-    static string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"Datasources/catering.json"));
+    static string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/catering.json"));
 
     public static List<CateringModel> LoadAll()
     {
