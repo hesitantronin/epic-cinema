@@ -1,6 +1,6 @@
 class AdminMenu : EmployeeMenu
 {
-    public static new void StartAdmin()
+    public static void StartAdmin()
     {
         while (true)
         {
@@ -126,7 +126,7 @@ class AdminMenu : EmployeeMenu
             if (isValidId)
             {
                 // Remove the account with the specified ID
-                AccountModel accountToRemove = accounts.Find(account => account.Id == idToRemove);
+                AccountModel? accountToRemove = accounts.Find(account => account.Id == idToRemove);
                 if (accountToRemove != null)
                 {
                     accounts.Remove(accountToRemove);

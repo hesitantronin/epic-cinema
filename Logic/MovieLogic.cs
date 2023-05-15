@@ -282,62 +282,62 @@ class MovieLogic
     }
 
     public static void AddMultipleMoviesJSON(string filename)
-{
-    if (!File.Exists(filename))
     {
-        Console.WriteLine("File not found, press enter to continue");
-        Console.ReadLine();
-    }
-
-    // Read file with new movies
-    string jsonstring = ReadJSON(filename);
-    List<MovieModel> newMovieData = new();
-
-    if (!string.IsNullOrEmpty(jsonstring))
-    {
-        newMovieData = JsonSerializer.Deserialize<List<MovieModel>>(jsonstring)!;
-    }
-
-    // Get the original movies that were already in the JSON file
-    List<MovieModel> originalMovieData = MovieAccess.LoadAll();
-
-    // Get the maximum ID from the original movies
-    int maxId = originalMovieData.Max(movie => movie.Id);
-
-    // Track already existing movies
-    List<MovieModel> existingMovies = new List<MovieModel>();
-
-    // Check if the new movies already exist in the original data
-    foreach (MovieModel newMovie in newMovieData)
-    {
-        bool movieExists = originalMovieData.Any(movie => movie.Title == newMovie.Title && movie.Genre == newMovie.Genre && movie.Description == newMovie.Description);
-        if (!movieExists)
+        if (!File.Exists(filename))
         {
-            // Increment the ID for each new movie to ensure uniqueness
-            newMovie.Id = ++maxId;
-            originalMovieData.Add(newMovie);
+            Console.WriteLine("File not found, press enter to continue");
+            Console.ReadLine();
         }
-        else
+
+        // Read file with new movies
+        string jsonstring = ReadJSON(filename);
+        List<MovieModel> newMovieData = new();
+
+        if (!string.IsNullOrEmpty(jsonstring))
         {
-            existingMovies.Add(newMovie);
+            newMovieData = JsonSerializer.Deserialize<List<MovieModel>>(jsonstring)!;
+        }
+
+        // Get the original movies that were already in the JSON file
+        List<MovieModel> originalMovieData = MovieAccess.LoadAll();
+
+        // Get the maximum ID from the original movies
+        int maxId = originalMovieData.Max(movie => movie.Id);
+
+        // Track already existing movies
+        List<MovieModel> existingMovies = new List<MovieModel>();
+
+        // Check if the new movies already exist in the original data
+        foreach (MovieModel newMovie in newMovieData)
+        {
+            bool movieExists = originalMovieData.Any(movie => movie.Title == newMovie.Title && movie.Genre == newMovie.Genre && movie.Description == newMovie.Description);
+            if (!movieExists)
+            {
+                // Increment the ID for each new movie to ensure uniqueness
+                newMovie.Id = ++maxId;
+                originalMovieData.Add(newMovie);
+            }
+            else
+            {
+                existingMovies.Add(newMovie);
+            }
+        }
+
+        // Write new + old movies to file
+        MovieAccess.WriteAll(originalMovieData);
+
+        // Display existing movies message
+        if (existingMovies.Count > 0)
+        {
+            Console.WriteLine("The following movies already exist and were not added:\n");
+            foreach (MovieModel existingMovie in existingMovies)
+            {
+                Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
+            }
+            Console.WriteLine("\nPress enter to continue");
+            Console.ReadLine();
         }
     }
-
-    // Write new + old movies to file
-    MovieAccess.WriteAll(originalMovieData);
-
-    // Display existing movies message
-    if (existingMovies.Count > 0)
-    {
-        Console.WriteLine("The following movies already exist and were not added:\n");
-        foreach (MovieModel existingMovie in existingMovies)
-        {
-            Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
-        }
-        Console.WriteLine("\nPress enter to continue");
-        Console.ReadLine();
-    }
-}
 
 
 
