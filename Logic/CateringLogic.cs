@@ -180,4 +180,39 @@ class CateringLogic
         // write original movies + new movies back to file
         CateringAccess.WriteAll(originalMenu);
     }
+
+    public List<CateringModel> SortBy(string input, bool ascending)
+    {
+        List<CateringModel> unsorted = _menu;
+
+        // depending on if its ascending or not, sorts _menu based on input (name, type, price) in ascending or descending
+        if (input.ToUpper() == "NAME")
+        {
+            return (ascending) ? unsorted.OrderBy(c => c.Name).ToList() : unsorted.OrderByDescending(c => c.Name).ToList();
+        }
+        else if (input.ToUpper() == "TYPE")
+        {
+            return (ascending) ? unsorted.OrderBy(c => c.Type).ToList() : unsorted.OrderByDescending(c => c.Type).ToList();
+        }
+        else if (input.ToUpper() == "PRICE")
+        {
+            return (ascending) ? unsorted.OrderBy(c => c.Price).ToList() : unsorted.OrderByDescending(c => c.Price).ToList();
+        }
+        else
+        {
+            return unsorted;
+        }
+    }
+
+    public List<CateringModel> FilterBy(string type)
+    {
+        List<CateringModel> filtered = _menu;
+
+        if (type != null)
+        {
+            filtered = _menu.Where(c => c.Type == type).ToList();
+        }
+
+        return filtered;
+    }
 }

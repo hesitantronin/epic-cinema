@@ -21,10 +21,10 @@
     "description": "Plain potato chips"
   },
   {
-    "id": 99,
-    "name": "test",
-    "type": "test",
-    "price": 1,
-    "description": "test"
+    "id": 4,
+    "name": "Twizzlers",
+    "type": "Candy",
+    "price": 0.99,
+    "description": "Long twisted pieces of red licorice"
   }
 ]
