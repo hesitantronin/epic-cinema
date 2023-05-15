@@ -7,12 +7,6 @@ class EmployeeMenu
         "Catering",
         "Seats"
     };
-    protected static List<string> MovieEditorList = new List<string>()
-    {
-        "Current movies",
-        "Edit movies",
-        "Remove movies"
-    };
     protected static List<string> MovieAdd = new List<string>()
     {
         "Current movies",
@@ -45,7 +39,7 @@ class EmployeeMenu
             if (option == 1)
             {
                 Console.Clear();
-                Movies();
+                movie.EmployeeMovies();
             }
             else if (option == 2)
             {
@@ -56,33 +50,6 @@ class EmployeeMenu
                 //seats
             }
             if (option == 4)
-            {
-                break;
-            }
-        }
-    }
-    private static void Movies()
-    {
-        while (true)
-        {
-            Console.Clear();
-            int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "Movies", "", true, true);
-            if (MovieOptions == 1)
-            {
-                Console.Clear();
-                movie.PrintMovies();
-            }
-            else if (MovieOptions == 2)
-            {
-                Console.Clear();
-                Console.WriteLine("Not yet implemented");
-            }
-            else if (MovieOptions == 3)
-            {
-                Console.Clear();
-                Console.WriteLine("Not yet implemented");
-            }
-            else if (MovieOptions == 4)
             {
                 break;
             }

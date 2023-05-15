@@ -48,7 +48,7 @@ class MovieLogic
         return _movies.Find(i => i.Id == id);
     }
 
-    public void PrintMovies(List<MovieModel> MovieList)
+    public void PrintMovies(List<MovieModel> MovieList, bool IsEmployee = false)
     {
         while (true)
         {
@@ -128,7 +128,14 @@ class MovieLogic
                     } 
                     else
                     {
-                        MovieInfo(subList[option - 1]);
+                        if (IsEmployee)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            MovieInfo(subList[option - 1]);
+                        }
                     }
                 }
             }
@@ -275,29 +282,65 @@ class MovieLogic
     }
 
     public static void AddMultipleMoviesJSON(string filename)
+{
+    if (!File.Exists(filename))
     {
-        // read file with new movies 
-        string jsonstring = ReadJSON(filename);
-        List<MovieModel> newMovieData = new();
+        Console.WriteLine("File not found, press enter to continue");
+        Console.ReadLine();
+    }
 
-        // 
-        if(!string.IsNullOrEmpty(jsonstring))
+    // Read file with new movies
+    string jsonstring = ReadJSON(filename);
+    List<MovieModel> newMovieData = new();
+
+    if (!string.IsNullOrEmpty(jsonstring))
+    {
+        newMovieData = JsonSerializer.Deserialize<List<MovieModel>>(jsonstring)!;
+    }
+
+    // Get the original movies that were already in the JSON file
+    List<MovieModel> originalMovieData = MovieAccess.LoadAll();
+
+    // Get the maximum ID from the original movies
+    int maxId = originalMovieData.Max(movie => movie.Id);
+
+    // Track already existing movies
+    List<MovieModel> existingMovies = new List<MovieModel>();
+
+    // Check if the new movies already exist in the original data
+    foreach (MovieModel newMovie in newMovieData)
+    {
+        bool movieExists = originalMovieData.Any(movie => movie.Title == newMovie.Title && movie.Genre == newMovie.Genre && movie.Description == newMovie.Description);
+        if (!movieExists)
         {
-            newMovieData = JsonSerializer.Deserialize<List<MovieModel>>(jsonstring!)!;
-        }
-
-        // get the original movies that were already in the json file
-        List<MovieModel> originalMovieData = MovieAccess.LoadAll();
-
-        // add new movies to list containing old movies
-        foreach(MovieModel newMovie in newMovieData)
-        {
+            // Increment the ID for each new movie to ensure uniqueness
+            newMovie.Id = ++maxId;
             originalMovieData.Add(newMovie);
         }
-
-        // write new + old movies to file
-        MovieAccess.WriteAll(originalMovieData);
+        else
+        {
+            existingMovies.Add(newMovie);
+        }
     }
+
+    // Write new + old movies to file
+    MovieAccess.WriteAll(originalMovieData);
+
+    // Display existing movies message
+    if (existingMovies.Count > 0)
+    {
+        Console.WriteLine("The following movies already exist and were not added:\n");
+        foreach (MovieModel existingMovie in existingMovies)
+        {
+            Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
+        }
+        Console.WriteLine("\nPress enter to continue");
+        Console.ReadLine();
+    }
+}
+
+
+
 
     public static string ReadJSON(string filename)
     {
@@ -323,6 +366,11 @@ class MovieLogic
 
     public static void AddMultipleMoviesCSV(string filename)
     {
+        if (!File.Exists(filename))
+        {
+            Console.WriteLine("File not found, press enter to continue");
+            Console.ReadLine();
+        }
         var csvMovies = new List<MovieModel>();
         var filePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filename));
 
@@ -355,5 +403,70 @@ class MovieLogic
 
         // write original movies + new movies back to file
         MovieAccess.WriteAll(originalMovies);
+    }
+    protected static List<string> MovieEditorList = new List<string>()
+    {
+        "Current movies",
+        "Add movies",
+        "Edit movies",
+        "Remove movies"
+    };
+    protected static List<string> AddMovieList = new List<string>()
+    {
+        "Single movie entry",
+        "JSON File",
+        "CSV File"
+       
+    };
+    public void EmployeeMovies()
+    {
+        while (true)
+        {
+            Console.Clear();
+            int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "Movies", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
+            if (MovieOptions == 1)
+            {
+                Console.Clear();
+                PrintMovies(_movies, true);
+            }
+            else if (MovieOptions == 2)
+            {
+                Console.Clear();
+                int addOptions = OptionsMenu.DisplaySystem(AddMovieList, "Add movies", "To add movies by file, please save the json or csv file in DataSources", true, true);
+
+                if (addOptions == 1)
+                {
+                    
+                }
+                else if (addOptions == 2)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Enter the name of the JSON file to add: ");
+                    string jsonFile = Console.ReadLine() + "";
+                    AddMultipleMoviesJSON(@$"DataSources\{jsonFile}.json");
+                }
+                else if (addOptions == 3)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Enter the name of the CSV file to add: ");
+                    string csvFile = Console.ReadLine() + "";
+                    AddMultipleMoviesJSON(@$"DataSources\{csvFile}.csv");
+                }
+            }
+            else if (MovieOptions == 3)
+            {
+                Console.Clear();
+                Console.WriteLine("Not yet implemented");
+            }
+            else if (MovieOptions == 4)
+            {
+                Console.Clear();
+                Console.WriteLine("Not yet implemented");
+            }
+            else if (MovieOptions == 5)
+            {
+                break;
+            }
+        }
     }
 }

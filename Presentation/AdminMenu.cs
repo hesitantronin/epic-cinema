@@ -22,8 +22,6 @@ class AdminMenu : EmployeeMenu
             // Display the menu and get the selected option
             int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Return");
 
-            Console.Clear();
-
             // Handle the selected option
             if (option == 1)
             {
@@ -81,7 +79,7 @@ class AdminMenu : EmployeeMenu
             "Create Admin account",
             "Create Employee account",
         };
-        int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "Use ⬆ and ⬇ to navigate and press Enter to select account type to create:", true, true);
+        int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "Use ⬆ and ⬇ to navigate and press Enter to select the account type to create:", true, true);
         Console.Clear();
 
         // Handle the selected option
