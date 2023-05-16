@@ -36,16 +36,6 @@ class MovieLogic
         MovieAccess.WriteAll(_movies);
     }
 
-    public void RemoveMovie(int id)
-    {
-        // finds if there is a movie with the same id
-        int index = _movies.FindIndex(s => s.Id == id);
-
-        // removes the movie with that id, and updates the json file
-        _movies.Remove(_movies[index]);
-        MovieAccess.WriteAll(_movies);
-    }
-
     public MovieModel? GetById(int id)
     {
         // returns the movie data that matches the id
@@ -361,10 +351,6 @@ class MovieLogic
             Console.ReadLine();
         }  
     }
-
-
-
-
     public static string ReadJSON(string filename)
     {
         StreamReader? reader = null;
@@ -454,7 +440,7 @@ class MovieLogic
                 existingMovies.Add(movie);
             }
         }
-
+        
         // Write original movies + new movies back to file
         MovieAccess.WriteAll(originalMovies);
 
@@ -476,6 +462,66 @@ class MovieLogic
             Console.ReadLine();
         }
     }
+    private static void RemoveMovie()
+    {
+        List<MovieModel> movies = MovieAccess.LoadAll();
+
+        // Retrieve and display the employee accounts
+        List<string> movieList = new List<string>();
+        foreach (MovieModel movie in movies)
+        {
+            string MovieInfo = $"ID: {movie.Id}\nTitle: {movie.Title}\nGenre: {movie.Genre}\nAge: {movie.Age}\nViewing Date: {movie.ViewingDate}\n";
+            movieList.Add(MovieInfo);
+            
+        }
+
+        int option = OptionsMenu.DisplaySystem(movieList, "Current movies", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected movie:", true, true);
+
+        if (option >= 1 && option <= movieList.Count)
+        {
+            // Get the index of the selected option (adjusted for 0-based indexing)
+            int selectedOptionIndex = option - 1;
+
+            // Extract the employee ID from the selected option string
+            string selectedOption = movieList[selectedOptionIndex];
+            int startIndex = selectedOption.IndexOf("ID: ") + 4;
+            int endIndex = selectedOption.IndexOf('\n', startIndex);
+            string idString = selectedOption.Substring(startIndex, endIndex - startIndex).Trim();
+
+            int idToRemove;
+            bool isValidId = int.TryParse(idString, out idToRemove);
+
+            if (isValidId)
+            {
+                // Remove the account with the specified ID
+                MovieModel? movieToRemove = movies.Find(movie => movie.Id == idToRemove);
+                if (movieToRemove != null)
+                {
+                    movies.Remove(movieToRemove);
+                    MovieAccess.WriteAll(movies);
+                    Console.WriteLine("Employee account removed successfully.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID found for the selected employee account.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid option selected.");
+        }
+    }
+    public void RemoveMovieID(int id)
+    {
+        // finds if there is a movie with the same id
+        int index = _movies.FindIndex(s => s.Id == id);
+
+        // removes the movie with that id, and updates the json file
+        _movies.Remove(_movies[index]);
+        MovieAccess.WriteAll(_movies);
+    }
+
     protected static List<string> MovieEditorList = new List<string>()
     {
         "Current movies",
@@ -490,6 +536,11 @@ class MovieLogic
         "CSV File"
        
     };
+    protected static List<string> RemoveList = new List<string>()
+    {
+        "Remove movie selection",
+        "Remove movie by ID"
+    };
     public void EmployeeMovies()
     {
         while (true)
@@ -499,6 +550,7 @@ class MovieLogic
             if (MovieOptions == 1)
             {
                 Console.Clear();
+                LoadMovies();
                 PrintMovies(_movies, true);
             }
             else if (MovieOptions == 2)
@@ -528,8 +580,18 @@ class MovieLogic
             }
             else if (MovieOptions == 4)
             {
-                Console.Clear();
-                Console.WriteLine("Not yet implemented");
+                int removeOptions = OptionsMenu.DisplaySystem(RemoveList, "Remove movies", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
+                if (removeOptions == 1)
+                {
+                    RemoveMovie();
+                }
+                else if (removeOptions == 2)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Please enter the movie ID you would like to remove.");
+                    int removeID = int.Parse(Console.ReadLine());
+                    RemoveMovieID(removeID);
+                }
             }
             else if (MovieOptions == 5)
             {
