@@ -97,7 +97,7 @@ static class SeatAccess
             var header = reader.ReadLine();
 
             // Split the header line into column names
-            var columns = header?.Split(',') ?? new string[0];
+            var columns = header.Split(',');
 
             // Add the header row to the data array
             data[0] = columns;
@@ -108,7 +108,7 @@ static class SeatAccess
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                var values = header?.Split(',') ?? new string[0];
+                var values = line.Split(',');
                 Array.Resize(ref data, data.Length + 1);
                 data[data.Length - 1] = values;
                 linecounter += 1;
