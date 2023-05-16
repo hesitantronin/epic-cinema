@@ -18,7 +18,12 @@ static class SeatLogic
         string currentlySelectedChair = string.Empty;
 
         string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
-        string pathToCsv = $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}.csv";
+        string[] movieViewingDate1 = movie.ViewingDate.ToString().Split(" ");
+        string movieViewingDate2 = string.Join(" ", movieViewingDate1[1].Replace(":", "_"));
+        string movieViewingDate3 = string.Join(" ", movieViewingDate1[0].Replace("/", "_"));
+
+
+        string pathToCsv = $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}_{movieViewingDate3 + "_" + movieViewingDate2}.csv";
 
         if (!File.Exists(pathToCsv)) // Checks if a CSV already exists, if it does that CSV will be loaded, otherwise a new one will be made based on the template
         {
@@ -159,6 +164,9 @@ static class SeatLogic
         OptionsMenu.Logo("Seat selection");
 
         // Going to food reservations and saving the data to the CSV
+        Dictionary<MovieModel, List<string>> movieSeatsSelection = AccountsLogic.CurrentAccount.SeatReservation;
+
+
 
         //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
         CateringMenu.Start();

@@ -286,11 +286,15 @@ static class SeatAccess
         string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
         string templatePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
 
+        string[] movieViewingDate1 = movie.ViewingDate.ToString().Split(" ");
+        string movieViewingDate2 = string.Join(" ", movieViewingDate1[1].Replace(":", "_"));
+        string movieViewingDate3 = string.Join(" ", movieViewingDate1[0].Replace("/", "_"));
+
         // Remove all spaces and special characters from the movie title to avoid conflict with names
         string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
 
         // Copy the template auditorium into a new file named after the movie
-        File.Copy(templatePath, $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}.csv");
+        File.Copy(templatePath, $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}_{movieViewingDate3 + "_" + movieViewingDate2}.csv");
 
         return $@"DataSources/MovieAuditoriums/{movie.Title}{movie.Id}.csv";
     }

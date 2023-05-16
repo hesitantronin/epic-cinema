@@ -10,7 +10,7 @@ class AccountModel
     public AccountType Type { get; set; }
 
     [JsonPropertyName("emailAddress")]
-    public string EmailAddress { get; set; } 
+    public string EmailAddress { get; set; }
 
     [JsonPropertyName("password")]
     public string Password { get; set; }
@@ -20,6 +20,8 @@ class AccountModel
 
         [JsonPropertyName("cateringReservation")]
     public Dictionary<string, string> CateringReservation { get; set; }
+
+    public Dictionary<MovieModel, List<string>> SeatReservation { get; set; }
 
     public bool Authorized = false;
 
@@ -31,11 +33,12 @@ class AccountModel
         FullName = fullName;
         Type = type;
         CateringReservation = new Dictionary<string, string>();
+        SeatReservation = new Dictionary<MovieModel, List<string>>();
     }
 
     public void Authorize() => Authorized = true;
 
-    public enum AccountType 
+    public enum AccountType
     {
         GUEST,
         CUSTOMER,
