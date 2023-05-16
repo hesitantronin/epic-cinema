@@ -46,5 +46,149 @@
     "rating": 7.2,
     "description": "A young woman, born at the turn of the 20th century, is rendered ageless after an accident. After many solitary years, she meets a man who complicates the eternal life she has settled into.",
     "age": 13
+  },
+  {
+    "id": 1,
+    "title": "Jackass: The Movie 2",
+    "genre": "Action",
+    "rating": 6.6,
+    "description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time.",
+    "age": 18
+  },
+  {
+    "id": 2,
+    "title": "Creed 2",
+    "genre": "Action",
+    "rating": 7.6,
+    "description": "The former World Heavyweight Champion Rocky Balboa serves as a trainer and mentor to Adonis Johnson, the son of his late friend and former rival Apollo Creed.",
+    "age": 16
+  },
+  {
+    "id": 3,
+    "title": "Alita: Battle Angel 2",
+    "genre": "Action",
+    "rating": 7.3,
+    "description": "A deactivated cyborg's revived, but can't remember anything of her past and goes on a quest to find out who she is.",
+    "age": 13
+  },
+  {
+    "id": 4,
+    "title": "Princess Mononoke 2",
+    "genre": "Adventure",
+    "rating": 8.3,
+    "description": "On a journey to find the cure for a Tatarigami's curse, Ashitaka finds himself in the middle of a war between the forest gods and Tatara, a mining colony. In this quest he also meets San, the Mononoke Hime.",
+    "age": 13
+  },
+  {
+    "id": 5,
+    "title": "Atlantis: The Lost Empire 2",
+    "genre": "Adventure",
+    "rating": 6.9,
+    "description": "A young linguist named Milo Thatch joins an intrepid group of explorers to find the mysterious lost continent of Atlantis.",
+    "age": 12
+  },
+  {
+    "id": 6,
+    "title": "The Age of Adaline 2",
+    "genre": "Romance",
+    "rating": 7.2,
+    "description": "A young woman, born at the turn of the 20th century, is rendered ageless after an accident. After many solitary years, she meets a man who complicates the eternal life she has settled into.",
+    "age": 13
+  },
+  {
+    "id": 1,
+    "title": "Jackass: The Movie 3",
+    "genre": "Action",
+    "rating": 6.6,
+    "description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time.",
+    "age": 18
+  },
+  {
+    "id": 2,
+    "title": "Creed 3",
+    "genre": "Action",
+    "rating": 7.6,
+    "description": "The former World Heavyweight Champion Rocky Balboa serves as a trainer and mentor to Adonis Johnson, the son of his late friend and former rival Apollo Creed.",
+    "age": 16
+  },
+  {
+    "id": 3,
+    "title": "Alita: Battle Angel 3",
+    "genre": "Action",
+    "rating": 7.3,
+    "description": "A deactivated cyborg's revived, but can't remember anything of her past and goes on a quest to find out who she is.",
+    "age": 13
+  },
+  {
+    "id": 4,
+    "title": "Princess Mononoke 3",
+    "genre": "Adventure",
+    "rating": 8.3,
+    "description": "On a journey to find the cure for a Tatarigami's curse, Ashitaka finds himself in the middle of a war between the forest gods and Tatara, a mining colony. In this quest he also meets San, the Mononoke Hime.",
+    "age": 13
+  },
+  {
+    "id": 5,
+    "title": "Atlantis: The Lost Empire 3",
+    "genre": "Adventure",
+    "rating": 6.9,
+    "description": "A young linguist named Milo Thatch joins an intrepid group of explorers to find the mysterious lost continent of Atlantis.",
+    "age": 12
+  },
+  {
+    "id": 6,
+    "title": "The Age of Adaline 3",
+    "genre": "Romance",
+    "rating": 7.2,
+    "description": "A young woman, born at the turn of the 20th century, is rendered ageless after an accident. After many solitary years, she meets a man who complicates the eternal life she has settled into.",
+    "age": 13
+  },
+  {
+    "id": 1,
+    "title": "Jackass: The Movie 4",
+    "genre": "Action",
+    "rating": 6.6,
+    "description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time.",
+    "age": 18
+  },
+  {
+    "id": 2,
+    "title": "Creed 4",
+    "genre": "Action",
+    "rating": 7.6,
+    "description": "The former World Heavyweight Champion Rocky Balboa serves as a trainer and mentor to Adonis Johnson, the son of his late friend and former rival Apollo Creed.",
+    "age": 16
+  },
+  {
+    "id": 3,
+    "title": "Alita: Battle Angel 4",
+    "genre": "Action",
+    "rating": 7.3,
+    "description": "A deactivated cyborg's revived, but can't remember anything of her past and goes on a quest to find out who she is.",
+    "age": 13
+  },
+  {
+    "id": 4,
+    "title": "Princess Mononoke 4",
+    "genre": "Adventure",
+    "rating": 8.3,
+    "description": "On a journey to find the cure for a Tatarigami's curse, Ashitaka finds himself in the middle of a war between the forest gods and Tatara, a mining colony. In this quest he also meets San, the Mononoke Hime.",
+    "age": 13
+  },
+  {
+    "id": 5,
+    "title": "Atlantis: The Lost Empire 4",
+    "genre": "Adventure",
+    "rating": 6.9,
+    "description": "A young linguist named Milo Thatch joins an intrepid group of explorers to find the mysterious lost continent of Atlantis.",
+    "age": 12
+  },
+  {
+    "id": 6,
+    "title": "The Age of Adaline 4",
+    "genre": "Romance",
+    "rating": 7.2,
+    "description": "A young woman, born at the turn of the 20th century, is rendered ageless after an accident. After many solitary years, she meets a man who complicates the eternal life she has settled into.",
+    "age": 13
   }
 ]
