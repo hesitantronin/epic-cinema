@@ -37,7 +37,7 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 4)
             {
-                //movies
+                movie.EmployeeMovies();
             }
             else if (option == 5)
             {
@@ -49,20 +49,6 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 7)
             {
-                // List<string> Confirmation = new List<string>()
-                // {
-                //     "Yes",
-                //     "No"
-                // };
-                // int LogoutConfirmation = OptionsMenu.DisplaySystem(Confirmation, "LOGOUT", "Are you sure you want to log out?", true, false);
-                // if (LogoutConfirmation == 2)
-                // {
-                //     continue;
-                // }
-                // else
-                // {
-                //     break;
-                // }
                 break;
             }
             else

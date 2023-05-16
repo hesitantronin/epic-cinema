@@ -18,6 +18,9 @@ class AccountModel
     [JsonPropertyName("fullName")]
     public string FullName { get; set; }
 
+        [JsonPropertyName("cateringReservation")]
+    public Dictionary<string, string> CateringReservation { get; set; }
+
     public bool Authorized = false;
 
     public AccountModel(int id, string emailAddress, string password, string fullName, AccountType type = AccountType.CUSTOMER)
@@ -27,6 +30,7 @@ class AccountModel
         Password = password;
         FullName = fullName;
         Type = type;
+        CateringReservation = new Dictionary<string, string>();
     }
 
     public void Authorize() => Authorized = true;
