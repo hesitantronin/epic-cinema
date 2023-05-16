@@ -12,7 +12,6 @@ class CateringLogic
 
     public void PrintMenu(List<CateringModel> FoodList)
     {
-        Console.WriteLine("printing");
         if (FoodList.Count() == 0)
         {
             List<string> ReturnList = new List<string>();
@@ -60,6 +59,39 @@ class CateringLogic
         Console.WriteLine("Price");
         Console.ResetColor();
         Console.WriteLine($" ${foodItem.Price}\n");
+
+         List<string> ReturnList = new List<string>()
+        {
+            "Yes",
+            "No"
+        };
+
+        int option = OptionsMenu.DisplaySystem(ReturnList, "", "\nDo you want to reserve this menu item?", false, false);
+
+        switch (option)
+        {
+            case 1:
+                Console.WriteLine("Please enter the amount that you would like to reserve: ");
+                string? amount = Console.ReadLine();
+
+                if (amount != null && AccountsLogic.CurrentAccount != null)
+                {
+                        // takes the dictionary bound to the current account that contains its previous menu reservations & adds onto it
+                        Dictionary<string, string> TotalReservations = AccountsLogic.CurrentAccount.CateringReservation;
+                        TotalReservations.Add(foodItem.Name, amount);
+
+                        // updates the json file so that the dictionary has the new menu item
+                        AccountsLogic accountslogic = new AccountsLogic();
+                        AccountsLogic.CurrentAccount.CateringReservation = TotalReservations;
+                        accountslogic.UpdateList(AccountsLogic.CurrentAccount);
+                }
+                break;
+            case 2:
+                break;
+        }
+
+        Console.Clear();
+        CateringMenu.Start();
     }
 
     public void UpdateList(CateringModel foodItem)
