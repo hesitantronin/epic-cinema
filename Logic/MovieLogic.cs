@@ -7,7 +7,11 @@ class MovieLogic
 
     public MovieLogic()
     {
-        // uses the loadall function to load the json to the list
+        LoadMovies();
+    }
+
+    private void LoadMovies()
+    {
         _movies = MovieAccess.LoadAll();
     }
 
@@ -281,13 +285,25 @@ class MovieLogic
         return finalString;
     }
 
-    public static void AddMultipleMoviesJSON(string filename)
+    public static void AddMultipleMoviesJSON()
     {
-        if (!File.Exists(filename))
+        string filename;
+        do
         {
-            Console.WriteLine("File not found, press enter to continue");
-            Console.ReadLine();
-        }
+            Console.WriteLine("Enter the JSON file name (or press enter to return): ");
+            string jsonFile = Console.ReadLine() + "";
+            filename = @$"DataSources\{jsonFile}.json";
+
+            if (jsonFile == "")
+            {
+                return;
+            }
+            else if (!File.Exists(filename))
+            {
+                Console.Clear();
+                Console.WriteLine("File not found, please try again");
+            }
+        } while (!File.Exists(filename));
 
         // Read file with new movies
         string jsonstring = ReadJSON(filename);
@@ -337,6 +353,12 @@ class MovieLogic
             Console.WriteLine("\nPress enter to continue");
             Console.ReadLine();
         }
+        else
+        {
+            Console.Clear();
+            Console.WriteLine("Movies have been succesfully added.\n\nPress enter to continue");
+            Console.ReadLine();
+        }  
     }
 
 
@@ -364,22 +386,36 @@ class MovieLogic
         }
     }
 
-    public static void AddMultipleMoviesCSV(string filename)
+    public static void AddMultipleMoviesCSV()
     {
-        if (!File.Exists(filename))
+        string filename;
+        do
         {
-            Console.WriteLine("File not found, press enter to continue");
-            Console.ReadLine();
-        }
+            Console.WriteLine("Enter the CSV file name (or press enter to return): ");
+            string csvFile = Console.ReadLine() + "";
+            filename = @$"DataSources\{csvFile}.csv";
+
+            if (csvFile == "")
+            {
+                return;
+            }
+            else if (!File.Exists(filename))
+            {
+                Console.Clear();
+                Console.WriteLine("File not found, please try again");
+            }
+        } while (!File.Exists(filename));
+       
         var csvMovies = new List<MovieModel>();
         var filePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filename));
 
-        // read lines from csv file using the filepath
-        // skip(1) is so that the header line will be skipped
+
+        // Read lines from the CSV file using the file path
+        // Skip(1) is used to skip the header line
         foreach (var line in File.ReadLines(filePath).Skip(1))
         {
-            // create new MovieModels for each movie in the csv and add to csvMovies list
-            csvMovies.Add(new MovieModel
+            // Create new MovieModels for each movie in the CSV and add to csvMovies list
+             csvMovies.Add(new MovieModel
             (
                 Convert.ToInt32(line.Split(",")[0]), // id
                 line.Split(",")[1], // title
@@ -392,17 +428,51 @@ class MovieLogic
             ));
         }
 
-        // load movies that were already in the file
+        // Load movies that were already in the file
         List<MovieModel> originalMovies = MovieAccess.LoadAll();
 
-        // add each new movie to the original list of movies
-        foreach(MovieModel movie in csvMovies)
+        // Get the maximum ID from the existing movies
+        int maxId = originalMovies.Max(movie => movie.Id);
+
+        // Track already existing movies
+        List<MovieModel> existingMovies = new List<MovieModel>();
+
+        // Check if the new movies already exist in the original data
+        foreach (MovieModel movie in csvMovies)
         {
-            originalMovies.Add(movie);
+            bool movieExists = originalMovies.Any(m => m.Title == movie.Title && m.Genre == movie.Genre && m.Description == movie.Description);
+            if (!movieExists)
+            {
+                // Increment the ID for each new movie to ensure uniqueness
+                movie.Id = ++maxId;
+                originalMovies.Add(movie);
+            }
+            else
+            {
+                existingMovies.Add(movie);
+            }
         }
 
-        // write original movies + new movies back to file
+        // Write original movies + new movies back to file
         MovieAccess.WriteAll(originalMovies);
+
+        // Display existing movies message
+        if (existingMovies.Count > 0)
+        {
+            Console.WriteLine("The following movies already exist and were not added:\n");
+            foreach (MovieModel existingMovie in existingMovies)
+            {
+                Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
+            }
+            Console.WriteLine("\nPress enter to continue");
+            Console.ReadLine();
+        }
+        else
+        {
+            Console.Clear();
+            Console.WriteLine("Movies have been succesfully added.\n\nPress enter to continue");
+            Console.ReadLine();
+        }
     }
     protected static List<string> MovieEditorList = new List<string>()
     {
@@ -441,16 +511,12 @@ class MovieLogic
                 else if (addOptions == 2)
                 {
                     Console.Clear();
-                    Console.WriteLine("Enter the name of the JSON file to add: ");
-                    string jsonFile = Console.ReadLine() + "";
-                    AddMultipleMoviesJSON(@$"DataSources\{jsonFile}.json");
+                    AddMultipleMoviesJSON();
                 }
                 else if (addOptions == 3)
                 {
                     Console.Clear();
-                    Console.WriteLine("Enter the name of the CSV file to add: ");
-                    string csvFile = Console.ReadLine() + "";
-                    AddMultipleMoviesJSON(@$"DataSources\{csvFile}.csv");
+                    AddMultipleMoviesCSV();
                 }
             }
             else if (MovieOptions == 3)
