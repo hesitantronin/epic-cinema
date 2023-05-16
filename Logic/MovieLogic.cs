@@ -290,7 +290,8 @@ class MovieLogic
         string filename;
         do
         {
-            Console.WriteLine("Enter the JSON file name (or press enter to return): ");
+            Console.WriteLine("Please save the JSON file in the DataSources folder.\n\n");
+            Console.WriteLine("Enter the JSON file name without '.json' (or press enter to return): ");
             string jsonFile = Console.ReadLine() + "";
             filename = @$"DataSources\{jsonFile}.json";
 
@@ -391,7 +392,8 @@ class MovieLogic
         string filename;
         do
         {
-            Console.WriteLine("Enter the CSV file name (or press enter to return): ");
+            Console.WriteLine("Please save the CSV file in the DataSources folder.\n\n");
+            Console.WriteLine("Enter the CSV file name without '.csv' (or press enter to return): ");
             string csvFile = Console.ReadLine() + "";
             filename = @$"DataSources\{csvFile}.csv";
 
@@ -502,7 +504,7 @@ class MovieLogic
             else if (MovieOptions == 2)
             {
                 Console.Clear();
-                int addOptions = OptionsMenu.DisplaySystem(AddMovieList, "Add movies", "To add movies by file, please save the json or csv file in DataSources", true, true);
+                int addOptions = OptionsMenu.DisplaySystem(AddMovieList, "Add movies", "To add movies by file, please save the json or csv file in the DataSources folder", true, true);
 
                 if (addOptions == 1)
                 {
