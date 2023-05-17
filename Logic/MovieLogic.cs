@@ -235,7 +235,7 @@ class MovieLogic
                 Console.WriteLine("Time? (ex. 16:30)");
                 string[] times = Console.ReadLine().Split(":");
 
-                if (times.Length != 2 || !int.TryParse(times[0], out int hour) || !int.TryParse(times[1], out int minute))
+                if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
                 {
                     Console.WriteLine("Invalid time format. Please try again.");
                     continue;
@@ -244,7 +244,6 @@ class MovieLogic
                 try
                 {
                     viewingDate = new DateTime(year, month, day, hour, minute, 0);
-                    movie.ViewingDate = viewingDate;
                     break;
                 }
                 catch (ArgumentOutOfRangeException)
@@ -270,7 +269,7 @@ class MovieLogic
                 Console.WriteLine("Time? (ex. 16:30)");
                 string[] times = Console.ReadLine().Split(":");
 
-                if (times.Length != 2 || !int.TryParse(times[0], out int hour) || !int.TryParse(times[1], out int minute))
+                if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
                 {
                     Console.WriteLine("Invalid time format. Please try again.");
                     continue;
@@ -279,7 +278,6 @@ class MovieLogic
                 try
                 {
                     publishDate = new DateTime(year, month, day, hour, minute, 0);
-                    movie.PublishDate = publishDate;
                     break;
                 }
                 catch (ArgumentOutOfRangeException)
@@ -772,7 +770,7 @@ class MovieLogic
             Console.WriteLine("Time? (ex. 16:30)");
             string[] times = Console.ReadLine().Split(":");
 
-            if (times.Length != 2 || !int.TryParse(times[0], out int hour) || !int.TryParse(times[1], out int minute))
+            if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
             {
                 Console.WriteLine("Invalid time format. Please try again.");
                 continue;
@@ -803,7 +801,7 @@ class MovieLogic
             Console.WriteLine("Time? (ex. 16:30)");
             string[] times = Console.ReadLine().Split(":");
 
-            if (times.Length != 2 || !int.TryParse(times[0], out int hour) || !int.TryParse(times[1], out int minute))
+            if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
             {
                 Console.WriteLine("Invalid time format. Please try again.");
                 continue;
