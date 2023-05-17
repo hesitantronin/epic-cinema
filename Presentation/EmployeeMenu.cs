@@ -43,7 +43,9 @@ class EmployeeMenu
             }
             else if (option == 2)
             {
-                //catering
+                Console.Clear();
+                
+
             }
             else if (option == 3)
             {
