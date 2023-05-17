@@ -155,6 +155,7 @@ class MovieLogic
         movieInfoList.Add($"Age Restriction: {movie.Age}");
         movieInfoList.Add($"Description: {MovieLogic.SpliceText(movie.Description, " ")}");
         movieInfoList.Add($"Viewing Date: {movie.ViewingDate}");
+        movieInfoList.Add($"Publish Date: {movie.PublishDate}");
         int edit = OptionsMenu.DisplaySystem(movieInfoList, "Edit existing movie", "Use ⬆ and ⬇ to navigate and press Enter to select what you would like to edit:", true, true);
         if (edit == 1)
         {
@@ -244,6 +245,41 @@ class MovieLogic
                 {
                     viewingDate = new DateTime(year, month, day, hour, minute, 0);
                     movie.ViewingDate = viewingDate;
+                    break;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Console.WriteLine("Invalid date or time. Please try again.");
+                }
+            }
+        }
+        else if (edit == 7)
+        {
+            DateTime publishDate;
+            while (true)
+            {
+                Console.WriteLine("Date? (MM-DD-YYYY)");
+                string[] date = Console.ReadLine().Split("-");
+
+                if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
+                {
+                    Console.WriteLine("Invalid date format. Please try again.");
+                    continue;
+                }
+
+                Console.WriteLine("Time? (ex. 16:30)");
+                string[] times = Console.ReadLine().Split(":");
+
+                if (times.Length != 2 || !int.TryParse(times[0], out int hour) || !int.TryParse(times[1], out int minute))
+                {
+                    Console.WriteLine("Invalid time format. Please try again.");
+                    continue;
+                }
+
+                try
+                {
+                    publishDate = new DateTime(year, month, day, hour, minute, 0);
+                    movie.PublishDate = publishDate;
                     break;
                 }
                 catch (ArgumentOutOfRangeException)
@@ -614,7 +650,7 @@ class MovieLogic
         List<string> movieList = new List<string>();
         foreach (MovieModel movie in movies)
         {
-            string MovieInfo = $"ID: {movie.Id}\nTitle: {movie.Title}\nGenre: {movie.Genre}\nAge: {movie.Age}\nViewing Date: {movie.ViewingDate}\n";
+            string MovieInfo = $"ID: {movie.Id}\nTitle: {movie.Title}\nGenre: {movie.Genre}\nAge: {movie.Age}\nViewing Date: {movie.ViewingDate}\nPublish Date: {movie.PublishDate}\n";
             movieList.Add(MovieInfo);
             
         }
@@ -724,7 +760,7 @@ class MovieLogic
         DateTime viewingDate;
         while (true)
         {
-            Console.WriteLine("Date? (MM-DD-YYYY)");
+            Console.WriteLine("Viewing Date? (MM-DD-YYYY)");
             string[] date = Console.ReadLine().Split("-");
 
             if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
@@ -752,6 +788,37 @@ class MovieLogic
                 Console.WriteLine("Invalid date or time. Please try again.");
             }
         }
+        DateTime publishDate;
+        while (true)
+        {
+            Console.WriteLine("Publish Date? (MM-DD-YYYY)");
+            string[] date = Console.ReadLine().Split("-");
+
+            if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
+            {
+                Console.WriteLine("Invalid date format. Please try again.");
+                continue;
+            }
+
+            Console.WriteLine("Time? (ex. 16:30)");
+            string[] times = Console.ReadLine().Split(":");
+
+            if (times.Length != 2 || !int.TryParse(times[0], out int hour) || !int.TryParse(times[1], out int minute))
+            {
+                Console.WriteLine("Invalid time format. Please try again.");
+                continue;
+            }
+
+            try
+            {
+                publishDate = new DateTime(year, month, day, hour, minute, 0);
+                break;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Invalid date or time. Please try again.");
+            }
+        }
 
         int maxId = movies.Count > 0 ? movies.Max(movie => movie.Id) : 0;
 
@@ -764,6 +831,7 @@ class MovieLogic
             existingMovie.Description = description;
             existingMovie.Age = age;
             existingMovie.ViewingDate = viewingDate;
+            existingMovie.PublishDate = publishDate;
 
             Console.Clear();
             Console.WriteLine("Movie updated successfully!\n\nPress enter to continue.");
@@ -772,7 +840,7 @@ class MovieLogic
         else
         {
             // Create a new movie with a unique ID
-            MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, DateTime.Now);
+            MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate);
             movies.Add(newMovie);
 
             Console.Clear();
