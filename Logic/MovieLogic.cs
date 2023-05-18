@@ -694,14 +694,45 @@ class MovieLogic
             Console.WriteLine("Invalid option selected.");
         }
     }
-    public void RemoveMovieID(int id)
+    public void RemoveMovieID()
     {
-        // finds if there is a movie with the same id
-        int index = _movies.FindIndex(s => s.Id == id);
+        int removeID;
 
-        // removes the movie with that id, and updates the json file
-        _movies.Remove(_movies[index]);
-        MovieAccess.WriteAll(_movies);
+        do
+        {
+            Console.Clear();
+            Console.WriteLine("Please enter the movie ID you would like to remove.");
+            if (!int.TryParse(Console.ReadLine(), out removeID))
+            {
+                Console.WriteLine("Invalid ID. Please enter a valid integer ID.");
+                continue;
+            }
+
+            // Find the index of the movie with the specified ID
+            int index = _movies.FindIndex(s => s.Id == removeID);
+
+            if (index != -1)
+            {
+                // Remove the movie from the list
+                _movies.RemoveAt(index);
+
+                // Update the JSON file
+                MovieAccess.WriteAll(_movies);
+
+                Console.WriteLine("Movie removed successfully.\n\nPress enter to continue.");
+                Console.ReadLine();
+                break;
+            }
+            else
+            {
+                List<string> EList = new List<string>() { "Continue" };
+                int option = OptionsMenu.DisplaySystem(EList, "", $"\nID {removeID} not found, make sure to enter a valid ID", false, true);
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+        } while (true);
     }
     public static void AddOrUpdateMovie()
     {
@@ -926,9 +957,7 @@ class MovieLogic
                 {
                     Console.Clear();
                     LoadMovies();
-                    Console.WriteLine("Please enter the movie ID you would like to remove.");
-                    int removeID = int.Parse(Console.ReadLine() + "");
-                    RemoveMovieID(removeID);
+                    RemoveMovieID();
                 }
             }
             else if (MovieOptions == 5)

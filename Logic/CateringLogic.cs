@@ -274,14 +274,45 @@ class CateringLogic
         CateringAccess.WriteAll(_menu);
     }
 
-    public void RemoveCateringID(int id)
+    public void RemoveCateringID()
     {
-        // finds if there is a catering item with the same id
-        int index = _menu.FindIndex(s => s.Id == id);
+        int removeID;
 
-        // removes the catering item with that id, and updates the json file
-        _menu.Remove(_menu[index]);
-        CateringAccess.WriteAll(_menu);
+        do
+        {
+            Console.Clear();
+            Console.WriteLine("Please enter the food item ID you would like to remove.");
+            if (!int.TryParse(Console.ReadLine(), out removeID))
+            {
+                Console.WriteLine("Invalid ID. Please enter a valid integer ID.");
+                continue;
+            }
+
+            // Find the index of the movie with the specified ID
+            int index = _menu.FindIndex(s => s.Id == removeID);
+
+            if (index != -1)
+            {
+                // Remove the movie from the list
+                _menu.RemoveAt(index);
+
+                // Update the JSON file
+                CateringAccess.WriteAll(_menu);
+
+                Console.WriteLine("Food item removed successfully.\n\nPress enter to continue.");
+                Console.ReadLine();
+                break;
+            }
+            else
+            {
+                List<string> EList = new List<string>() { "Continue" };
+                int option = OptionsMenu.DisplaySystem(EList, "", $"\nID {removeID} not found, make sure to enter a valid ID", false, true);
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+        } while (true);
     }
 
 
@@ -694,9 +725,7 @@ class CateringLogic
                 {
                     Console.Clear();
                     LoadCatering();
-                    Console.WriteLine("Please enter the food item ID you would like to remove.");
-                    int removeID = int.Parse(Console.ReadLine() + "");
-                    RemoveCateringID(removeID);
+                    RemoveCateringID();
                 }
             }
             else if (MenuOptions == 5)
