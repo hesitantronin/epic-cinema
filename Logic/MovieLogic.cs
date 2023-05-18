@@ -458,19 +458,21 @@ class MovieLogic
         string filename;
         do
         {
+            Console.Clear();
             Console.WriteLine("Please save the JSON file in the DataSources folder.\n\n");
-            Console.WriteLine("Enter the JSON file name without '.json' (or press enter to return): ");
+            Console.WriteLine("Enter the JSON file name without '.json': ");
             string jsonFile = Console.ReadLine() + "";
             filename = @$"DataSources\{jsonFile}.json";
 
-            if (jsonFile == "")
-            {
-                return;
-            }
-            else if (!File.Exists(filename))
+            if (!File.Exists(filename))
             {
                 Console.Clear();
-                Console.WriteLine("File not found, please try again");
+                List<string> EList = new List<string>() { "Continue" };
+                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile {jsonFile} not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.json'", false, true);
+                if (option == 2)
+                {
+                    return;
+                }
             }
         } while (!File.Exists(filename));
 
@@ -556,19 +558,21 @@ class MovieLogic
         string filename;
         do
         {
+            Console.Clear();
             Console.WriteLine("Please save the CSV file in the DataSources folder.\n\n");
-            Console.WriteLine("Enter the CSV file name without '.csv' (or press enter to return): ");
+            Console.WriteLine("Enter the CSV file name without '.csv': ");
             string csvFile = Console.ReadLine() + "";
             filename = @$"DataSources\{csvFile}.csv";
 
-            if (csvFile == "")
-            {
-                return;
-            }
-            else if (!File.Exists(filename))
+            if (!File.Exists(filename))
             {
                 Console.Clear();
-                Console.WriteLine("File not found, please try again");
+                List<string> EList = new List<string>() { "Continue" };
+                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile {csvFile} not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.csv'", false, true);
+                if (option == 2)
+                {
+                    return;
+                }
             }
         } while (!File.Exists(filename));
        
