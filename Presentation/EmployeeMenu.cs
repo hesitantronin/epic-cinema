@@ -8,12 +8,6 @@ class EmployeeMenu
         "Catering",
         "Seats"
     };
-    protected static List<string> CateringEditorList = new List<string>()
-    {
-        "Menu",
-        "Edit menu",
-        "Remove items"
-    };
     public static void StartEmployee()
     {
         while (true)
