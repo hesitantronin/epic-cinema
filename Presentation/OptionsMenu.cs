@@ -397,7 +397,7 @@ static class OptionsMenu
         return option;
     }
 
-    static public int CateringDisplaySystem(List<CateringModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
+    static public int CateringDisplaySystem(List<CateringModel> list, string title, string question = "", bool showlogo = true, bool previousButton = false, bool nextButton = false, bool showreturn = true)
     {
         // makes the cursor invisible
         Console.CursorVisible = false;
@@ -441,17 +441,27 @@ static class OptionsMenu
                 Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i].Name}\u001b[0m");
                 Console.ResetColor();
 
-                // prints the description & price
-                Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}");
+                // prints the description
+                Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}\n");
                 Console.WriteLine($"    Price:\n    ${(list[i].Price)}\n");
             }
 
+            returncount = 1;
+
             // this will show the return button
-            if (showreturn)
+            if (previousButton)
             {
-                Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
-                returncount = 1;
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Previous\u001b[0m");
+                returncount += 1;
             }
+
+            if (nextButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Next\u001b[0m");
+                returncount += 1;
+            }
+
+            Console.WriteLine($"\n{(option == list.Count() + returncount ? decorator : "   ")}Return\u001b[0m");
 
             // sees what key has been pressed
             key = Console.ReadKey(false);

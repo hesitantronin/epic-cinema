@@ -19,45 +19,100 @@ class CateringLogic
     {
         while (true)
         {
+            Console.Clear();
+
+            // prints an error message if nothing was found
             if (FoodList.Count() == 0)
             {
+                // list of options that will be displayed
                 List<string> ReturnList = new List<string>();
-                int option = OptionsMenu.DisplaySystem(ReturnList, "CATERING", "No catering items were found that matched the criteria.");
+
+                // the necessary info gets used in the display method
+                int option = OptionsMenu.DisplaySystem(ReturnList, "Catering", "No movies were found that matched the criteria.");
+
+                // depending on the option that was chosen, it will clear the console and call the right function
                 if (option == 1)
                 {
-                    Console.Clear();
-                    CateringMenu.Start();
+                    break;
                 }
             }
             else
             {
-                int option = OptionsMenu.CateringDisplaySystem(FoodList, "CATERING");
-                // depending on the option that was chosen, it will clear the console and call the right function     
-                if (option == FoodList.Count() + 1)
+                int BaseLine = 0;
+                int MaxItems = 5;
+                int pageNr = 1;
+
+                bool previousButton = false;
+                bool nextButton = true;
+
+                while (BaseLine < FoodList.Count() - 1)
                 {
-                    Console.Clear();
-                    MovieMenu.Start();
-                }
-                else
-                {
-                    if (IsEmployee && IsEdit)
+                    if (BaseLine + 5 > FoodList.Count() - 1)
                     {
-                        continue;
+                        MaxItems = (FoodList.Count() - 1) % 5;
+                        nextButton = false;
                     }
-                    else if (IsEmployee && !IsEdit)
+                    else
                     {
-                        EditCatering(FoodList[option - 1]);
+                        MaxItems = 5;
+                        nextButton = true;
+                    }
+
+                    if (BaseLine < 0)
+                    {
+                        BaseLine = 0;
+                        pageNr = 0;
+                    }
+
+                    if (BaseLine != 0)
+                    {
+                        previousButton = true;
+                    }
+                    else
+                    {
+                        previousButton = false;
+                    }
+
+                    // the necessary info gets used in the display method
+                    List<CateringModel> subList = FoodList.GetRange(BaseLine, MaxItems);
+
+                    int option = OptionsMenu.CateringDisplaySystem(subList, "MOVIES", $"Page {pageNr}", true, previousButton, nextButton);
+
+                    // depending on the option that was chosen, it will clear the console and call the right function  
+                    if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && previousButton && !nextButton) || (option == subList.Count() + 1 && previousButton && nextButton))
+                    {
+                        BaseLine -= 5;
+                        pageNr -= 1;
+                    }
+                    else if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && nextButton))
+                    {
+                        BaseLine += 5;
+                        pageNr += 1;
+                    }
+                    else if (option == subList.Count() + 1 + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton))
+                    {
                         return;
                     }
                     else
                     {
-                        Console.Clear();
-                        CateringInfo(FoodList[option - 1]);
+                        if (IsEmployee && IsEdit)
+                        {
+                            continue;
+                        }
+                        else if (IsEmployee && !IsEdit)
+                        {
+                            EditCatering(subList[option - 1]);
+                            return;
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            CateringInfo(subList[option - 1]);
+                        }
                     }
-                    
                 }
             }
-        }  
+        }
     }
     public static void EditCatering(CateringModel foodItem)
     {

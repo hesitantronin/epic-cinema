@@ -41,7 +41,7 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 5)
             {
-                //catering
+                food.EmployeeCatering();
             }
             else if (option == 6)
             {
