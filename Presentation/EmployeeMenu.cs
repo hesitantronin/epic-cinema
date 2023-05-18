@@ -1,17 +1,12 @@
 class EmployeeMenu
 {
     public static MovieLogic movie = new MovieLogic();
+    public static CateringLogic food = new CateringLogic();
     protected static List<string> StartList = new List<string>()
     {
         "Movies",
         "Catering",
         "Seats"
-    };
-    protected static List<string> MovieAdd = new List<string>()
-    {
-        "Current movies",
-        "Edit movies",
-        "Remove movies"
     };
     protected static List<string> CateringEditorList = new List<string>()
     {
@@ -19,13 +14,6 @@ class EmployeeMenu
         "Edit menu",
         "Remove items"
     };
-    protected static List<string> SeatEditorList = new List<string>()
-    {
-        "Current seats",
-        "Edit seat prices",
-        "remove ?",
-    };
-
     public static void StartEmployee()
     {
         while (true)
@@ -44,8 +32,7 @@ class EmployeeMenu
             else if (option == 2)
             {
                 Console.Clear();
-                
-
+                food.EmployeeCatering();
             }
             else if (option == 3)
             {

@@ -921,6 +921,7 @@ class MovieLogic
                 else if (removeOptions == 2)
                 {
                     Console.Clear();
+                    LoadMovies();
                     Console.WriteLine("Please enter the movie ID you would like to remove.");
                     int removeID = int.Parse(Console.ReadLine() + "");
                     RemoveMovieID(removeID);
