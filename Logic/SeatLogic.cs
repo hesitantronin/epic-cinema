@@ -14,16 +14,17 @@ static class SeatLogic
         // Regex pattern for checking the validity of the input ID later in the selection process
         string pattern = @"^[a-l]([1-9]|1[0-4])$";
 
+        // List and string for keeping track of the selections
         List<string> selectedChairs = new();
         string currentlySelectedChair = string.Empty;
 
+        // Creating the CSV'S with corresponding names
         string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
         string[] movieViewingDate1 = movie.ViewingDate.ToString().Split(" ");
         string movieViewingDate2 = string.Join(" ", movieViewingDate1[1].Replace(":", "_"));
         string movieViewingDate3 = string.Join(" ", movieViewingDate1[0].Replace("/", "_"));
 
-
-        string pathToCsv = $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}_{movieViewingDate3 + "_" + movieViewingDate2}.csv";
+        string pathToCsv = $@"DataSources/MovieAuditoriums/{movieTitle}/ID_{movie.Id}_{movieTitle}_{movieViewingDate3 + "_" + movieViewingDate2}.csv";
 
         if (!File.Exists(pathToCsv)) // Checks if a CSV already exists, if it does that CSV will be loaded, otherwise a new one will be made based on the template
         {
@@ -32,6 +33,7 @@ static class SeatLogic
 
         string[][] auditoriumArray = SeatAccess.LoadAuditorium(pathToCsv); // Initialise array for searching and updating values
 
+        // A bool and a variable used to reuse the same loop for removing seats from your selection
         bool removingMode = false;
         string four = "4";
 

@@ -218,7 +218,7 @@ static class SeatAccess
 
     public static string FindDefaultSeatValueArray(string ID)
     {
-        string [][] seatArray = LoadAuditorium(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
+        string [][] seatArray = LoadAuditorium(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/DefaultAuditorium/Auditorium.csv"));
 
         // Split ID into the letter and the number
         char letterOfID = ID[0];
@@ -281,11 +281,11 @@ static class SeatAccess
     }
 
 
-    public static string NewAuditorium(MovieModel movie)
+    public static void NewAuditorium(MovieModel movie)
     {
-        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
-        string templatePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/TestAuditorium/Plattegrond.csv"));
-
+        string templatePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/DefaultAuditorium/Auditorium.csv"));
+        
+        // Strings for converting the datetime to a format which is useable in the title of the CSV
         string[] movieViewingDate1 = movie.ViewingDate.ToString().Split(" ");
         string movieViewingDate2 = string.Join(" ", movieViewingDate1[1].Replace(":", "_"));
         string movieViewingDate3 = string.Join(" ", movieViewingDate1[0].Replace("/", "_"));
@@ -293,9 +293,12 @@ static class SeatAccess
         // Remove all spaces and special characters from the movie title to avoid conflict with names
         string movieTitle = Regex.Replace(movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
 
-        // Copy the template auditorium into a new file named after the movie
-        File.Copy(templatePath, $@"DataSources/MovieAuditoriums/ID_{movie.Id}_{movieTitle}_{movieViewingDate3 + "_" + movieViewingDate2}.csv");
+        if (!Directory.Exists($@"DataSources/MovieAuditoriums/{movieTitle}"))
+        {
+            Directory.CreateDirectory($@"DataSources/MovieAuditoriums/{movieTitle}");
+        }
 
-        return $@"DataSources/MovieAuditoriums/{movie.Title}{movie.Id}.csv";
+        // Copy the template auditorium into a new file named after the movie
+        File.Copy(templatePath, $@"DataSources/MovieAuditoriums/{movieTitle}/ID_{movie.Id}_{movieTitle}_{movieViewingDate3 + "_" + movieViewingDate2}.csv");
     }
 }
