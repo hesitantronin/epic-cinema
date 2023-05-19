@@ -18,10 +18,14 @@ class AccountModel
     [JsonPropertyName("fullName")]
     public string FullName { get; set; }
 
-        [JsonPropertyName("cateringReservation")]
+    [JsonPropertyName("movieReservation")]
+    public MovieModel? Movie { get; set; }
+
+    [JsonPropertyName("cateringReservation")]
     public Dictionary<string, string> CateringReservation { get; set; }
 
-    public Dictionary<MovieModel, List<string>> SeatReservation { get; set; }
+    [JsonPropertyName("seatReservation")]
+    public List<string> SeatReservation { get; set; }
 
     public bool Authorized = false;
 
@@ -32,8 +36,9 @@ class AccountModel
         Password = password;
         FullName = fullName;
         Type = type;
+        Movie = null;
         CateringReservation = new Dictionary<string, string>();
-        SeatReservation = new Dictionary<MovieModel, List<string>>();
+        SeatReservation = new List<string>();
     }
 
     public void Authorize() => Authorized = true;

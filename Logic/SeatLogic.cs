@@ -163,13 +163,16 @@ static class SeatLogic
         Console.Clear();
         OptionsMenu.Logo("Seat selection");
 
-        // Going to food reservations and saving the data to the CSV
-        Dictionary<MovieModel, List<string>> movieSeatsSelection = AccountsLogic.CurrentAccount.SeatReservation;
-
-
+        // Going to food reservations and saving the reserved seats/movie to the current account
+        if (selectedChairs != null && AccountsLogic.CurrentAccount != null)
+        {
+            AccountsLogic accountslogic = new AccountsLogic();
+            AccountsLogic.CurrentAccount.Movie = movie;
+            AccountsLogic.CurrentAccount.SeatReservation = selectedChairs;
+            accountslogic.UpdateList(AccountsLogic.CurrentAccount);
+        }
 
         //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
         CateringMenu.Start();
-
     }
 }
