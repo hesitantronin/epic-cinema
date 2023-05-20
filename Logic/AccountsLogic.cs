@@ -3,14 +3,19 @@ using System.Text;
 
 class AccountsLogic
 {
-    private List<AccountModel> _accounts;
+    private List<AccountModel> _accounts = new();
     public static AccountModel? CurrentAccount = null;
     private static AccountsLogic accountsLogic = new AccountsLogic();
 
     public AccountsLogic()
     {
+        LoadAccounts();
+    }
+    public void LoadAccounts()
+    {
         _accounts = AccountsAccess.LoadAll();
     }
+
 
     public void SetCurrentAccount(AccountModel account) 
     {
@@ -44,6 +49,38 @@ class AccountsLogic
         // removes the movie with that id, and updates the json file
         _accounts.Remove(_accounts[index]);
         AccountsAccess.WriteAll(_accounts);
+    }
+    public void RemoveAccAdmin(int id)
+    {
+        // Get the ID of the currently logged-in account
+        int loggedInAccountId = CurrentAccount?.Id ?? 0;
+
+        if (id == loggedInAccountId)
+        {
+            Console.Clear();
+            Console.WriteLine("You cannot remove your own account.\n\nPress Enter to continue.");
+            Console.ReadLine();
+            return;
+        }
+
+        // Find the index of the account with the specified ID
+        int index = _accounts.FindIndex(s => s.Id == id);
+
+        if (index != -1)
+        {
+            // Remove the account with the specified ID
+            _accounts.RemoveAt(index);
+            AccountsAccess.WriteAll(_accounts);
+            Console.Clear();
+            Console.WriteLine("Account removed successfully.\n\nPress Enter to continue.");
+            Console.ReadLine();
+        }
+        else
+        {
+            Console.Clear();
+            Console.WriteLine("Account not found.\n\nPress Enter to continue.");
+            Console.ReadLine();
+        }
     }
 
     public AccountModel? GetById(int id)
@@ -236,7 +273,18 @@ class AccountsLogic
         List<string> DList = new List<string>(){"Continue"};
 
         OptionsMenu.DisplaySystem(DList, "welcome page", $"Account created successfully!\nWelcome, {fullName}.", true, false);
-        MovieMenu.Start();     
+        if (isEmployeeRegistration)
+        {
+            EmployeeMenu.StartEmployee();
+        }
+        else if (isAdminRegistration)
+        {
+            AdminMenu.StartAdmin();
+        }
+        else
+        {
+            MovieMenu.Start();     
+        }
         
         Console.CursorVisible = false;
     }

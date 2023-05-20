@@ -29,6 +29,7 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 2)
             {
+                account.LoadAccounts();
                 AccountCreator();
             }
             else if (option == 3)
@@ -71,11 +72,11 @@ class AdminMenu : EmployeeMenu
         // Handle the selected option
         if (option == 1)
         {
-            AccountsLogic.Register(true);
+            AccountsLogic.Register(false, true);
         }
         else if (option == 2)
         {
-            AccountsLogic.Register(false, true);
+            AccountsLogic.Register(true);
         }
     }
     private static void RemoveEmployeeAccount()
@@ -93,7 +94,7 @@ class AdminMenu : EmployeeMenu
             }
         }
 
-        int option = OptionsMenu.DisplaySystem(employeeList, "Employee accounts", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected account:", true, true);
+        int option = OptionsMenu.DisplaySystem(employeeList, "Employee/ admin accounts", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected account:", true, true);
 
         if (option >= 1 && option <= employeeList.Count)
         {
@@ -111,23 +112,22 @@ class AdminMenu : EmployeeMenu
 
             if (isValidId)
             {
-                // Remove the account with the specified ID
-                AccountModel? accountToRemove = accounts.Find(account => account.Id == idToRemove);
-                if (accountToRemove != null)
-                {
-                    accounts.Remove(accountToRemove);
-                    AccountsAccess.WriteAll(accounts);
-                    Console.WriteLine("Employee account removed successfully.");
-                }
+                // Create an instance of AccountsLogic
+                AccountsLogic accountsLogic = new AccountsLogic();
+
+                // Call the RemoveAcc method on the instance
+                accountsLogic.RemoveAccAdmin(idToRemove);
             }
             else
             {
-                Console.WriteLine("Invalid ID found for the selected employee account.");
+                Console.Clear();
+                Console.WriteLine("Invalid ID found for the selected employee account.\n\n Press enter to continue.");
+                Console.ReadLine();
             }
         }
         else
         {
-            Console.WriteLine("Invalid option selected.");
+            return;
         }
     }
 }

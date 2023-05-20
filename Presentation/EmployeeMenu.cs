@@ -2,6 +2,7 @@ class EmployeeMenu
 {
     public static MovieLogic movie = new MovieLogic();
     public static CateringLogic food = new CateringLogic();
+    public static AccountsLogic account = new AccountsLogic();
     protected static List<string> StartList = new List<string>()
     {
         "Movies",
