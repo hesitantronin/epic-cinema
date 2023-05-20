@@ -49,7 +49,7 @@ class CateringLogic
                 {
                     if (BaseLine + 5 > FoodList.Count() - 1)
                     {
-                        MaxItems = (FoodList.Count() - 1) % 5;
+                        MaxItems = (FoodList.Count() - 1) % 5 + 1;
                         nextButton = false;
                     }
                     else
@@ -101,6 +101,7 @@ class CateringLogic
                         }
                         else if (IsEmployee && !IsEdit)
                         {
+                            LoadCatering();
                             EditCatering(subList[option - 1]);
                             return;
                         }

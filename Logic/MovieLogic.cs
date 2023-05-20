@@ -129,6 +129,7 @@ class MovieLogic
                         }
                         else if (IsEmployee && !IsEdit)
                         {
+                            LoadMovies();
                             EditMovie(subList[option - 1]);
                             return;
                         }
@@ -951,6 +952,8 @@ class MovieLogic
                 int removeOptions = OptionsMenu.DisplaySystem(RemoveList, "Remove movies", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
                 if (removeOptions == 1)
                 {
+                    Console.Clear();
+                    LoadMovies();
                     RemoveMovie();
                 }
                 else if (removeOptions == 2)
