@@ -73,11 +73,11 @@ class MovieLogic
                 bool previousButton = false;
                 bool nextButton = true;
 
-                while (BaseLine < MovieList.Count() - 1)
+                while (BaseLine < MovieList.Count())
                 {
-                    if (BaseLine + 5 > MovieList.Count() - 1)
+                    if (BaseLine + 5 > MovieList.Count())
                     {
-                        MaxItems = (MovieList.Count() - 1) % 5;
+                        MaxItems = MovieList.Count() % 5;
                         nextButton = false;
                     }
                     else
