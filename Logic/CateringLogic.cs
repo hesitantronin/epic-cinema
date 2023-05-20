@@ -28,7 +28,7 @@ class CateringLogic
                 List<string> ReturnList = new List<string>();
 
                 // the necessary info gets used in the display method
-                int option = OptionsMenu.DisplaySystem(ReturnList, "Catering", "No movies were found that matched the criteria.");
+                int option = OptionsMenu.DisplaySystem(ReturnList, "Catering", "No catering items were found that matched the criteria.");
 
                 // depending on the option that was chosen, it will clear the console and call the right function
                 if (option == 1)
@@ -45,18 +45,9 @@ class CateringLogic
                 bool previousButton = false;
                 bool nextButton = true;
 
-                while (BaseLine < FoodList.Count() - 1)
+                while (BaseLine < FoodList.Count())
                 {
-                    if (BaseLine + 5 > FoodList.Count() - 1)
-                    {
-                        MaxItems = (FoodList.Count() - 1) % 5 + 1;
-                        nextButton = false;
-                    }
-                    else
-                    {
-                        MaxItems = 5;
-                        nextButton = true;
-                    }
+                    MaxItems = Math.Min(5, FoodList.Count() - BaseLine);
 
                     if (BaseLine < 0)
                     {
@@ -76,7 +67,7 @@ class CateringLogic
                     // the necessary info gets used in the display method
                     List<CateringModel> subList = FoodList.GetRange(BaseLine, MaxItems);
 
-                    int option = OptionsMenu.CateringDisplaySystem(subList, "MOVIES", $"Page {pageNr}", true, previousButton, nextButton);
+                    int option = OptionsMenu.CateringDisplaySystem(subList, "Catering", $"Page {pageNr}", true, previousButton, nextButton);
 
                     // depending on the option that was chosen, it will clear the console and call the right function  
                     if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && previousButton && !nextButton) || (option == subList.Count() + 1 && previousButton && nextButton))
@@ -115,6 +106,7 @@ class CateringLogic
             }
         }
     }
+
     public static void EditCatering(CateringModel foodItem)
     {
         Console.Clear();
@@ -691,7 +683,7 @@ class CateringLogic
             else if (MenuOptions == 2)
             {
                 Console.Clear();
-                int addOptions = OptionsMenu.DisplaySystem(AddFoodList, "Add movies", "To add food items by file, please save the json or csv file in the DataSources folder", true, true);
+                int addOptions = OptionsMenu.DisplaySystem(AddFoodList, "Add Food items", "To add food items by file, please save the json or csv file in the DataSources folder", true, true);
 
                 if (addOptions == 1)
                 {

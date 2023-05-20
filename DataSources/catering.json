@@ -26,5 +26,19 @@
     "type": "Candy",
     "price": 0.99,
     "description": "Long twisted pieces of red licorice"
+  },
+  {
+    "id": 5,
+    "name": "ass",
+    "type": "ass",
+    "price": 12,
+    "description": "ass"
+  },
+  {
+    "id": 6,
+    "name": "nothing",
+    "type": "air",
+    "price": 11111,
+    "description": "scammed"
   }
 ]
