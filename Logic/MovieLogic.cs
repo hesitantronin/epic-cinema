@@ -43,7 +43,7 @@ class MovieLogic
         return _movies.Find(i => i.Id == id);
     }
 
-    public void PrintMovies(List<MovieModel> MovieList, bool IsEmployee = false, bool IsEdit = false)
+    public void PrintMovies(List<MovieModel> MovieList, bool IsEmployee = false, bool IsEdit = false, bool SeatEdit = false)
     {
         while (true)
         {
@@ -133,6 +133,10 @@ class MovieLogic
                             EditMovie(subList[option - 1]);
                             return;
                         }
+                        else if (SeatEdit)
+                        {
+                            SeatLogic.SeatSelection(subList[option - 1], true);
+                        }
                         else
                         {
                             MovieInfo(subList[option - 1]);
@@ -144,6 +148,7 @@ class MovieLogic
     }
     public static void EditMovie(MovieModel movie)
     {
+        bool seatEdit = false;
         Console.Clear();
 
         // shows the banner and title
@@ -156,7 +161,8 @@ class MovieLogic
         movieInfoList.Add($"Age Restriction: {movie.Age}");
         movieInfoList.Add($"Description: {MovieLogic.SpliceText(movie.Description, " ")}");
         movieInfoList.Add($"Viewing Date: {movie.ViewingDate}");
-        movieInfoList.Add($"Publish Date: {movie.PublishDate}");
+        movieInfoList.Add($"Publish Date: {movie.PublishDate}\n");
+        movieInfoList.Add("Auditorium seat editer");
         int edit = OptionsMenu.DisplaySystem(movieInfoList, "Edit existing movie", "Use ⬆ and ⬇ to navigate and press Enter to select what you would like to edit:", true, true);
         if (edit == 1)
         {
@@ -287,6 +293,11 @@ class MovieLogic
                 }
             }
         }
+        else if (edit == 8)
+        {
+            seatEdit = true;
+            SeatLogic.SeatSelection(movie, true);
+        }
         else
         {
             return;
@@ -305,8 +316,15 @@ class MovieLogic
             // Write the updated movie list to the JSON file
             MovieAccess.WriteAll(movies);
             Console.Clear();
-            Console.WriteLine("Movie updated successfully.\n\n Press enter to continue.");
-            Console.ReadLine();
+            if (seatEdit)
+            {
+                Console.WriteLine("Auditorium updated successfully.\n\n Press enter to continue.");
+            }
+            else
+            {
+                Console.WriteLine("Movie updated successfully.\n\n Press enter to continue.");
+                Console.ReadLine();
+            }
         }
         else
         {
@@ -888,7 +906,7 @@ class MovieLogic
     {
         "Current movies",
         "Add movies",
-        "Edit movies",
+        "Movies and seats editer",
         "Remove movies"
     };
     protected static List<string> YN = new List<string>()

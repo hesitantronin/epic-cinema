@@ -46,10 +46,6 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 6)
             {
-                //Seats
-            }
-            else if (option == 7)
-            {
                 break;
             }
             else

@@ -2,13 +2,18 @@ using System.Text.RegularExpressions;
 
 static class SeatLogic
 {
-    public static void SeatSelection(MovieModel movie)
+    public static void SeatSelection(MovieModel movie, bool isEdit = false)
     {
         List<string> answerList = new List<string>()
         {
             "Yes",
             "Add more seats",
             "Remove seats"
+        };
+        List<string> editList = new List<string>()
+        {
+            "Edit availability",
+            "Edit seat type (price range)",
         };
 
         // Regex pattern for checking the validity of the input ID later in the selection process
@@ -47,7 +52,7 @@ static class SeatLogic
             SeatsMenu.SeatLegend();
 
             // Ask user for id of the seat
-            Console.WriteLine($"Type in the ID of the seat you want to {(removingMode ? "remove from your selection" : "select")} (I.E. - A6)");
+            Console.WriteLine($"Type in the ID of the seat you want to {(isEdit ? "edit" : (removingMode ? "remove from your selection" : "select"))} (I.E. - A6)");
             currentlySelectedChair = Console.ReadLine();
 
             // If removing mode is on the 4 check in the csv will be negated so you can remove your own selections
@@ -91,7 +96,23 @@ static class SeatLogic
 
                         if (optionInLoop == 1)
                         {
-                            break;
+                            if (isEdit)
+                            {
+                                Console.Clear();
+                                int seatEdit = OptionsMenu.DisplaySystem(editList, "", $"Select an option what you want to do with the following seats: {String.Join(", ", selectedChairs)}", false, true);
+                                if (seatEdit == 1)
+                                {
+                                    //edit availability function
+                                }
+                                else if (seatEdit == 2)
+                                {
+                                    //edit seat type or price function
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
 
                         else if (optionInLoop == 2)
@@ -174,7 +195,10 @@ static class SeatLogic
             accountslogic.UpdateList(AccountsLogic.CurrentAccount);
         }
 
-        //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
-        CateringMenu.Start();
+        if (!isEdit)
+        {
+            //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
+            CateringMenu.Start();
+        }
     }
 }
