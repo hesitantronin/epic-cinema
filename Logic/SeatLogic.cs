@@ -15,6 +15,12 @@ static class SeatLogic
             "Edit availability",
             "Edit seat type (price range)",
         };
+        List<string> seatType = new List<string>()
+        {
+            "Normal seat",
+            "VIP seat",
+            "Lover seat"
+        };
 
         // Regex pattern for checking the validity of the input ID later in the selection process
         string pattern = @"^[a-l]([1-9]|1[0-4])$";
@@ -107,6 +113,31 @@ static class SeatLogic
                                 else if (seatEdit == 2)
                                 {
                                     //edit seat type or price function
+                                    int typeEdit = OptionsMenu.DisplaySystem(seatType, "", $"Select an option what you want change the following seat(s) in: {String.Join(", ", selectedChairs)}", false, true);
+                                    if (typeEdit == 1)
+                                    {
+                                        foreach (string chair in selectedChairs)
+                                        SeatAccess.UpdateSeatValue(auditoriumArray, chair, "1");
+                                        
+                                    }
+                                    else if (typeEdit == 2)
+                                    {
+                                        foreach (string chair in selectedChairs)
+                                        SeatAccess.UpdateSeatValue(auditoriumArray, chair, "2");
+                                    }
+                                    else if (typeEdit == 3)
+                                    {
+                                        foreach (string chair in selectedChairs)
+                                        SeatAccess.UpdateSeatValue(auditoriumArray, chair, "3");
+                                    }
+                                    else if (typeEdit == 4)
+                                    {
+                                        return;
+                                    }
+                                    // OptionsMenu.Logo("Seat selection");
+                                    // SeatAccess.PrintAuditorium(auditoriumArray);
+                                    // SeatsMenu.SeatLegend();
+
                                 }
                             }
                             else
