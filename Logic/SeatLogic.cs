@@ -229,7 +229,29 @@ static class SeatLogic
         if (!isEdit)
         {
             //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
-            CateringMenu.Start();
+            List<string> ReturnList = new List<string>
+            {
+                "Yes",
+                "No"
+            };
+
+            int option4 = OptionsMenu.DisplaySystem(ReturnList, "", "\nWould you like to reserve catering menu items?");
+
+            switch(option4)
+            {
+                case 1:
+                    Console.Clear();
+                    CateringMenu.Start();
+                    break;
+                case 2:
+                    Console.Clear();
+                    ReservationMenu.Start();
+                    break;
+                case 3:
+                    Console.Clear();
+                    CateringMenu.Start();
+                    break;
+            }
         }
     }
 }

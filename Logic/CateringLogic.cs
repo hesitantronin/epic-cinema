@@ -212,7 +212,7 @@ class CateringLogic
         Console.ResetColor();
         Console.WriteLine($" ${foodItem.Price}\n");
 
-         List<string> ReturnList = new List<string>()
+        List<string> ReturnList = new List<string>()
         {
             "Yes",
             "No"
@@ -222,28 +222,74 @@ class CateringLogic
 
         switch (option)
         {
-            case 1:
+            case 1: // Customer wants to reserve selected item
                 Console.WriteLine("Please enter the amount that you would like to reserve: ");
                 string? amount = Console.ReadLine();
-
-                if (amount != null && AccountsLogic.CurrentAccount != null)
+                
+                if (amount != null && amount.All(Char.IsDigit)) // check if entered amount is a valid number (0-9)
                 {
-                        // takes the dictionary bound to the current account that contains its previous menu reservations & adds onto it
-                        Dictionary<string, string> TotalReservations = AccountsLogic.CurrentAccount.CateringReservation;
-                        TotalReservations.Add(foodItem.Name, amount);
+                    int numAmount = Convert.ToInt32(amount);
+        
+                    if (AccountsLogic.CurrentAccount != null)
+                    {
+                            // takes the dictionary bound to the current account that contains its previous menu reservations & adds onto it
+                            Dictionary<string, string> TotalReservations = AccountsLogic.CurrentAccount.CateringReservation;
 
-                        // updates the json file so that the dictionary has the new menu item
-                        AccountsLogic accountslogic = new AccountsLogic();
-                        AccountsLogic.CurrentAccount.CateringReservation = TotalReservations;
-                        accountslogic.UpdateList(AccountsLogic.CurrentAccount);
+                            // check whether or not the customer has already reserved this item. If yes, add to the previously entered amount, otherwise add a new item & amount to their cateringReservations dictionary
+                            if (TotalReservations.ContainsKey(foodItem.Name))
+                            {
+                                int newAmount = Convert.ToInt32(TotalReservations[foodItem.Name]) + numAmount;
+                                TotalReservations[foodItem.Name] = Convert.ToString(newAmount);
+                            }
+                            else
+                            {
+                            TotalReservations.Add(foodItem.Name, amount);
+                            }
+        
+                            // updates the json file so that the dictionary has the new/updated menu item
+                            AccountsLogic accountslogic = new AccountsLogic();
+                            AccountsLogic.CurrentAccount.CateringReservation = TotalReservations;
+                            accountslogic.UpdateList(AccountsLogic.CurrentAccount);
+                    }
+                }
+                else // if the entered number is not a valid number (0-9)
+                {
+                    List<string> EmptyReturnList = new List<string>() {};
+                    int option3 = OptionsMenu.DisplaySystem(EmptyReturnList, "", "Please enter a valid number (ex. 5)");
+                    
+                    if (option3 == 1)
+                    {
+                        break; // go back to the start of the catering menu
+                    }
                 }
                 break;
-            case 2:
+    
+            case 2: // Customer does not want to reserve selected item
                 break;
         }
 
-        Console.Clear();
-        CateringMenu.Start();
+        // show all currently reserved menu items and asks whether the customer would like to reserve more
+        string menuReservations = "";
+        foreach (var item in AccountsLogic.CurrentAccount.CateringReservation)
+        {
+            menuReservations += $"{item.Key}        Amount: {item.Value}\n";
+        }
+
+        int option2 = OptionsMenu.DisplaySystem(ReturnList, "", $"You've selected these menu items:\n{menuReservations}\nIs this all you want to reserve?");
+
+
+        switch(option2)
+        {
+            case 1: // don't reserve more
+                Console.Clear();
+                ReservationMenu.Start();
+                break;
+
+            case 2: // reserve more
+                Console.Clear();
+                CateringMenu.Start();
+                break;
+        }
     }
 
     public void UpdateList(CateringModel foodItem)

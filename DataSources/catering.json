@@ -29,16 +29,16 @@
   },
   {
     "id": 5,
-    "name": "ass",
-    "type": "ass",
-    "price": 12,
-    "description": "ass"
+    "name": "Twizzlers 2.0",
+    "type": "Candy",
+    "price": 0.99,
+    "description": "Long twisted pieces of licorice"
   },
   {
     "id": 6,
-    "name": "nothing",
-    "type": "air",
-    "price": 11111,
-    "description": "scammed"
+    "name": "Twizzlers...",
+    "type": "Candy",
+    "price": 0.99,
+    "description": "Long twisted pieces of an unknown substance, most likely toxic"
   }
 ]

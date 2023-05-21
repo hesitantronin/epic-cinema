@@ -27,6 +27,10 @@ class AccountModel
     [JsonPropertyName("seatReservation")]
     public List<string> SeatReservation { get; set; }
 
+    [JsonPropertyName("accessibilityRequest")]
+    public string AccessibilityRequest { get; set; }
+
+
     public bool Authorized = false;
 
     public AccountModel(int id, string emailAddress, string password, string fullName, AccountType type = AccountType.CUSTOMER)
@@ -39,6 +43,7 @@ class AccountModel
         Movie = null;
         CateringReservation = new Dictionary<string, string>();
         SeatReservation = new List<string>();
+        AccessibilityRequest = "";
     }
 
     public void Authorize() => Authorized = true;
