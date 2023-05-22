@@ -97,8 +97,14 @@ static class SeatLogic
                         OptionsMenu.Logo("Seat selection");
                         SeatAccess.PrintAuditorium(auditoriumArray);
                         SeatsMenu.SeatLegend();
+                        
+                        // Prepare option for use in checking if there are any seats selected
+                        int optionInLoop = 0;
 
-                        int optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) {String.Join(", ", selectedChairs)}, are you satisfied with these selections?", false, true);
+                        // If there are no seats selected option 2 is automatically selected and the user is prompted to select a seat again
+                        if (!selectedChairs.Any()) optionInLoop = 2;
+                        
+                        else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) {String.Join(", ", selectedChairs)}, are you satisfied with these selections?", false, true);
 
                         if (optionInLoop == 1)
                         {
@@ -114,30 +120,14 @@ static class SeatLogic
                                 {
                                     //edit seat type or price function
                                     int typeEdit = OptionsMenu.DisplaySystem(seatType, "", $"Select an option what you want change the following seat(s) in: {String.Join(", ", selectedChairs)}", false, true);
-                                    if (typeEdit == 1)
-                                    {
-                                        foreach (string chair in selectedChairs)
-                                        SeatAccess.UpdateSeatValue(auditoriumArray, chair, "1");
-                                        
-                                    }
-                                    else if (typeEdit == 2)
-                                    {
-                                        foreach (string chair in selectedChairs)
-                                        SeatAccess.UpdateSeatValue(auditoriumArray, chair, "2");
-                                    }
-                                    else if (typeEdit == 3)
-                                    {
-                                        foreach (string chair in selectedChairs)
-                                        SeatAccess.UpdateSeatValue(auditoriumArray, chair, "3");
-                                    }
-                                    else if (typeEdit == 4)
+
+                                    foreach (string chair in selectedChairs)
+                                    SeatAccess.UpdateSeatValue(auditoriumArray, chair, Convert.ToString(typeEdit));
+
+                                    if (typeEdit == 4)
                                     {
                                         return;
                                     }
-                                    // OptionsMenu.Logo("Seat selection");
-                                    // SeatAccess.PrintAuditorium(auditoriumArray);
-                                    // SeatsMenu.SeatLegend();
-
                                 }
                             }
                             else
@@ -220,9 +210,18 @@ static class SeatLogic
         // Going to food reservations and saving the reserved seats/movie to the current account
         if (selectedChairs != null && AccountsLogic.CurrentAccount != null)
         {
+            List<SeatModel> finalSeatSelection = new();
+
+            foreach (string ID in selectedChairs)
+            {
+                SeatAccess.FindDefaultSeatValueArray(ID);
+                finalSeatSelection.Add(new SeatModel(ID, Convert.ToInt32(SeatAccess.FindDefaultSeatValueArray(ID))));
+            }
+
+
             AccountsLogic accountslogic = new AccountsLogic();
             AccountsLogic.CurrentAccount.Movie = movie;
-            AccountsLogic.CurrentAccount.SeatReservation = selectedChairs;
+            AccountsLogic.CurrentAccount.SeatReservation = finalSeatSelection;
             accountslogic.UpdateList(AccountsLogic.CurrentAccount);
         }
 

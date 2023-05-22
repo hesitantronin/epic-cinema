@@ -7,7 +7,8 @@
     "fullName": "User",
     "movieReservation": null,
     "cateringReservation": {},
-    "seatReservation": []
+    "seatReservation": [],
+    "accessibilityRequest": ""
   },
   {
     "id": 2,
@@ -17,7 +18,8 @@
     "fullName": "Employee",
     "movieReservation": null,
     "cateringReservation": {},
-    "seatReservation": []
+    "seatReservation": [],
+    "accessibilityRequest": ""
   },
   {
     "id": 3,
@@ -27,6 +29,7 @@
     "fullName": "Admin",
     "movieReservation": null,
     "cateringReservation": {},
-    "seatReservation": []
+    "seatReservation": [],
+    "accessibilityRequest": ""
   }
 ]

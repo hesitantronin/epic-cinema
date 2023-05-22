@@ -265,14 +265,14 @@ class AccountsLogic
         AccountModel.AccountType accountType = isEmployeeRegistration ? AccountModel.AccountType.EMPLOYEE : isAdminRegistration ? AccountModel.AccountType.ADMIN : AccountModel.AccountType.CUSTOMER;
         AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, accountsLogic.HashPassword(password), fullName, accountType);
         accountsLogic.UpdateList(acc);
-
-        accountsLogic.SetCurrentAccount(acc);
+        
+        if (!isEmployeeRegistration && !isAdminRegistration) accountsLogic.SetCurrentAccount(acc);
 
         Console.Clear();
 
         List<string> DList = new List<string>(){"Continue"};
 
-        OptionsMenu.DisplaySystem(DList, "welcome page", $"Account created successfully!\nWelcome, {fullName}.", true, false);
+        OptionsMenu.DisplaySystem(DList, "welcome page", isEmployeeRegistration || isAdminRegistration ? $"Succesfully created {acc.Type} account: {acc.FullName}!":$"Account created successfully!\nWelcome, {fullName}.", true, false);
         if (isEmployeeRegistration)
         {
             EmployeeMenu.StartEmployee();

@@ -25,7 +25,7 @@ class AccountModel
     public Dictionary<string, string> CateringReservation { get; set; }
 
     [JsonPropertyName("seatReservation")]
-    public List<string> SeatReservation { get; set; }
+    public List<SeatModel> SeatReservation { get; set; }
 
     [JsonPropertyName("accessibilityRequest")]
     public string AccessibilityRequest { get; set; }
@@ -42,7 +42,7 @@ class AccountModel
         Type = type;
         Movie = null;
         CateringReservation = new Dictionary<string, string>();
-        SeatReservation = new List<string>();
+        SeatReservation = new List<SeatModel>();
         AccessibilityRequest = "";
     }
 

@@ -14,8 +14,6 @@ class AdminMenu : EmployeeMenu
                 "Remove accounts"
             };
             
-            
-
 
             startList.AddRange(StartList); // Add the options from EmployeeMenu
 

@@ -694,8 +694,8 @@ class CateringLogic
     protected static List<string> FoodEditorList = new List<string>()
     {
         "Current menu",
-        "Add consumptions",
-        "Edit consumables",
+        "Add food item",
+        "Edit food item",
         "Remove item"
     };
     protected static List<string> YN = new List<string>()
@@ -705,15 +705,15 @@ class CateringLogic
     };
     protected static List<string> AddFoodList = new List<string>()
     {
-        "Single movie entry",
+        "Single food item entry",
         "JSON File",
         "CSV File"
 
     };
     protected static List<string> RemoveList = new List<string>()
     {
-        "Remove movie selection",
-        "Remove movie by ID"
+        "Remove food item selection",
+        "Remove food item by ID"
     };
     public void EmployeeCatering()
     {
@@ -755,7 +755,7 @@ class CateringLogic
             }
             else if (MenuOptions == 4)
             {
-                int removeOptions = OptionsMenu.DisplaySystem(RemoveList, "Remove movies", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
+                int removeOptions = OptionsMenu.DisplaySystem(RemoveList, "Remove food items", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
                 if (removeOptions == 1)
                 {
                     RemoveFood();
