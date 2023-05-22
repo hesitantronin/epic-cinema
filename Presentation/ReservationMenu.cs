@@ -5,7 +5,10 @@ class ReservationMenu
     static public void Start()
     {
         AccountsLogic accountsLogic = new AccountsLogic();
+        CateringAccess cateringAccess = new CateringAccess();
 
+        // With a guest account, we won't have any information about the person who's making a reservation. So when they're finishing their reservation, they're asked to make an account
+        // this way, you can look at your options without having to create an account, but won't have to go back to create an account if you do decide to make a reservation
         if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
         {
             Console.Clear();
@@ -96,10 +99,13 @@ class ReservationMenu
             Console.WriteLine("Please enter your name:");
             string fullName = Console.ReadLine() + "";
 
+            // Update the info from the guest account, which was previously just "" or null, to the entered information
             AccountsLogic.CurrentAccount.EmailAddress = email;
             AccountsLogic.CurrentAccount.Password = accountsLogic.HashPassword(password);
             AccountsLogic.CurrentAccount.FullName = fullName;
-            AccountsLogic.CurrentAccount.Type = AccountModel.AccountType.CUSTOMER;
+
+            // Since they're no longer a guest, their account type is also switched from guest to customer
+            AccountsLogic.CurrentAccount.Type = AccountModel.AccountType.CUSTOMER; 
             accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
         }
         
@@ -111,27 +117,83 @@ class ReservationMenu
             "No"
         };
 
+        // This is for accessibility, customers can input a special request here
         int option1 = OptionsMenu.DisplaySystem(ReturnList, "", "\nWill you need any special assistance to make going to our cinema a more accessible experience for you?");
 
-        switch (option1)
+        if (option1 == 1)
         {
-            case 1:
-                Console.WriteLine("\nPlease write down how we can be of assistance");
+            Console.WriteLine("\nPlease write down how we can be of assistance");
                 string? accessibilityReq = Console.ReadLine();
                 Console.WriteLine("");
 
                 if (accessibilityReq != null)
                 {
+                    // sets the AccessibilityRequest part of an account to their specified request
                     AccountsLogic.CurrentAccount.AccessibilityRequest = accessibilityReq;
                     accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
                 }
-                break;
-            
-            case 2:
-                break;
         }
 
-        // finalize reservation
+        // final reservation overview
 
+        Console.CursorVisible = true;
+        OptionsMenu.Logo("reservation");
+        Console.WriteLine("Here are the details of your reservation:\n");
+        Console.WriteLine($"NAME: {AccountsLogic.CurrentAccount.FullName}");
+        Console.WriteLine($"MOVIE: {AccountsLogic.CurrentAccount.Movie.Title}");
+
+        double finalPrice = 0.0;
+
+        Console.WriteLine($"SEAT(S):");
+        string seatReservations = "";
+        foreach (var seat in AccountsLogic.CurrentAccount.SeatReservation)
+        {
+            seatReservations += $"    {seat.Id} ({seat.SeatTypeName})\n";
+            finalPrice += seat.Price;
+        }
+
+        Console.WriteLine($"{seatReservations}");
+        Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate}");
+        
+
+        // A customer doesn't have to reserve catering items, so this checks whether or not they have
+        if (AccountsLogic.CurrentAccount.CateringReservation.Count > 0)
+        {
+            
+            Console.WriteLine($"CATERING:");
+
+            string menuReservations = "";
+
+            // cateringItems is a list of all cateringModels in catering.json
+            List<CateringModel> cateringItems = CateringAccess.LoadAll();
+            foreach (var item in AccountsLogic.CurrentAccount.CateringReservation)
+            {
+                // Gets every catering reservation from the cateringReservation dictionary which is a part of their account, and adds it to a string so it can be shown in the overview
+                menuReservations += $"    {item.Key}: x{item.Value}\n";
+
+                // to get the total price, this finds the current catering item, locates it in cateringItems based on whether the name is the same as the current item (item.Key)
+                // and then once its selected the right cateringModel, it gets the price of one of those specific items. Then that price is multiplied by how many times the
+                // user has reserved that item (item.Value)
+                finalPrice += (Convert.ToInt32(item.Value) * cateringItems.Where(c => c.Name == item.Key).Select(c => c.Price).Sum());
+            }
+
+            // prints all previously gathered menu reservations
+            Console.WriteLine($"{menuReservations}");
+        }
+
+        Random random = new Random();
+        Console.WriteLine($"RESERVATION CODE: {random.Next(1000000, 9999999)}");
+
+        if (AccountsLogic.CurrentAccount.AccessibilityRequest != "")
+        {
+            Console.WriteLine($"\nREQUEST: {AccountsLogic.CurrentAccount.AccessibilityRequest}");
+        }
+
+        Console.WriteLine($"\nTOTAL PRICE: {finalPrice} euros");
+    
+        // Temporary end of the program? without displaying anything it automatically goes back to another menu (seatMenu/movieMenu/cateringMenu) so this is to prevent that
+        // if you press enter itll still go to a menu though
+        List<string> emptyList = new List<string>(){};
+        OptionsMenu.DisplaySystem(emptyList, "", $"\n", false, false, "");
     }
 }

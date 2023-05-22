@@ -578,6 +578,21 @@ class CateringLogic
 
         return filtered;
     }
+
+    public List<CateringModel> SearchBy(string query)
+    {
+        List<CateringModel> searched = new();
+        foreach(CateringModel menuItem in _menu)
+        {
+            if (menuItem.Name.ToLower().Contains(query.ToLower()) || menuItem.Description.ToLower().Contains(query.ToLower()))
+            {
+                searched.Add(menuItem);
+            }
+        }
+
+        return searched;
+    }
+
     public static void AddOrUpdateFood()
     {
         List<CateringModel> foods = CateringAccess.LoadAll();

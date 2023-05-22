@@ -33,7 +33,7 @@ class CateringMenu
             else if (option == 3)
             {
                 Console.Clear();
-                //Search();
+                Search();
             }
             else if (option == 4)
             {
@@ -151,5 +151,22 @@ class CateringMenu
                 }
             }
         }
+    }
+
+    static public void Search()
+    {
+        Console.Clear();
+        Console.CursorVisible = true;
+
+        // shows banner and title
+        OptionsMenu.Logo("SEARCH MENU");
+
+        // asks for an input to search for and searches for it
+        Console.WriteLine("Search: ");
+        string query = Console.ReadLine() + "";
+
+        cateringlogic.PrintMenu(cateringlogic.SearchBy(query));
+
+        Console.CursorVisible = false;
     }
 }
