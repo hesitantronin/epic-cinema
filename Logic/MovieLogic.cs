@@ -167,7 +167,7 @@ class MovieLogic
         if (edit == 1)
         {
             Console.Write("New Title: ");
-            string newTitle = Console.ReadLine();
+            string newTitle = Console.ReadLine() + "";
             if (!string.IsNullOrEmpty(newTitle))
             {
                 movie.Title = newTitle;
@@ -176,7 +176,7 @@ class MovieLogic
         else if (edit == 2)
         {
             Console.Write("New genre: ");
-            string newGenre = Console.ReadLine();
+            string newGenre = Console.ReadLine() + "";
             if (!string.IsNullOrEmpty(newGenre))
             {
                 movie.Genre = newGenre;
@@ -188,7 +188,7 @@ class MovieLogic
             while (true)
             {
                 Console.Write("Rating: ");
-                string ratingInput = Console.ReadLine();
+                string ratingInput = Console.ReadLine() + "";
 
                 if (double.TryParse(ratingInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
                 {
@@ -205,7 +205,7 @@ class MovieLogic
             while (true)
             {
                 Console.Write("Age: ");
-                string newAgeInput = Console.ReadLine();
+                string newAgeInput = Console.ReadLine() + "";
 
                 if (int.TryParse(newAgeInput, out age) && age >= 0)
                 {
@@ -219,7 +219,7 @@ class MovieLogic
         else if (edit == 5)
         {
             Console.Write("Description: ");
-            string newDescription = Console.ReadLine();
+            string newDescription = Console.ReadLine() + "";
             if (!string.IsNullOrEmpty(newDescription))
             {
                 movie.Description = newDescription;
@@ -760,7 +760,7 @@ class MovieLogic
         Console.WriteLine("Enter the movie details:");
 
         Console.Write("Title: ");
-        string title = Console.ReadLine();
+        string title = Console.ReadLine() + "";
 
         MovieModel? existingMovie = movies.FirstOrDefault(movie => movie.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
 
@@ -776,13 +776,13 @@ class MovieLogic
         }
 
         Console.Write("Genre: ");
-        string genre = Console.ReadLine();
+        string genre = Console.ReadLine() + "";
 
         double rating;
         while (true)
         {
             Console.Write("Rating: ");
-            string ratingInput = Console.ReadLine();
+            string ratingInput = Console.ReadLine() + "";
 
             if (double.TryParse(ratingInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
             {
@@ -793,13 +793,13 @@ class MovieLogic
         }
 
         Console.Write("Description: ");
-        string description = Console.ReadLine();
+        string description = Console.ReadLine() + "";
 
         int age;
         while (true)
         {
             Console.Write("Age: ");
-            string ageInput = Console.ReadLine();
+            string ageInput = Console.ReadLine() + "";
 
             if (int.TryParse(ageInput, out age) && age >= 0)
             {

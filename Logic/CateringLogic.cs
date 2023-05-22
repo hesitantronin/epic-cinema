@@ -122,7 +122,7 @@ class CateringLogic
         if (edit == 1)
         {
             Console.Write("New name: ");
-            string newName = Console.ReadLine();
+            string newName = Console.ReadLine() + "";
             if (!string.IsNullOrEmpty(newName))
             {
                 foodItem.Name = newName;
@@ -131,7 +131,7 @@ class CateringLogic
         else if (edit == 2)
         {
             Console.Write("New type: ");
-            string newType = Console.ReadLine();
+            string newType = Console.ReadLine() + "";
             if (!string.IsNullOrEmpty(newType))
             {
                 foodItem.Type = newType;
@@ -143,7 +143,7 @@ class CateringLogic
             while (true)
             {
                 Console.Write($"New price (old price was {foodItem.Price}): ");
-                string priceInput = Console.ReadLine();
+                string priceInput = Console.ReadLine() + "";
 
                 if (double.TryParse(priceInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out price))
                 {
@@ -157,7 +157,7 @@ class CateringLogic
         else if (edit == 4)
         {
             Console.Write("New description: ");
-            string newDescription = Console.ReadLine();
+            string newDescription = Console.ReadLine() + "";
             if (!string.IsNullOrEmpty(newDescription))
             {
                 foodItem.Description = newDescription;
@@ -583,7 +583,7 @@ class CateringLogic
         List<CateringModel> foods = CateringAccess.LoadAll();
         Console.WriteLine("Enter the food details:");
         Console.Write("Name: ");
-        string name = Console.ReadLine();
+        string name = Console.ReadLine() + "";
         CateringModel? existingCatering = foods.FirstOrDefault(food => food.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         if (existingCatering != null)
@@ -597,13 +597,13 @@ class CateringLogic
             }
         }
         Console.Write("Type: ");
-        string type = Console.ReadLine();
+        string type = Console.ReadLine() + "";
 
         double price;
         while (true)
         {
             Console.Write("Price: ");
-            string priceInput = Console.ReadLine();
+            string priceInput = Console.ReadLine() + "";
 
             if (double.TryParse(priceInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out price))
             {
@@ -613,7 +613,7 @@ class CateringLogic
             Console.WriteLine("Invalid Price. Please enter a valid decimal number.");
         }
         Console.Write("Description: ");
-        string description = Console.ReadLine();
+        string description = Console.ReadLine() + "";
         int maxId = foods.Count > 0 ? foods.Max(food => food.Id) : 0;
 
         if (existingCatering != null)
