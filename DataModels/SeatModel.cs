@@ -28,15 +28,15 @@ class SeatModel
                 break;
 
             case SeatType.Loveseat:
-                Price = 12.5;
+                Price = 5.0;
                 break;
 
             case SeatType.NormalSeat:
-                Price = 8.50;
+                Price = 0.0;
                 break;
 
             case SeatType.VIPseat:
-                Price = 20.0;
+                Price = 7.50;
                 break;
 
             case SeatType.SelectedSeat:

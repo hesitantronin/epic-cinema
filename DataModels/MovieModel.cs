@@ -26,6 +26,9 @@ class MovieModel
     [JsonPropertyName("publish_date")]
     public DateTime PublishDate { get; set; }
 
+    [JsonPropertyName("movie_price")]
+    public double MoviePrice { get; set; }
+
 
     public MovieModel(int id, string title, string genre, double rating, string description, int age, DateTime viewingdate, DateTime publishdate)
     {
@@ -37,6 +40,7 @@ class MovieModel
         Age = age;
         ViewingDate = viewingdate;
         PublishDate = publishdate;
+        MoviePrice = 10.99;
     }
 }
 
