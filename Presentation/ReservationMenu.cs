@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 
 class ReservationMenu
 {
@@ -14,7 +15,7 @@ class ReservationMenu
             Console.Clear();
             OptionsMenu.Logo("registration");
             Console.WriteLine("In order to finalize your reservation, please create an account.");
-            
+
             Console.CursorVisible = true;
             string email = "";
 
@@ -86,7 +87,7 @@ class ReservationMenu
                 {
                     List<string> CList = new List<string>() { "Continue" };
                     int option = OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, one capital letter and one special character", false, true);
-                
+
                     if (option == 2)
                     {
                         return;
@@ -105,10 +106,10 @@ class ReservationMenu
             AccountsLogic.CurrentAccount.FullName = fullName;
 
             // Since they're no longer a guest, their account type is also switched from guest to customer
-            AccountsLogic.CurrentAccount.Type = AccountModel.AccountType.CUSTOMER; 
+            AccountsLogic.CurrentAccount.Type = AccountModel.AccountType.CUSTOMER;
             accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
         }
-        
+
         AccountsLogic accountslogic = new AccountsLogic();
 
         List<string> ReturnList = new List<string>()
@@ -154,12 +155,12 @@ class ReservationMenu
 
         Console.WriteLine($"{seatReservations}");
         Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate}");
-        
+
 
         // A customer doesn't have to reserve catering items, so this checks whether or not they have
         if (AccountsLogic.CurrentAccount.CateringReservation.Count > 0)
         {
-            
+
             Console.WriteLine($"CATERING:");
 
             string menuReservations = "";
@@ -190,7 +191,24 @@ class ReservationMenu
         }
 
         Console.WriteLine($"\nTOTAL PRICE: {finalPrice} euros");
-    
+
+        // Update the values in the CSV to show that the seats have been booked
+        string movieTitle = Regex.Replace(AccountsLogic.CurrentAccount.Movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
+        string[] movieViewingDate1 = AccountsLogic.CurrentAccount.Movie.ViewingDate.ToString().Split(" ");
+        string movieViewingDate2 = string.Join(" ", movieViewingDate1[1].Replace(":", "_"));
+        string movieViewingDate3 = string.Join(" ", movieViewingDate1[0].Replace("/", "_"));
+
+        string pathToCsv = $@"DataSources/MovieAuditoriums/{movieTitle}/ID_{AccountsLogic.CurrentAccount.Movie.Id}_{movieTitle}_{movieViewingDate3 + "_" + movieViewingDate2}.csv";
+
+        string[][] auditorium = SeatAccess.LoadAuditorium(pathToCsv);
+
+        foreach (SeatModel seat in AccountsLogic.CurrentAccount.SeatReservation)
+        {
+            SeatAccess.UpdateSeatValue(auditorium, seat.Id, "0");
+        }
+
+        SeatAccess.WriteToCSV(auditorium, pathToCsv);
+
         // Temporary end of the program? without displaying anything it automatically goes back to another menu (seatMenu/movieMenu/cateringMenu) so this is to prevent that
         // if you press enter itll still go to a menu though
         List<string> emptyList = new List<string>(){};
