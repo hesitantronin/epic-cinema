@@ -26,7 +26,6 @@ class EmployeeMenu
             }
             else if (option == 2)
             {
-                Console.Clear();
                 food.EmployeeCatering();
             }
             if (option == 3)

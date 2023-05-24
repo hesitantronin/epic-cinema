@@ -123,6 +123,8 @@ static class OptionsMenu
 
     static public void Logo(string title = "")
     {
+        Console.Clear();
+        
         // prints logo in red
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine($@"      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.  ™");
@@ -204,13 +206,13 @@ static class OptionsMenu
         Console.WriteLine("\nOpening Hours");
         Console.ResetColor();
 
-        Console.WriteLine("Monday: Closed");
-        Console.WriteLine("Tuesday: 3:00 to 3:00.0001");
-        Console.WriteLine("Wednesday: Closed");
-        Console.WriteLine("Thursday: Closed");
-        Console.WriteLine("Friday: Closed");
-        Console.WriteLine("Saturday: Closed");
-        Console.WriteLine("Sunday: Closed");
+        Console.WriteLine("Monday: 9:00 to 23:00");
+        Console.WriteLine("Tuesday: 9:00 to 23:00");
+        Console.WriteLine("Wednesday: 9:00 to 23:00");
+        Console.WriteLine("Thursday: 9:00 to 23:00");
+        Console.WriteLine("Friday: 9:00 to 23:00");
+        Console.WriteLine("Saturday: 12:00 to 24:00");
+        Console.WriteLine("Sunday: 13:00 to 22:00");
 
         // prints a fake return option hehe
         Console.WriteLine("\n > \u001b[32mReturn\u001b[0m");
@@ -350,7 +352,7 @@ static class OptionsMenu
                 Console.ResetColor();
 
                 // prints the description
-                Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}\n");
+                Console.WriteLine($"    Viewing Date: {list[i].ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n    Base Price: €{list[i].MoviePrice}\n");
             }
 
             returncount = 1;
@@ -442,8 +444,8 @@ static class OptionsMenu
                 Console.ResetColor();
 
                 // prints the description
-                Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}\n");
-                Console.WriteLine($"    Price:\n    ${(list[i].Price)}\n");
+                Console.WriteLine($"    Type: {list[i].Type}");
+                Console.WriteLine($"    Price: ${(list[i].Price)}\n");
             }
 
             returncount = 1;

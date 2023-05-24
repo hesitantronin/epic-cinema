@@ -30,7 +30,7 @@ class MovieModel
     public double MoviePrice { get; set; }
 
 
-    public MovieModel(int id, string title, string genre, double rating, string description, int age, DateTime viewingdate, DateTime publishdate)
+    public MovieModel(int id, string title, string genre, double rating, string description, int age, DateTime viewingdate, DateTime publishdate, double movieprice = 10.99)
     {
         Id = id;
         Title = title;
@@ -40,7 +40,7 @@ class MovieModel
         Age = age;
         ViewingDate = viewingdate;
         PublishDate = publishdate;
-        MoviePrice = 10.99;
+        MoviePrice = movieprice;
     }
 }
 

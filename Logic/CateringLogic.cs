@@ -14,7 +14,11 @@ class CateringLogic
     {
         _menu = CateringAccess.LoadAll();
     }
-
+    public CateringModel? GetById(int id)
+    {
+        // returns the movie data that matches the id
+        return _menu.Find(i => i.Id == id);
+    }
     public void PrintMenu(List<CateringModel> FoodList, bool IsEmployee = false, bool IsEdit = false)
     {
         while (true)
@@ -107,88 +111,129 @@ class CateringLogic
         }
     }
 
-    public static void EditCatering(CateringModel foodItem)
+    public void EditCatering(CateringModel foodItem)
     {
-        Console.Clear();
+        bool remove = false;
 
-        // shows the banner and title
-        OptionsMenu.Logo(foodItem.Name);
-        List<string> foodInfoList = new List<string>();
-        foodInfoList.Add($"Name: {foodItem.Name}");
-        foodInfoList.Add($"Type: {foodItem.Type}");
-        foodInfoList.Add($"Price: {foodItem.Price}");
-        foodInfoList.Add($"Description: {foodItem.Description}");
-        int edit = OptionsMenu.DisplaySystem(foodInfoList, "Edit food item", "Use ⬆ and ⬇ to navigate and press Enter to select what you would like to edit:", true, true);
-        if (edit == 1)
+        while (true)
         {
-            Console.Write("New name: ");
-            string newName = Console.ReadLine() + "";
-            if (!string.IsNullOrEmpty(newName))
-            {
-                foodItem.Name = newName;
-            }
-        }
-        else if (edit == 2)
-        {
-            Console.Write("New type: ");
-            string newType = Console.ReadLine() + "";
-            if (!string.IsNullOrEmpty(newType))
-            {
-                foodItem.Type = newType;
-            }
-        }
-        else if (edit == 3)
-        {
-            double price;
-            while (true)
-            {
-                Console.Write($"New price (old price was {foodItem.Price}): ");
-                string priceInput = Console.ReadLine() + "";
+            Console.Clear();
 
-                if (double.TryParse(priceInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out price))
+            // shows the banner and title
+            OptionsMenu.Logo(foodItem.Name);
+            List<string> foodInfoList = new List<string>();
+            foodInfoList.Add($"Name: {foodItem.Name}");
+            foodInfoList.Add($"Type: {foodItem.Type}");
+            foodInfoList.Add($"Price: {foodItem.Price}");
+            foodInfoList.Add($"Description: {foodItem.Description}");
+            foodInfoList.Add("Remove food item");
+            int edit = OptionsMenu.DisplaySystem(foodInfoList, "Edit food item", "Select which field to edit, or choose to delete this item.", true, true);
+            if (edit == 1)
+            {
+                Console.Write("New name: ");
+                string newName = Console.ReadLine() + "";
+                if (!string.IsNullOrEmpty(newName))
                 {
-                    foodItem.Price = price;
+                    foodItem.Name = newName;
+                }
+                break;
+            }
+            else if (edit == 2)
+            {
+                Console.Write("New type: ");
+                string newType = Console.ReadLine() + "";
+                if (!string.IsNullOrEmpty(newType))
+                {
+                    foodItem.Type = newType;
+                }
+                break;
+            }
+            else if (edit == 3)
+            {
+                double price;
+                while (true)
+                {
+                    Console.Write($"New price (old price was {foodItem.Price}): ");
+                    string priceInput = Console.ReadLine() + "";
+
+                    if (double.TryParse(priceInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out price))
+                    {
+                        foodItem.Price = price;
+                        break;
+                    }
+
+                    Console.WriteLine("Invalid price. Please enter a valid decimal number.");
+                }
+                break;
+            }
+            else if (edit == 4)
+            {
+                Console.Write("New description: ");
+                string newDescription = Console.ReadLine() + "";
+                if (!string.IsNullOrEmpty(newDescription))
+                {
+                    foodItem.Description = newDescription;
+                }
+                break;
+            }
+            else if (edit == 5)
+            {
+                int removeOptions = OptionsMenu.DisplaySystem(YN, "confirm", "Are you sure you want to delete this item?", true, false);
+                if (removeOptions == 1)
+                {
+                    remove = true;
                     break;
                 }
-
-                Console.WriteLine("Invalid price. Please enter a valid decimal number.");
             }
-        }
-        else if (edit == 4)
-        {
-            Console.Write("New description: ");
-            string newDescription = Console.ReadLine() + "";
-            if (!string.IsNullOrEmpty(newDescription))
+            else
             {
-                foodItem.Description = newDescription;
+                return;
             }
         }
-        else
-        {
-            return;
-        }
-        // Load all catering from the JSON file
-        List<CateringModel> catering = CateringAccess.LoadAll();
+        
 
         // Find the index of the movie to update
-        int index = catering.FindIndex(c => c.Id == foodItem.Id);
+        int index = _menu.FindIndex(c => c.Id == foodItem.Id);
 
-        if (index != -1)
+        if (!remove)
         {
+            Console.CursorVisible = false;
+
             // Update the movie in the list
-            catering[index] = foodItem;
+            _menu[index] = foodItem;
 
             // Write the updated movie list to the JSON file
-            CateringAccess.WriteAll(catering);
-            Console.Clear();
-            Console.WriteLine("Menu updated successfully.\n\n Press enter to continue.");
+            CateringAccess.WriteAll(_menu);
+            
+            OptionsMenu.Logo("menu updated");
+            Console.WriteLine("Menu updated successfully.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
             Console.ReadLine();
+
+            Console.CursorVisible = true;
         }
         else
         {
-            Console.Clear();
-            Console.WriteLine("Food item not found.\n\n Press enter to continue.");
+            Console.CursorVisible = false;
+
+            _menu.Remove(_menu[index]);
+
+            CateringAccess.WriteAll(_menu);
+            
+            OptionsMenu.Logo("item deleted");
+            Console.WriteLine("Item deleted successfully.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
             Console.ReadLine();
+
+            Console.CursorVisible = true;
         }
     }
     public void PrintMenu() => PrintMenu(_menu);
@@ -360,17 +405,16 @@ class CateringLogic
         string filename;
         do
         {
-            Console.Clear();
-            Console.WriteLine("Please save the JSON file in the DataSources folder.\n\n");
+            OptionsMenu.Logo("json item adding");
+            Console.WriteLine("Please save the JSON file in the DataSources folder.");
             Console.WriteLine("Enter the JSON file name without '.json': ");
             string jsonFile = Console.ReadLine() + "";
             filename = @$"DataSources\{jsonFile}.json";
 
             if (!File.Exists(filename))
             {
-                Console.Clear();
                 List<string> EList = new List<string>() { "Continue" };
-                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile {jsonFile} not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.json'", false, true);
+                int option = OptionsMenu.DisplaySystem(EList, "file not found", $"File '{jsonFile}.json' not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.json'", true, true);
                 if (option == 2)
                 {
                     return;
@@ -418,19 +462,28 @@ class CateringLogic
         // Display existing movies message
         if (existingFoods.Count > 0)
         {
+            OptionsMenu.Logo("double items");
             Console.WriteLine("The following food items already exist and were not added:\n");
             foreach (CateringModel existingFood in existingFoods)
             {
                 Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: {existingFood.Price}\n");
             }
-            Console.WriteLine("\nPress enter to continue");
-            Console.ReadLine();
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine(); 
         }
         else
         {
-            Console.Clear();
-            Console.WriteLine("Food items have been succesfully added.\n\nPress enter to continue");
-            Console.ReadLine();
+            OptionsMenu.Logo("Items added");
+            Console.WriteLine("Food items have been succesfully added.");
+           
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();         
         }
     }
 
@@ -461,8 +514,8 @@ class CateringLogic
         string filename;
         do
         {
-            Console.Clear();
-            Console.WriteLine("Please save the CSV file in the DataSources folder.\n\n");
+            OptionsMenu.Logo("CSV item adding");
+            Console.WriteLine("Please save the CSV file in the DataSources folder.");
             Console.WriteLine("Enter the CSV file name without '.csv': ");
             string csvFile = Console.ReadLine() + "";
             filename = @$"DataSources\{csvFile}.csv";
@@ -471,7 +524,7 @@ class CateringLogic
             {
                 Console.Clear();
                 List<string> EList = new List<string>() { "Continue" };
-                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile {csvFile} not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.csv'", false, true);
+                int option = OptionsMenu.DisplaySystem(EList, "file not found", $"File '{csvFile}.csv' not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.csv'");
                 if (option == 2)
                 {
                     return;
@@ -529,19 +582,30 @@ class CateringLogic
         // Display existing movies message
         if (existingFoods.Count > 0)
         {
+            OptionsMenu.Logo("double items");
+
             Console.WriteLine("The following food items already exist and were not added:\n");
             foreach (CateringModel existingFood in existingFoods)
             {
                 Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: {existingFood.Price}");
             }
             Console.WriteLine("\nPress enter to continue");
-            Console.ReadLine();
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();  
         }
         else
         {
-            Console.Clear();
+            OptionsMenu.Logo("Items added");
+
             Console.WriteLine("Food items have been succesfully added.\n\nPress enter to continue");
-            Console.ReadLine();
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();          
         }
     }
     public List<CateringModel> SortBy(string input, bool ascending)
@@ -595,28 +659,43 @@ class CateringLogic
 
     public static void AddOrUpdateFood()
     {
+        OptionsMenu.Logo("add food item");
+        Console.WriteLine("Enter the food details.");
+
         List<CateringModel> foods = CateringAccess.LoadAll();
-        Console.WriteLine("Enter the food details:");
         Console.Write("Name: ");
         string name = Console.ReadLine() + "";
         CateringModel? existingCatering = foods.FirstOrDefault(food => food.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         if (existingCatering != null)
         {
-            int YNQ = OptionsMenu.DisplaySystem(YN, "Food item already exists", $"Food item with the Name '{name}' already exists, do you want to update the details instead?", true, false);
+            int YNQ = OptionsMenu.DisplaySystem(YN, "Food item already exists", $"Food item with the name '{name}' already exists, do you want to update the details instead?", true, false);
             if (YNQ == 2)
             {
-                Console.WriteLine("Update operation cancelled, press enter to continue.");
+                OptionsMenu.Logo("Canceled");
+                Console.WriteLine("Update operation cancelled.");
+
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
                 Console.ReadLine();
                 return;
             }
         }
+
+        OptionsMenu.Logo("add food item");
+        Console.WriteLine("Enter the food details.");
+
         Console.Write("Type: ");
         string type = Console.ReadLine() + "";
 
         double price;
         while (true)
         {
+            OptionsMenu.Logo("add food item");
+            Console.WriteLine("Enter the food details.");
+
             Console.Write("Price: ");
             string priceInput = Console.ReadLine() + "";
 
@@ -626,7 +705,16 @@ class CateringLogic
             }
 
             Console.WriteLine("Invalid Price. Please enter a valid decimal number.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
         }
+        OptionsMenu.Logo("add food item");
+        Console.WriteLine("Enter the food details.");
+
         Console.Write("Description: ");
         string description = Console.ReadLine() + "";
         int maxId = foods.Count > 0 ? foods.Max(food => food.Id) : 0;
@@ -639,9 +727,14 @@ class CateringLogic
             existingCatering.Price = price;
             existingCatering.Description = description;
 
-            Console.Clear();
-            Console.WriteLine("Menu updated successfully!\n\nPress enter to continue.");
-            Console.ReadLine();
+            OptionsMenu.Logo("menu updated");
+            Console.WriteLine("Menu updated successfully!");
+
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();        
         }
         else
         {
@@ -649,69 +742,74 @@ class CateringLogic
             CateringModel newFood = new CateringModel(++maxId, name, type, price, description);
             foods.Add(newFood);
 
-            Console.Clear();
-            Console.WriteLine("Food item added successfully!\n\nPress enter to continue.");
+            OptionsMenu.Logo("Item added");
+            Console.WriteLine("Food item added successfully!");
+
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
             Console.ReadLine();
         }
         // Save the updated movies list
         CateringAccess.WriteAll(foods);
     }
-    private static void RemoveFood()
-    {
-        List<CateringModel> foods = CateringAccess.LoadAll();
 
-        // Retrieve and display the movies
-        List<string> foodList = new List<string>();
-        foreach (CateringModel food in foods)
-        {
-            string FoodInfo = $"ID: {food.Id}\nName: {food.Name}\nType: {food.Type}\nDescription: {food.Description}\nPrice: {food.Price}\n";
-            foodList.Add(FoodInfo);
+    // THE FUNCTION BELOW IS NO LONGER NEEDED
+    // private static void RemoveFood()
+    // {
+    //     List<CateringModel> foods = CateringAccess.LoadAll();
 
-        }
+    //     // Retrieve and display the movies
+    //     List<string> foodList = new List<string>();
+    //     foreach (CateringModel food in foods)
+    //     {
+    //         string FoodInfo = $"ID: {food.Id}\nName: {food.Name}\nType: {food.Type}\nDescription: {food.Description}\nPrice: {food.Price}\n";
+    //         foodList.Add(FoodInfo);
 
-        int option = OptionsMenu.DisplaySystem(foodList, "Current menu", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected food item:", true, true);
+    //     }
 
-        if (option >= 1 && option <= foodList.Count)
-        {
-            // Get the index of the selected option (adjusted for 0-based indexing)
-            int selectedOptionIndex = option - 1;
+    //     int option = OptionsMenu.DisplaySystem(foodList, "Current menu", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected food item:", true, true);
 
-            // Extract the movie ID from the selected option string
-            string selectedOption = foodList[selectedOptionIndex];
-            int startIndex = selectedOption.IndexOf("ID: ") + 4;
-            int endIndex = selectedOption.IndexOf('\n', startIndex);
-            string idString = selectedOption.Substring(startIndex, endIndex - startIndex).Trim();
+    //     if (option >= 1 && option <= foodList.Count)
+    //     {
+    //         // Get the index of the selected option (adjusted for 0-based indexing)
+    //         int selectedOptionIndex = option - 1;
 
-            int idToRemove;
-            bool isValidId = int.TryParse(idString, out idToRemove);
+    //         // Extract the movie ID from the selected option string
+    //         string selectedOption = foodList[selectedOptionIndex];
+    //         int startIndex = selectedOption.IndexOf("ID: ") + 4;
+    //         int endIndex = selectedOption.IndexOf('\n', startIndex);
+    //         string idString = selectedOption.Substring(startIndex, endIndex - startIndex).Trim();
 
-            if (isValidId)
-            {
-                // Remove the movie with the specified ID
-                CateringModel? foodToRemove = foods.Find(food => food.Id == idToRemove);
-                if (foodToRemove != null)
-                {
-                    foods.Remove(foodToRemove);
-                    CateringAccess.WriteAll(foods);
-                    Console.WriteLine("Food item removed successfully.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid ID found for the selected Food item.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Invalid option selected.");
-        }
-    }
+    //         int idToRemove;
+    //         bool isValidId = int.TryParse(idString, out idToRemove);
+
+    //         if (isValidId)
+    //         {
+    //             // Remove the movie with the specified ID
+    //             CateringModel? foodToRemove = foods.Find(food => food.Id == idToRemove);
+    //             if (foodToRemove != null)
+    //             {
+    //                 foods.Remove(foodToRemove);
+    //                 CateringAccess.WriteAll(foods);
+    //                 Console.WriteLine("Food item removed successfully.");
+    //             }
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("Invalid ID found for the selected Food item.");
+    //         }
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Invalid option selected.");
+    //     }
+    // }
     protected static List<string> FoodEditorList = new List<string>()
     {
-        "Current menu",
-        "Add food item",
-        "Edit food item",
-        "Remove item"
+        "Add food item(s)",
+        "Edit/Remove food item(s)"
     };
     protected static List<string> YN = new List<string>()
     {
@@ -735,20 +833,15 @@ class CateringLogic
         while (true)
         {
             Console.Clear();
-            int MenuOptions = OptionsMenu.DisplaySystem(FoodEditorList, "Catering", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
+            int MenuOptions = OptionsMenu.DisplaySystem(FoodEditorList, "edit Catering", "Select what you want to do.", true, true);
+
             if (MenuOptions == 1)
-            {
-                LoadCatering();
-                PrintMenu(_menu, true, true);
-            }
-            else if (MenuOptions == 2)
             {
                 Console.Clear();
                 int addOptions = OptionsMenu.DisplaySystem(AddFoodList, "Add Food items", "To add food items by file, please save the json or csv file in the DataSources folder", true, true);
 
                 if (addOptions == 1)
                 {
-                    Console.Clear();
                     AddOrUpdateFood();
                 }
                 else if (addOptions == 2)
@@ -762,27 +855,12 @@ class CateringLogic
                     AddMultipleFoodCSV();
                 }
             }
-            else if (MenuOptions == 3)
+            else if (MenuOptions == 2)
             {
-                Console.Clear();
                 LoadCatering();
                 PrintMenu(_menu, true);
             }
-            else if (MenuOptions == 4)
-            {
-                int removeOptions = OptionsMenu.DisplaySystem(RemoveList, "Remove food items", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
-                if (removeOptions == 1)
-                {
-                    RemoveFood();
-                }
-                else if (removeOptions == 2)
-                {
-                    Console.Clear();
-                    LoadCatering();
-                    RemoveCateringID();
-                }
-            }
-            else if (MenuOptions == 5)
+            else if (MenuOptions == 3)
             {
                 break;
             }

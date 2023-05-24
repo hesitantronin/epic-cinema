@@ -362,9 +362,24 @@ class MovieLogic
             Console.WriteLine($" {movie.Age}\n");
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Release Date");
+            Console.ResetColor();
+            Console.WriteLine($" {movie.PublishDate.ToString("MMMM yyyy")}\n");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine($"Description");
             Console.ResetColor();
             Console.WriteLine($" {MovieLogic.SpliceText(movie.Description, " ")}\n");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Viewing Date");
+            Console.ResetColor();
+            Console.WriteLine($" {movie.ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n");
+            
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Base Price");
+            Console.ResetColor();
+            Console.WriteLine($" {movie.MoviePrice}\n");
 
             // list of options that will be displayed
             List<string> ReturnList = new List<string>()
