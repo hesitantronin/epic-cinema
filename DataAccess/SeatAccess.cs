@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 static class SeatAccess
 {
@@ -83,6 +84,23 @@ static class SeatAccess
         }
     }
 
+    public static Dictionary<int, (string, double)> LoadGlobalSeatData()
+    {
+        Dictionary<int, (string, double)> SeatData = new();
+        string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"DataSources/seatPrices.json"));
+
+        // Read the JSON file into a string
+        string json = File.ReadAllText(path);
+
+        // Deserialize the JSON string into a dictionary
+        if (!string.IsNullOrEmpty(json))
+        {
+            return JsonConvert.DeserializeObject<Dictionary<int, (string, double)>>(json);
+        } 
+
+        else return new Dictionary<int, (string, double)>();
+    }
+    
     public static string[][] LoadAuditorium(string auditoriumPath)
     {
         string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, auditoriumPath));

@@ -55,7 +55,7 @@ static class SeatLogic
             Console.Clear();
             OptionsMenu.Logo("Seat selection");
             SeatAccess.PrintAuditorium(auditoriumArray);
-            SeatsMenu.SeatLegend();
+            SeatsMenu.SeatLegend(movie);
 
             // Ask user for id of the seat
             Console.WriteLine($"Type in the ID of the seat you want to {(isEdit ? "edit" : (removingMode ? "remove from your selection" : "select"))} (I.E. - A6)");
@@ -96,7 +96,7 @@ static class SeatLogic
                         Console.Clear();
                         OptionsMenu.Logo("Seat selection");
                         SeatAccess.PrintAuditorium(auditoriumArray);
-                        SeatsMenu.SeatLegend();
+                        SeatsMenu.SeatLegend(movie);
                         
                         // Prepare option for use in checking if there are any seats selected
                         int optionInLoop = 0;
@@ -208,7 +208,7 @@ static class SeatLogic
         OptionsMenu.Logo("Seat selection");
 
         // Going to food reservations and saving the reserved seats/movie to the current account
-        if (selectedChairs != null && AccountsLogic.CurrentAccount != null)
+        if (AccountsLogic.CurrentAccount != null)
         {
             List<SeatModel> finalSeatSelection = new();
 
@@ -218,7 +218,6 @@ static class SeatLogic
                 finalSeatSelection.Add(new SeatModel(ID, Convert.ToInt32(SeatAccess.FindDefaultSeatValueArray(ID))));
             }
 
-
             AccountsLogic accountslogic = new AccountsLogic();
             AccountsLogic.CurrentAccount.Movie = movie;
             AccountsLogic.CurrentAccount.SeatReservation = finalSeatSelection;
@@ -227,7 +226,6 @@ static class SeatLogic
 
         if (!isEdit)
         {
-            //SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
             List<string> ReturnList = new List<string>
             {
                 "Yes",

@@ -44,6 +44,10 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 6)
             {
+                EmployeeMenu.EditGlobalSeatData();
+            }
+            else if (option == 7)
+            {
                 break;
             }
             else

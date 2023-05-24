@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Newtonsoft.Json;
 class SeatModel
 {
     public string Id { get; set; }
@@ -16,27 +17,41 @@ class SeatModel
         Id = id;
         SeatTypeValue = (SeatType)seatType;
         SeatTypeName = GetSeatTypeName();
-        Price = GetPrice();
+        GetData();
     }
 
-    public double GetPrice()
+    public double GetData()
     {
+        var SeatData = SeatAccess.LoadGlobalSeatData();
+
         switch (SeatTypeValue)
         {
             case SeatType.OccupiedSeat:
                 Price = 0.0;
                 break;
 
-            case SeatType.Loveseat:
-                Price = 5.0;
+            case SeatType.SeatType1:
+                var seatType1Data = SeatData.FirstOrDefault(x => x.Key == 1);
+
+                Price = seatType1Data.Value.Item2;
+                SeatTypeName = seatType1Data.Value.Item1;
+
                 break;
 
-            case SeatType.NormalSeat:
-                Price = 0.0;
+            case SeatType.SeatType2:
+                var seatType2Data = SeatData.FirstOrDefault(x => x.Key == 2);
+                
+                Price = seatType2Data.Value.Item2;
+                SeatTypeName = seatType2Data.Value.Item1;
+                
                 break;
 
-            case SeatType.VIPseat:
-                Price = 7.50;
+            case SeatType.SeatType3:
+                var seatType3Data = SeatData.FirstOrDefault(x => x.Key == 3);
+
+                Price = seatType3Data.Value.Item2;
+                SeatTypeName = seatType3Data.Value.Item1;
+        
                 break;
 
             case SeatType.SelectedSeat:
