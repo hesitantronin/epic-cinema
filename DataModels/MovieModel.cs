@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-class MovieModel
+public class MovieModel
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }

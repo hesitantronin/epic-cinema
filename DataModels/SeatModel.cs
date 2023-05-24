@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using Newtonsoft.Json;
-class SeatModel
+public class SeatModel
 {
     public string Id { get; set; }
     public double Price { get; set; }

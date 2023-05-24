@@ -16,10 +16,10 @@ class CateringAccess
             return new List<CateringModel>();
     }
 
-    public static void WriteAll(List<CateringModel> movies)
+    public static void WriteAll(List<CateringModel> menu)
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
-        string json = JsonSerializer.Serialize(movies, options);
+        string json = JsonSerializer.Serialize(menu, options);
         File.WriteAllText(path, json);
     }
 }

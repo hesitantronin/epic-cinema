@@ -187,14 +187,41 @@ class ReservationMenu
         }
 
         Random random = new Random();
-        Console.WriteLine($"RESERVATION CODE: {random.Next(1000000, 9999999)}");
+        int resCode = random.Next(1000000, 9999999);
+        Console.WriteLine($"RESERVATION CODE: {resCode}");
 
         if (AccountsLogic.CurrentAccount.AccessibilityRequest != "")
         {
             Console.WriteLine($"\nREQUEST: {AccountsLogic.CurrentAccount.AccessibilityRequest}");
         }
 
-        Console.WriteLine($"\nTOTAL PRICE: {finalPrice} euros");
+        Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
+
+
+
+        // ADD RESERVATION TO JSON FILE
+
+        // Get reservations already present in file
+        List<ReservationsModel> originalReservations = ReservationsAccess.LoadAll();
+        // Get maximum ID from the original reservations
+        int maxId = 0;
+        try
+        {
+            maxId = originalReservations.Max(reservation => reservation.Id);
+        }
+        catch (System.InvalidOperationException) // If the reservations file has no entries yet, there will be no max (no ids), so this is to circumvent that
+        {
+            maxId = 0;
+        }
+
+        // Update reservations.json to include this new reservation
+        ReservationsLogic reservationsLogic = new ReservationsLogic();
+        ReservationsModel newReservation = new ReservationsModel(maxId + 1, AccountsLogic.CurrentAccount.EmailAddress, AccountsLogic.CurrentAccount.FullName, AccountsLogic.CurrentAccount.Movie, AccountsLogic.CurrentAccount.SeatReservation, AccountsLogic.CurrentAccount.CateringReservation, AccountsLogic.CurrentAccount.AccessibilityRequest, AccountsLogic.CurrentAccount.Movie.ViewingDate, resCode, System.Math.Round(finalPrice, 2));
+        reservationsLogic.UpdateList(newReservation);
+
+
+
+        // UPDATE SEATS CSV
 
         // Update the values in the CSV to show that the seats have been booked
         string movieTitle = Regex.Replace(AccountsLogic.CurrentAccount.Movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
@@ -212,6 +239,12 @@ class ReservationMenu
         }
 
         SeatAccess.WriteToCSV(auditorium, pathToCsv);
+
+
+
+        // Reservation data is temporarily stored in a users account. After the reservation is finalized, the data is removed from their account
+        // This way, they can create multiple reservations
+        reservationsLogic.RemoveReservationFromAccount();
 
         // Temporary end of the program? without displaying anything it automatically goes back to another menu (seatMenu/movieMenu/cateringMenu) so this is to prevent that
         // if you press enter itll still go to a menu though
