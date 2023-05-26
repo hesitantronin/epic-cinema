@@ -151,7 +151,7 @@ class MovieLogic
                         }
                         else if (SeatEdit)
                         {
-                            SeatLogic.SeatSelection(subList[option - 1], true);
+                            SeatLogic.SeatSelectionEdit(subList[option - 1]);
                         }
                         else
                         {
@@ -426,7 +426,7 @@ class MovieLogic
             else if (edit == 9)
             {
                 seatEdit = true;
-                SeatLogic.SeatSelection(movie, true);
+                SeatLogic.SeatSelectionEdit(movie);
             }
             else if (edit == 10)
             {

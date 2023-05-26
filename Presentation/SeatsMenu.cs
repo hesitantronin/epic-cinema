@@ -32,4 +32,24 @@ static class SeatsMenu
         Console.ResetColor();
         Console.Write($" - SELECTED SEATS\n\n");
     }
+
+    public static void SeatLegendDefault()
+    {
+        Dictionary<int, (string, double)> seatdata = SeatAccess.LoadGlobalSeatData();
+
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
+        Console.Write("■");
+        Console.ResetColor();
+        Console.Write($" - {seatdata[1].Item1.ToUpper()}: + €{seatdata[1].Item2}\n");
+
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("■");
+        Console.ResetColor();
+        Console.Write($" - {seatdata[2].Item1.ToUpper()}: + €{seatdata[2].Item2}\n");
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.Write("■");
+        Console.ResetColor();
+        Console.Write($" - {seatdata[3].Item1.ToUpper()}: + €{seatdata[3].Item2}\n");
+    }
 }
