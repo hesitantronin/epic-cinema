@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": 1,
+    "emailAddress": "Ally@.",
+    "fullName": "Ally",
+    "movie": {
+      "id": 7,
+      "title": "Scream",
+      "genre": "Horror",
+      "rating": 3.3,
+      "description": "everybody screams",
+      "age": 5,
+      "viewing_date": "2023-12-23T16:30:00",
+      "publish_date": "2004-12-02T13:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "C14",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "SeatType1"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-12-23T16:30:00",
+    "reservationCode": 7231844,
+    "totalPrice": 10.99,
+    "cancelled": false
+  }
+]

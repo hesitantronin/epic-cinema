@@ -129,17 +129,7 @@ static class OptionsMenu
         Console.Clear();
         
         // prints logo in red
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine($@"      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.  ™");
-        Console.WriteLine($@"   ,-.--` , \  .-`.' ,`.  /==/_ /.' .' -   \         .' .' -   \  /==/_ //==/ \  .-._  ,-.--` , \ .-._ .'=.'\  .--.'  \");
-        Console.WriteLine($@"  |==|-  _.-` /==/, -   \|==|, |/==/  ,  ,-'        /==/  ,  ,-' |==|, | |==|, \/ /, /|==|-  _.-`/==/ \|==|  | \==\-/\ \");
-        Console.WriteLine($@"  |==|   `.-.|==| _ .=. ||==|  ||==|-   |  .        |==|-   |  . |==|  | |==|-  \|  | |==|   `.-.|==|,|  / - | /==/-|_\ |");
-        Console.WriteLine($@" /==/_ ,    /|==| , '=',||==|- ||==|_   `-' \       |==|_   `-' \|==|- | |==| ,  | -|/==/_ ,    /|==|  \/  , | \==\,   - \");
-        Console.WriteLine($@" |==|    .-' |==|-  '..' |==| ,||==|   _  , |       |==|   _  , ||==| ,| |==| -   _ ||==|    .-' |==|- ,   _ | /==/ -   ,|");
-        Console.WriteLine($@" |==|_  ,`-._|==|,  |    |==|- |\==\.       /       \==\.       /|==|- | |==|  /\ , ||==|_  ,`-._|==| _ /\   |/==/-  /\ - \");
-        Console.WriteLine($@" /==/ ,     //==/ - |    /==/. / `-.`.___.-'         `-.`.___.-' /==/. / /==/, | |- |/==/ ,     //==/  / / , /\==\ _.\=\.-'");
-        Console.WriteLine($@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`");
-        Console.ResetColor();
+        AdminMenu.SetLogo();
 
         // prints acc name and acc type
         Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -556,6 +546,5 @@ static class OptionsMenu
             }
         }
         ReservationsAccess.WriteAll(reservations);
-
     }
 }

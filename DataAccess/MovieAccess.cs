@@ -25,6 +25,4 @@ static class MovieAccess
         File.WriteAllText(path, json);
     }
 
-
-
 }

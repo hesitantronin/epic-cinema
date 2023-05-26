@@ -51,7 +51,7 @@ class EmployeeMenu
     {
         while (true)
         {
-            List<string> ew = new() {"Global Seat Data", "Heat Map"};
+            List<string> ew = new() {"Global Seat Data", "Edit Heat Map", "Reset Heat Map"};
 
             int weh = OptionsMenu.DisplaySystem(ew, "edit auditorium", "What would you like tho change?");
             
@@ -339,6 +339,32 @@ class EmployeeMenu
                         break;
                     }
                 }
+            }
+            else if (weh == 3)
+            {
+                string pathToCsv = $@"DataSources/DefaultAuditorium/ResetAuditorium.csv";
+                string pathToCsv2 = $@"DataSources/DefaultAuditorium/Auditorium.csv";
+
+
+                string[][] resetAu = SeatAccess.LoadAuditorium(pathToCsv); // Initialise array for searching and updating values
+
+                SeatAccess.WriteToCSV(resetAu, pathToCsv2);
+
+                string[][] defaultAu = SeatAccess.LoadAuditorium(pathToCsv); // Initialise array for searching and updating values
+
+
+                OptionsMenu.Logo("edit seats");
+                SeatAccess.PrintAuditorium(defaultAu);
+                SeatsMenu.SeatLegendDefault();
+
+                Console.WriteLine("The heatmap has been reset");
+
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
+                Console.ReadLine();  
+                break;
             }
             else
             {
