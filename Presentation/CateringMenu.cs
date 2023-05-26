@@ -43,8 +43,7 @@ class CateringMenu
 
             else if (option == 5)
             {
-                Console.Clear();
-                OptionsMenu.Start();
+                break;
             }
         }
     }

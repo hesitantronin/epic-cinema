@@ -51,8 +51,17 @@ class CateringLogic
 
                 while (BaseLine < FoodList.Count())
                 {
-                    MaxItems = Math.Min(5, FoodList.Count() - BaseLine);
-
+                    if (BaseLine + 5 > FoodList.Count())
+                    {
+                        MaxItems = FoodList.Count() % 5;
+                        nextButton = false;
+                    }
+                    else
+                    {
+                        MaxItems = 5;
+                        nextButton = true;
+                    }
+                    
                     if (BaseLine < 0)
                     {
                         BaseLine = 0;
@@ -126,7 +135,7 @@ class CateringLogic
             foodInfoList.Add($"Type: {foodItem.Type}");
             foodInfoList.Add($"Price: {foodItem.Price}");
             foodInfoList.Add($"Description: {foodItem.Description}");
-            foodInfoList.Add("Remove food item");
+            foodInfoList.Add("\u001b[31mRemove Item\u001b[0m");
             int edit = OptionsMenu.DisplaySystem(foodInfoList, "Edit food item", "Select which field to edit, or choose to delete this item.", true, true);
             if (edit == 1)
             {
@@ -242,17 +251,17 @@ class CateringLogic
     {
         OptionsMenu.Logo(foodItem.Name);
 
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Type");
         Console.ResetColor();
         Console.WriteLine($" {foodItem.Type}\n");
 
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Description");
         Console.ResetColor();
         Console.WriteLine($" {foodItem.Description}\n");
 
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Price");
         Console.ResetColor();
         Console.WriteLine($" ${foodItem.Price}\n");
@@ -320,7 +329,7 @@ class CateringLogic
             menuReservations += $"{item.Key}        Amount: {item.Value}\n";
         }
 
-        int option2 = OptionsMenu.DisplaySystem(ReturnList, "", $"You've selected these menu items:\n{menuReservations}\nIs this all you want to reserve?");
+        int option2 = OptionsMenu.DisplaySystem(ReturnList, "", $"You've selected these menu items:\n{menuReservations}\nIs this all you want to reserve?", true, false);
 
 
         switch(option2)
@@ -659,36 +668,72 @@ class CateringLogic
 
     public static void AddOrUpdateFood()
     {
-        OptionsMenu.Logo("add food item");
-        Console.WriteLine("Enter the food details.");
-
         List<CateringModel> foods = CateringAccess.LoadAll();
-        Console.Write("Name: ");
-        string name = Console.ReadLine() + "";
-        CateringModel? existingCatering = foods.FirstOrDefault(food => food.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        CateringModel? existingCatering = null;
 
-        if (existingCatering != null)
+        string name;
+        while (true)
         {
-            int YNQ = OptionsMenu.DisplaySystem(YN, "Food item already exists", $"Food item with the name '{name}' already exists, do you want to update the details instead?", true, false);
-            if (YNQ == 2)
-            {
-                OptionsMenu.Logo("Canceled");
-                Console.WriteLine("Update operation cancelled.");
+            OptionsMenu.Logo("add food item");
+            Console.WriteLine("Enter the food details.");
 
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
-                return;
+            Console.Write("Name: ");
+            name = Console.ReadLine();
+
+            existingCatering = foods.FirstOrDefault(food => food.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            if (existingCatering != null)
+            {
+                int YNQ = OptionsMenu.DisplaySystem(YN, "Food item already exists", $"Food item with the name '{name}' already exists, do you want to update the details instead?", true, false);
+                if (YNQ == 2)
+                {
+                    OptionsMenu.Logo("Canceled");
+                    Console.WriteLine("Update operation cancelled.");
+
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                    return;
+                }
             }
+            if (name != "")
+            {
+                break;
+            }
+            
+            Console.WriteLine("\nThe name can't be empty.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
         }
 
-        OptionsMenu.Logo("add food item");
-        Console.WriteLine("Enter the food details.");
+        string type;
+        while (true)
+        {
+            OptionsMenu.Logo("add food item");
+            Console.WriteLine("Enter the food details.");
 
-        Console.Write("Type: ");
-        string type = Console.ReadLine() + "";
+            Console.Write("Type: ");
+            type = Console.ReadLine() + "";
+            
+            if (type != "")
+            {
+                break;
+            }
+
+            Console.WriteLine("\nThe type can't be empty.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+        }
 
         double price;
         while (true)
@@ -704,7 +749,7 @@ class CateringLogic
                 break;
             }
 
-            Console.WriteLine("Invalid Price. Please enter a valid decimal number.");
+            Console.WriteLine("\nInvalid Price. Please enter a valid decimal number.");
             
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
@@ -712,11 +757,30 @@ class CateringLogic
             // actually returns you to the main menu
             Console.ReadLine();
         }
-        OptionsMenu.Logo("add food item");
-        Console.WriteLine("Enter the food details.");
 
-        Console.Write("Description: ");
-        string description = Console.ReadLine() + "";
+        string description;
+        while (true)
+        {
+            OptionsMenu.Logo("add food item");
+            Console.WriteLine("Enter the food details.");
+
+            Console.Write("Description: ");
+            description = Console.ReadLine() + "";
+
+            if (description != "")
+            {
+                break;
+            }
+
+            Console.WriteLine("\nThe description can't be empty.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+        }
+
         int maxId = foods.Count > 0 ? foods.Max(food => food.Id) : 0;
 
         if (existingCatering != null)

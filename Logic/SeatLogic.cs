@@ -58,7 +58,9 @@ static class SeatLogic
             SeatsMenu.SeatLegend(movie);
 
             // Ask user for id of the seat
+            Console.WriteLine($"Selected seats: [{String.Join(", ", selectedChairs)}]");
             Console.WriteLine($"Type in the ID of the seat you want to {(isEdit ? "edit" : (removingMode ? "remove from your selection" : "select"))} (I.E. - A6)");
+
             currentlySelectedChair = Console.ReadLine();
 
             // If removing mode is on the 4 check in the csv will be negated so you can remove your own selections
@@ -104,7 +106,7 @@ static class SeatLogic
                         // If there are no seats selected option 2 is automatically selected and the user is prompted to select a seat again
                         if (!selectedChairs.Any()) optionInLoop = 2;
                         
-                        else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) {String.Join(", ", selectedChairs)}, are you satisfied with these selections?", false, true);
+                        else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) [{String.Join(", ", selectedChairs)}], are you satisfied with these selections?", false, true);
 
                         if (optionInLoop == 1)
                         {
@@ -232,7 +234,7 @@ static class SeatLogic
                 "No"
             };
 
-            int option4 = OptionsMenu.DisplaySystem(ReturnList, "", "\nWould you like to reserve catering menu items?");
+            int option4 = OptionsMenu.DisplaySystem(ReturnList, "", "\nWould you like to reserve catering menu items?", true, false);
 
             switch(option4)
             {
@@ -243,10 +245,6 @@ static class SeatLogic
                 case 2:
                     Console.Clear();
                     ReservationMenu.Start();
-                    break;
-                case 3:
-                    Console.Clear();
-                    CateringMenu.Start();
                     break;
             }
         }
