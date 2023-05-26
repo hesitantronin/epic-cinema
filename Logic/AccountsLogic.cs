@@ -58,7 +58,7 @@ class AccountsLogic
         if (id == loggedInAccountId)
         {
             Console.Clear();
-            Console.WriteLine("You cannot remove your own account.\n\nPress Enter to continue.");
+            Console.WriteLine("You cannot remove your own account.");
             Console.ReadLine();
             return;
         }
@@ -71,14 +71,18 @@ class AccountsLogic
             // Remove the account with the specified ID
             _accounts.RemoveAt(index);
             AccountsAccess.WriteAll(_accounts);
-            Console.Clear();
-            Console.WriteLine("Account removed successfully.\n\nPress Enter to continue.");
-            Console.ReadLine();
+            OptionsMenu.Logo("Account removed");
+            Console.WriteLine("Account removed successfully.");
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();        
         }
         else
         {
             Console.Clear();
-            Console.WriteLine("Account not found.\n\nPress Enter to continue.");
+            Console.WriteLine("Account not found.");
             Console.ReadLine();
         }
     }
@@ -273,15 +277,15 @@ class AccountsLogic
         List<string> DList = new List<string>(){"Continue"};
 
         OptionsMenu.DisplaySystem(DList, "welcome page", isEmployeeRegistration || isAdminRegistration ? $"Succesfully created {acc.Type} account: {acc.FullName}!":$"Account created successfully!\nWelcome, {fullName}.", true, false);
-        if (isEmployeeRegistration)
-        {
-            EmployeeMenu.StartEmployee();
-        }
-        else if (isAdminRegistration)
-        {
-            AdminMenu.StartAdmin();
-        }
-        else
+        // if (isEmployeeRegistration)
+        // {
+        //     EmployeeMenu.StartEmployee();
+        // }
+        // else if (isAdminRegistration)
+        // {
+        //     AdminMenu.StartAdmin();
+        // }
+        if (!isAdminRegistration && !isEmployeeRegistration)
         {
             MovieMenu.Start();     
         }

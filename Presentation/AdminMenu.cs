@@ -10,7 +10,7 @@ class AdminMenu : EmployeeMenu
             List<string> startList = new List<string>()
             {
                 "Change Cinema font",
-                "Create admin/ employee account",
+                "Create admin / employee account",
                 "Remove accounts"
             };
             
@@ -18,7 +18,7 @@ class AdminMenu : EmployeeMenu
             startList.AddRange(StartList); // Add the options from EmployeeMenu
 
             // Display the menu and get the selected option
-            int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Return");
+            int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Select what you want to do.");
 
             // Handle the selected option
             if (option == 1)
@@ -64,7 +64,8 @@ class AdminMenu : EmployeeMenu
             "Create Admin account",
             "Create Employee account",
         };
-        int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "Use ⬆ and ⬇ to navigate and press Enter to select the account type to create:", true, true);
+
+        int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "What type of account do you want to add", true, true);
         Console.Clear();
 
         // Handle the selected option
@@ -79,7 +80,15 @@ class AdminMenu : EmployeeMenu
     }
     private static void RemoveEmployeeAccount()
     {
-        List<AccountModel> accounts = AccountsAccess.LoadAll();
+        List<AccountModel> tempaccounts = AccountsAccess.LoadAll();
+        List<AccountModel> accounts = new();
+        foreach (AccountModel acc in tempaccounts)
+        {
+            if (acc.Id != AccountsLogic.CurrentAccount.Id)
+            {
+                accounts.Add(acc);
+            }
+        }
 
         // Retrieve and display the employee accounts
         List<string> employeeList = new List<string>();
@@ -87,12 +96,12 @@ class AdminMenu : EmployeeMenu
         {
             if (account.Type == AccountModel.AccountType.EMPLOYEE || account.Type == AccountModel.AccountType.ADMIN)
             {
-                string employeeInfo = $"ID: {account.Id}\nName: {account.FullName}\nEmail: {account.EmailAddress}\nAccount Type: {account.Type}\n";
+                string employeeInfo = $"ID: {account.Id}\n   Name: {account.FullName}\n   Email: {account.EmailAddress}\n   Account Type: {account.Type}\n";
                 employeeList.Add(employeeInfo);
             }
         }
 
-        int option = OptionsMenu.DisplaySystem(employeeList, "Employee/ admin accounts", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected account:", true, true);
+        int option = OptionsMenu.DisplaySystem(employeeList, "Employee / admin accounts", "Choose what account you want to remove");
 
         if (option >= 1 && option <= employeeList.Count)
         {
@@ -119,7 +128,7 @@ class AdminMenu : EmployeeMenu
             else
             {
                 Console.Clear();
-                Console.WriteLine("Invalid ID found for the selected employee account.\n\n Press enter to continue.");
+                Console.WriteLine("Invalid ID found for the selected employee account.");
                 Console.ReadLine();
             }
         }
