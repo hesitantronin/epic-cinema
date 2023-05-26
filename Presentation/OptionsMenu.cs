@@ -4,6 +4,9 @@ static class OptionsMenu
 { 
     public static void Start()
     {
+        // deletes any movies or reservations where the viewing date was more than two weeks ago
+        DeleteOldData();
+
         // a check that deletes any stray guest accounts
         List<AccountModel> Accounts = AccountsAccess.LoadAll();
         foreach (AccountModel acc in Accounts)
@@ -527,5 +530,32 @@ static class OptionsMenu
             }
         }
         return true;
+    }
+
+    public static void DeleteOldData()
+    {
+        List<MovieModel> movies = MovieAccess.LoadAll();
+        List<MovieModel> newmovies = new();
+        foreach (MovieModel movie in movies)
+        {
+            if (movie.ViewingDate > DateTime.Now - TimeSpan.FromDays(14))
+            {
+                newmovies.Add(movie);
+            }
+        }
+        MovieAccess.WriteAll(newmovies);
+
+
+        List<ReservationsModel> reservations = ReservationsAccess.LoadAll();
+        List<ReservationsModel> newres = new();
+        foreach (ReservationsModel reservation in reservations)
+        {
+            if (reservation.Movie.ViewingDate > DateTime.Now - TimeSpan.FromDays(14))
+            {
+                newres.Add(reservation);
+            }
+        }
+        ReservationsAccess.WriteAll(reservations);
+
     }
 }
