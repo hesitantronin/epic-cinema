@@ -1,3 +1,6 @@
+using System.Globalization;
+using System.Text.Json;
+
 class EmployeeMenu
 {
     public static MovieLogic movie = new MovieLogic();
@@ -33,7 +36,6 @@ class EmployeeMenu
 
             else if (option == 3)
             {
-                Console.Clear();
                 EditGlobalSeatData();
             }
 
@@ -46,21 +48,18 @@ class EmployeeMenu
 
     public static void EditGlobalSeatData()
     {
-        List<string> optionList = new List<string>()
-        {
-            "Price Range 1",
-            "Price Range 2",
-            "Price Range 3"
-        };
-
-        var SeatData = SeatAccess.LoadGlobalSeatData();
-        (string, double) seatType = new();
-
         while (true)
         {
-            
-            Console.Clear();
-            int option = OptionsMenu.DisplaySystem(optionList, "Editing menu", "Select what category you want to edit.", true, true);
+            var SeatData = SeatAccess.LoadGlobalSeatData();
+
+            List<string> optionList = new List<string>()
+            {
+                $"Range 1: {SeatData[1].Item1} (+ {SeatData[1].Item2})",
+                $"Range 2: {SeatData[2].Item1} (+ {SeatData[2].Item2})",
+                $"Range 3: {SeatData[3].Item1} (+ {SeatData[3].Item2})"
+            };
+
+            int option = OptionsMenu.DisplaySystem(optionList, "edit seat info", "Select what category you want to edit.", true, true);
 
             int key = option;
 
@@ -68,15 +67,80 @@ class EmployeeMenu
             {
                 return;
             }
+            else
+            {
+                List<string> change = new() {$"Name: {SeatData[key].Item1}", $"Price: {SeatData[key].Item2}"};
+                while (true)
+                {
+                    int option2 = OptionsMenu.DisplaySystem(change, "edit seat info", "Select what field you want to edit.", true, true);
+                    if (option2 == 1)
+                    {
+                        while (true)
+                        {
+                            OptionsMenu.Logo("edit seat info");
+                            Console.Write("New name: ");
+                            string newName = Console.ReadLine();
+                            if (!string.IsNullOrEmpty(newName))
+                            {
+                                SeatData[key] = (newName, SeatData[key].Item2);
+                                break;
+                            }
+
+                            Console.WriteLine("\nThe name can't be empty.");
+                            
+                            // prints a fake return option hehe
+                            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                        
+                            // actually returns you to the main menu
+                            Console.ReadLine();
+                        }
+                    }
+                    else if (option2 == 2)
+                    {
+                        while (true)
+                        {
+                            double Price;
+                            OptionsMenu.Logo("edit seat info");
+                            Console.Write("New price: ");
+                            string newPrice = Console.ReadLine();
+
+                            if (double.TryParse(newPrice.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out Price))
+                            {
+                                SeatData[key] = (SeatData[key].Item1, Price);
+
+                                break;
+                            }
+
+                            Console.WriteLine("Invalid price. Please enter a valid decimal number.");
+                            
+                            // prints a fake return option hehe
+                            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                        
+                            // actually returns you to the main menu
+                            Console.ReadLine();
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    SeatAccess.WriteGlobalSeatData(SeatData);
             
-            seatType = SeatData[key];
-            break;
+                    OptionsMenu.Logo("Seat data updated");
+
+                    Console.WriteLine("Seat Data updated successfully.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                    break;
+                }
+            }
         }
-
-        Console.WriteLine($"Current state of Seat Type 1:\n\nName: {seatType.Item1}\nPrice: {seatType.Item2}");
-        
-
-        Console.ReadLine();
-
     }
+    
+
 }

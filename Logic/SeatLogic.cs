@@ -137,7 +137,6 @@ static class SeatLogic
                                 break;
                             }
                         }
-
                         else if (optionInLoop == 2)
                         {
                             removingMode = false;

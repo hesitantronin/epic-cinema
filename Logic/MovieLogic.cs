@@ -43,8 +43,24 @@ class MovieLogic
         return _movies.Find(i => i.Id == id);
     }
 
-    public void PrintMovies(List<MovieModel> MovieList, bool IsEmployee = false, bool IsEdit = false, bool SeatEdit = false)
+    public void PrintMovies(List<MovieModel> TempMovieList, bool IsEmployee = false, bool IsEdit = false, bool SeatEdit = false)
     {
+        List<MovieModel> MovieList = new();
+        if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+        {
+            foreach (MovieModel movie in TempMovieList)
+            {
+                if (movie.ViewingDate > DateTime.Now)
+                {
+                    MovieList.Add(movie);
+                }
+            }
+        }
+        else
+        {
+            MovieList = TempMovieList;
+        }
+        
         while (true)
         {
             Console.Clear();
@@ -146,191 +162,342 @@ class MovieLogic
             }
         }
     }
-    public static void EditMovie(MovieModel movie)
+    public void EditMovie(MovieModel movie)
     {
         bool seatEdit = false;
-        Console.Clear();
+        bool remove = false;
 
-        // shows the banner and title
-        OptionsMenu.Logo(movie.Title);
 
-        List<string> movieInfoList = new List<string>();
-        movieInfoList.Add($"Title: {movie.Title}");
-        movieInfoList.Add($"Genre: {movie.Genre}");
-        movieInfoList.Add($"Rating: {movie.Rating}");
-        movieInfoList.Add($"Age Restriction: {movie.Age}");
-        movieInfoList.Add($"Description: {MovieLogic.SpliceText(movie.Description, " ")}");
-        movieInfoList.Add($"Viewing Date: {movie.ViewingDate}");
-        movieInfoList.Add($"Publish Date: {movie.PublishDate}\n");
-        movieInfoList.Add("Auditorium seat editer");
-        int edit = OptionsMenu.DisplaySystem(movieInfoList, "Edit existing movie", "Use ⬆ and ⬇ to navigate and press Enter to select what you would like to edit:", true, true);
-        if (edit == 1)
+        while (true)
         {
-            Console.Write("New Title: ");
-            string newTitle = Console.ReadLine() + "";
-            if (!string.IsNullOrEmpty(newTitle))
-            {
-                movie.Title = newTitle;
-            }
-        }
-        else if (edit == 2)
-        {
-            Console.Write("New genre: ");
-            string newGenre = Console.ReadLine() + "";
-            if (!string.IsNullOrEmpty(newGenre))
-            {
-                movie.Genre = newGenre;
-            }
-        }
-        else if (edit == 3)
-        {
-            double rating;
-            while (true)
-            {
-                Console.Write("Rating: ");
-                string ratingInput = Console.ReadLine() + "";
-
-                if (double.TryParse(ratingInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
-                {
-                    movie.Rating = rating;
-                    break;
-                }
-
-                Console.WriteLine("Invalid rating. Please enter a valid decimal number.");
-            }
-        }
-        else if (edit == 4)
-        {
-            int age;
-            while (true)
-            {
-                Console.Write("Age: ");
-                string newAgeInput = Console.ReadLine() + "";
-
-                if (int.TryParse(newAgeInput, out age) && age >= 0)
-                {
-                    movie.Age = age;
-                    break;
-                }
-
-                Console.WriteLine("Invalid age. Please enter a valid number.");
-            }
-        }
-        else if (edit == 5)
-        {
-            Console.Write("Description: ");
-            string newDescription = Console.ReadLine() + "";
-            if (!string.IsNullOrEmpty(newDescription))
-            {
-                movie.Description = newDescription;
-            }
-        }
-        else if (edit == 6)
-        {
-            DateTime viewingDate;
-            while (true)
-            {
-                Console.WriteLine("Date? (MM-DD-YYYY)");
-                string[] date = Console.ReadLine().Split("-");
-
-                if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
-                {
-                    Console.WriteLine("Invalid date format. Please try again.");
-                    continue;
-                }
-
-                Console.WriteLine("Time? (ex. 16:30)");
-                string[] times = Console.ReadLine().Split(":");
-
-                if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
-                {
-                    Console.WriteLine("Invalid time format. Please try again.");
-                    continue;
-                }
-
-                try
-                {
-                    viewingDate = new DateTime(year, month, day, hour, minute, 0);
-                    break;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    Console.WriteLine("Invalid date or time. Please try again.");
-                }
-            }
-        }
-        else if (edit == 7)
-        {
-            DateTime publishDate;
-            while (true)
-            {
-                Console.WriteLine("Date? (MM-DD-YYYY)");
-                string[] date = Console.ReadLine().Split("-");
-
-                if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
-                {
-                    Console.WriteLine("Invalid date format. Please try again.");
-                    continue;
-                }
-
-                Console.WriteLine("Time? (ex. 16:30)");
-                string[] times = Console.ReadLine().Split(":");
-
-                if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
-                {
-                    Console.WriteLine("Invalid time format. Please try again.");
-                    continue;
-                }
-
-                try
-                {
-                    publishDate = new DateTime(year, month, day, hour, minute, 0);
-                    break;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    Console.WriteLine("Invalid date or time. Please try again.");
-                }
-            }
-        }
-        else if (edit == 8)
-        {
-            seatEdit = true;
-            SeatLogic.SeatSelection(movie, true);
-        }
-        else
-        {
-            return;
-        }
-        // Load all movies from the JSON file
-        List<MovieModel> movies = MovieAccess.LoadAll();
-
-        // Find the index of the movie to update
-        int index = movies.FindIndex(m => m.Id == movie.Id);
-
-        if (index != -1)
-        {
-            // Update the movie in the list
-            movies[index] = movie;
-
-            // Write the updated movie list to the JSON file
-            MovieAccess.WriteAll(movies);
             Console.Clear();
-            if (seatEdit)
+
+            // shows the banner and title
+            OptionsMenu.Logo(movie.Title);
+
+            List<string> movieInfoList = new List<string>();
+            movieInfoList.Add($"Title: {movie.Title}");
+            movieInfoList.Add($"Genre: {movie.Genre}");
+            movieInfoList.Add($"Rating: {movie.Rating}");
+            movieInfoList.Add($"Age Restriction: {movie.Age}");
+            movieInfoList.Add($"Publish Date: {movie.PublishDate}");
+            movieInfoList.Add($"Description: {MovieLogic.SpliceText(movie.Description, "   ")}");
+            movieInfoList.Add($"Viewing Date: {movie.ViewingDate}");
+            movieInfoList.Add($"Base Price: {movie.MoviePrice}");
+            movieInfoList.Add("Auditorium seat editer\n");
+            movieInfoList.Add("\u001b[31mRemove Item\u001b[0m");
+
+            int edit = OptionsMenu.DisplaySystem(movieInfoList, "Edit movie", "Select which field to edit, or choose to delete this movie.", true, true);
+            if (edit == 1)
             {
-                Console.WriteLine("Auditorium updated successfully.\n\n Press enter to continue.");
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+                    Console.Write("New Title: ");
+                    string newTitle = Console.ReadLine() + "";
+                    if (!string.IsNullOrEmpty(newTitle))
+                    {
+                        movie.Title = newTitle;
+                        break;
+                    }
+
+                    Console.WriteLine("\nThe title can't be empty.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                }
+                break;
+            }
+            else if (edit == 2)
+            {
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.Write("New genre: ");
+                    string newGenre = Console.ReadLine() + "";
+                    if (!string.IsNullOrEmpty(newGenre))
+                    {
+                        movie.Genre = newGenre;
+                        break;
+                    }
+                    
+                    Console.WriteLine("\nThe genre can't be empty.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                }
+                break;
+            }
+            else if (edit == 3)
+            {
+                double rating;
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.Write("Rating: ");
+                    string ratingInput = Console.ReadLine() + "";
+
+                    if (double.TryParse(ratingInput.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
+                    {
+                        movie.Rating = rating;
+                        break;
+                    }
+
+                    Console.WriteLine("Invalid rating. Please enter a valid decimal number.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                }
+            }
+            else if (edit == 4)
+            {
+                int age;
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.Write("Age: ");
+                    string newAgeInput = Console.ReadLine() + "";
+
+                    if (int.TryParse(newAgeInput, out age) && age >= 0)
+                    {
+                        movie.Age = age;
+                        break;
+                    }
+
+                    Console.WriteLine("Invalid age. Please enter a valid number.");
+
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                }
+            }
+            else if (edit == 5)
+            {
+                DateTime publishDate;
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.WriteLine("Publish Date: (MM-DD-YYYY)");
+                    string[] date = Console.ReadLine().Split("-");
+
+                    if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
+                    {
+                        Console.WriteLine("Invalid date format. Please try again.");
+                        
+                        // prints a fake return option hehe
+                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                    
+                        // actually returns you to the main menu
+                        Console.ReadLine();
+                        continue;
+                    }
+
+                    try
+                    {
+                        publishDate = new DateTime(year, month, day, 0, 0, 0);
+                        break;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Console.WriteLine("Invalid date. Please try again.");
+
+                        // prints a fake return option hehe
+                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                    
+                        // actually returns you to the main menu
+                        Console.ReadLine();
+                    }
+                }
+            }
+            else if (edit == 6)
+            {
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.Write("Description: ");
+                    string newDescription = Console.ReadLine() + "";
+                    if (!string.IsNullOrEmpty(newDescription))
+                    {
+                        movie.Description = newDescription;
+                        break;
+                    }
+                        Console.WriteLine("The description can't be empty.");
+
+                        // prints a fake return option hehe
+                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                    
+                        // actually returns you to the main menu
+                        Console.ReadLine();
+                }
+                break;
+            }
+            else if (edit == 7)
+            {
+                DateTime viewingDate;
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.WriteLine("Viewing Date: (MM-DD-YYYY)");
+                    string[] date = Console.ReadLine().Split("-");
+
+                    if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
+                    {
+                        Console.WriteLine("Invalid date format. Please try again.");
+                        // prints a fake return option hehe
+                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                    
+                        // actually returns you to the main menu
+                        Console.ReadLine();
+                        continue;
+                    }
+
+                    Console.WriteLine("Viewing Time: (ex. 16:30)");
+                    string[] times = Console.ReadLine().Split(":");
+
+                    if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
+                    {
+                        Console.WriteLine("Invalid time format. Please try again.");
+                        // prints a fake return option hehe
+                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                    
+                        // actually returns you to the main menu
+                        Console.ReadLine();
+                        continue;
+                    }
+
+                    try
+                    {
+                        viewingDate = new DateTime(year, month, day, hour, minute, 0);
+                        break;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Console.WriteLine("Invalid date or time. Please try again.");
+                        // prints a fake return option hehe
+                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                    
+                        // actually returns you to the main menu
+                        Console.ReadLine();
+                    }
+                }
+            }
+            else if (edit == 8)
+            {
+                double price;
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.Write("Age: ");
+                    string newAgeInput = Console.ReadLine() + "";
+
+                    if (double.TryParse(newAgeInput, out price) && price >= 0)
+                    {
+                        movie.MoviePrice = price;
+                        break;
+                    }
+
+                    Console.WriteLine("Invalid price. Please enter a valid decimal number.");
+
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                }   
+            }
+            else if (edit == 9)
+            {
+                seatEdit = true;
+                SeatLogic.SeatSelection(movie, true);
+            }
+            else if (edit == 10)
+            {
+                int removeOptions = OptionsMenu.DisplaySystem(YN, "confirm", "Are you sure you want to delete this item?", true, false);
+                if (removeOptions == 1)
+                {
+                    remove = true;
+                    break;
+                }
             }
             else
             {
-                Console.WriteLine("Movie updated successfully.\n\n Press enter to continue.");
+                return;
+            }
+        }
+
+
+        // Find the index of the movie to update
+        int index = _movies.FindIndex(m => m.Id == movie.Id);
+
+        if (!remove)
+        {
+            // Update the movie in the list
+            _movies[index] = movie;
+
+            // Write the updated movie list to the JSON file
+            MovieAccess.WriteAll(_movies);
+            Console.Clear();
+            if (seatEdit)
+            {
+                OptionsMenu.Logo("seats updated");
+
+                Console.WriteLine("Auditorium updated successfully.");
+                
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
+                Console.ReadLine();
+            }
+            else
+            {
+                OptionsMenu.Logo("movie updated");
+
+                Console.WriteLine("Movie updated successfully.");
+
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
                 Console.ReadLine();
             }
         }
         else
         {
-            Console.Clear();
-            Console.WriteLine("Movie not found.\n\n Press enter to continue.");
+            Console.CursorVisible = false;
+
+            _movies.Remove(_movies[index]);
+
+            MovieAccess.WriteAll(_movies);
+            
+            OptionsMenu.Logo("movie deleted");
+            Console.WriteLine("Movie deleted successfully.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
             Console.ReadLine();
+
+            Console.CursorVisible = true;
         }
     }
 
@@ -492,15 +659,14 @@ class MovieLogic
         string filename;
         do
         {
-            Console.Clear();
-            Console.WriteLine("Please save the JSON file in the DataSources folder.\n\n");
+            OptionsMenu.Logo("json movie adding");
+            Console.WriteLine("Please save the JSON file in the DataSources folder.");
             Console.WriteLine("Enter the JSON file name without '.json': ");
             string jsonFile = Console.ReadLine() + "";
             filename = @$"DataSources\{jsonFile}.json";
 
             if (!File.Exists(filename))
             {
-                Console.Clear();
                 List<string> EList = new List<string>() { "Continue" };
                 int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile {jsonFile} not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.json'", false, true);
                 if (option == 2)
@@ -550,20 +716,28 @@ class MovieLogic
         // Display existing movies message
         if (existingMovies.Count > 0)
         {
+            OptionsMenu.Logo("double movies");
+
             Console.WriteLine("The following movies already exist and were not added:\n");
             foreach (MovieModel existingMovie in existingMovies)
             {
                 Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
             }
-            Console.WriteLine("\nPress enter to continue");
-            Console.ReadLine();
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine(); 
         }
         else
         {
-            Console.Clear();
-            Console.WriteLine("Movies have been succesfully added.\n\nPress enter to continue");
-            Console.ReadLine();
-        }  
+            OptionsMenu.Logo("Items added");
+            Console.WriteLine("Movies have been succesfully added.");
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();           }  
     }
     public static string ReadJSON(string filename)
     {
@@ -592,7 +766,7 @@ class MovieLogic
         string filename;
         do
         {
-            Console.Clear();
+            OptionsMenu.Logo("CSV movie adding");
             Console.WriteLine("Please save the CSV file in the DataSources folder.\n\n");
             Console.WriteLine("Enter the CSV file name without '.csv': ");
             string csvFile = Console.ReadLine() + "";
@@ -663,20 +837,28 @@ class MovieLogic
         // Display existing movies message
         if (existingMovies.Count > 0)
         {
+            OptionsMenu.Logo("double movies");
+
             Console.WriteLine("The following movies already exist and were not added:\n");
             foreach (MovieModel existingMovie in existingMovies)
             {
                 Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
             }
-            Console.WriteLine("\nPress enter to continue");
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
             Console.ReadLine();
         }
         else
         {
-            Console.Clear();
+            OptionsMenu.Logo("movies added");
             Console.WriteLine("Movies have been succesfully added.\n\nPress enter to continue");
-            Console.ReadLine();
-        }
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();        }
     }
     private static void RemoveMovie()
     {
@@ -771,31 +953,78 @@ class MovieLogic
     public static void AddOrUpdateMovie()
     {
         List<MovieModel> movies = MovieAccess.LoadAll();
+        MovieModel? existingMovie = null;
 
-        Console.WriteLine("Enter the movie details:");
-
-        Console.Write("Title: ");
-        string title = Console.ReadLine() + "";
-
-        MovieModel? existingMovie = movies.FirstOrDefault(movie => movie.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
-
-        if (existingMovie != null)
+        string title;
+        while (true)
         {
-            int YNQ = OptionsMenu.DisplaySystem(YN, "Movie already exists", $"Movie with the title '{title}' already exists, do you want to update the details instead?", true, false);
-            if (YNQ == 2)
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
+            Console.Write("Title: ");
+            title = Console.ReadLine();
+
+            existingMovie = movies.FirstOrDefault(movie => movie.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+
+            if (existingMovie != null)
             {
-                Console.WriteLine("Update operation cancelled, press enter to continue.");
-                Console.ReadLine();
-                return;
+                int YNQ = OptionsMenu.DisplaySystem(YN, "Movie already exists", $"Movie with the title '{title}' already exists, do you want to update the details instead?", true, false);
+                if (YNQ == 2)
+                {
+                    OptionsMenu.Logo("Canceled");
+                    Console.WriteLine("Update operation cancelled.");
+
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
+                    return;
+                }
             }
+            if (title != "")
+            {
+                break;
+            }
+
+            Console.WriteLine("\nThe title can't be empty.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
         }
 
-        Console.Write("Genre: ");
-        string genre = Console.ReadLine() + "";
+        string genre;
+        while (true)
+        {
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
 
+            Console.Write("Genre: ");
+            genre = Console.ReadLine();
+
+            if (genre != "")
+            {
+                break;
+            }
+
+            Console.WriteLine("\nThe genre can't be empty.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+        }
+        
         double rating;
         while (true)
         {
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
             Console.Write("Rating: ");
             string ratingInput = Console.ReadLine() + "";
 
@@ -805,14 +1034,44 @@ class MovieLogic
             }
 
             Console.WriteLine("Invalid rating. Please enter a valid decimal number.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
         }
 
-        Console.Write("Description: ");
-        string description = Console.ReadLine() + "";
+        string description;
+        while(true)
+        {
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
+            Console.Write("Description: ");
+            description = Console.ReadLine() + "";
+
+            if (description != "")
+            {
+                break;
+            }
+
+            Console.WriteLine("\nThe description can't be empty.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+        }
+
 
         int age;
         while (true)
         {
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
             Console.Write("Age: ");
             string ageInput = Console.ReadLine() + "";
 
@@ -822,26 +1081,50 @@ class MovieLogic
             }
 
             Console.WriteLine("Invalid age. Please enter a valid mumber.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
         }
 
         DateTime viewingDate;
         while (true)
         {
-            Console.WriteLine("Viewing Date? (MM-DD-YYYY)");
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
+            Console.WriteLine("Viewing Date: (MM-DD-YYYY)");
             string[] date = Console.ReadLine().Split("-");
 
             if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
             {
                 Console.WriteLine("Invalid date format. Please try again.");
+                
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
+                Console.ReadLine();
                 continue;
             }
 
-            Console.WriteLine("Time? (ex. 16:30)");
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
+            Console.WriteLine("Viewing Time: (ex. 16:30)");
             string[] times = Console.ReadLine().Split(":");
 
             if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
             {
                 Console.WriteLine("Invalid time format. Please try again.");
+
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
+                Console.ReadLine();
                 continue;
             }
 
@@ -853,37 +1136,49 @@ class MovieLogic
             catch (ArgumentOutOfRangeException)
             {
                 Console.WriteLine("Invalid date or time. Please try again.");
+
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
+                Console.ReadLine();
             }
         }
+
         DateTime publishDate;
         while (true)
         {
-            Console.WriteLine("Publish Date? (MM-DD-YYYY)");
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
+            Console.WriteLine("Publish Date: (MM-DD-YYYY)");
             string[] date = Console.ReadLine().Split("-");
 
             if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
             {
                 Console.WriteLine("Invalid date format. Please try again.");
+
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
+                Console.ReadLine();
                 continue;
             }
-
-            Console.WriteLine("Time? (ex. 16:30)");
-            string[] times = Console.ReadLine().Split(":");
-
-            if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
-            {
-                Console.WriteLine("Invalid time format. Please try again.");
-                continue;
-            }
-
             try
             {
-                publishDate = new DateTime(year, month, day, hour, minute, 0);
+                publishDate = new DateTime(year, month, day, 0, 0, 0);
                 break;
             }
             catch (ArgumentOutOfRangeException)
             {
-                Console.WriteLine("Invalid date or time. Please try again.");
+                Console.WriteLine("Invalid date. Please try again.");
+
+                // prints a fake return option hehe
+                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+            
+                // actually returns you to the main menu
+                Console.ReadLine();
             }
         }
 
@@ -899,10 +1194,15 @@ class MovieLogic
             existingMovie.Age = age;
             existingMovie.ViewingDate = viewingDate;
             existingMovie.PublishDate = publishDate;
+            
+            OptionsMenu.Logo("movie updated");
+            Console.WriteLine("Movie updated successfully!");
 
-            Console.Clear();
-            Console.WriteLine("Movie updated successfully!\n\nPress enter to continue.");
-            Console.ReadLine();
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();  
         }
         else
         {
@@ -910,19 +1210,22 @@ class MovieLogic
             MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate);
             movies.Add(newMovie);
 
-            Console.Clear();
-            Console.WriteLine("Movie added successfully!\n\nPress enter to continue.");
-            Console.ReadLine();
+            OptionsMenu.Logo("movie added");
+            Console.WriteLine("Movie added successfully!");
+
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine(); 
         }
         // Save the updated movies list
         MovieAccess.WriteAll(movies);
     }
     protected static List<string> MovieEditorList = new List<string>()
     {
-        "Current movies",
         "Add movies",
-        "Movies and seats editer",
-        "Remove movies"
+        "Edit/Remove Movies and seats",
     };
     protected static List<string> YN = new List<string>()
     {
@@ -946,21 +1249,14 @@ class MovieLogic
         while (true)
         {
             Console.Clear();
-            int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "Movies", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
+            int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "edit Movies", "Select what you want to do.", true, true);
             if (MovieOptions == 1)
-            {
-                Console.Clear();
-                LoadMovies();
-                PrintMovies(_movies, true, true);
-            }
-            else if (MovieOptions == 2)
             {
                 Console.Clear();
                 int addOptions = OptionsMenu.DisplaySystem(AddMovieList, "Add movies", "To add movies by file, please save the json or csv file in the DataSources folder", true, true);
 
                 if (addOptions == 1)
                 {
-                    Console.Clear();
                     AddOrUpdateMovie();
                 }
                 else if (addOptions == 2)
@@ -974,29 +1270,82 @@ class MovieLogic
                     AddMultipleMoviesCSV();
                 }
             }
-            else if (MovieOptions == 3)
+            else if (MovieOptions == 2)
             {
-                Console.Clear();
                 LoadMovies();
-                PrintMovies(_movies, true);
-            }
-            else if (MovieOptions == 4)
-            {
-                int removeOptions = OptionsMenu.DisplaySystem(RemoveList, "Remove movies", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true);
-                if (removeOptions == 1)
+                while (true)
                 {
-                    Console.Clear();
-                    LoadMovies();
-                    RemoveMovie();
-                }
-                else if (removeOptions == 2)
-                {
-                    Console.Clear();
-                    LoadMovies();
-                    RemoveMovieID();
+                    // list of options to display
+                    List<string> OptionList = new List<string>()
+                    {
+                    "Sort",
+                    "Filter",
+                    "Search",
+                    "Show Whole Menu"
+                    };
+
+                    // the necessary info gets used in the display method
+                    int option = OptionsMenu.DisplaySystem(OptionList, "edit Movies");
+
+                    // depending on the option that was chosen, it will clear the console and call the right function
+                    if (option == 1)
+                    {
+                        MovieMenu.Sort(true);
+                    }
+                    else if (option == 2)
+                    {
+                        MovieMenu.Filter(true);
+                    }
+                    else if (option == 3)
+                    {
+                        while (true)
+                        {
+                            List<string> id_or_else = new(){"Id", "Other"};
+                            int option2 = OptionsMenu.DisplaySystem(id_or_else, "Search by", "What do you want to search by?");
+
+                            if (option2 == 1)
+                            {
+                                MovieModel result = MovieMenu.SearchId();
+                                if (result == null)
+                                {
+                                    OptionsMenu.Logo("ID NOT FOUND");
+                                    Console.WriteLine("No item with this id was found.");
+
+                                    // prints a fake return option hehe
+                                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                                
+                                    // actually returns you to the main menu
+                                    Console.ReadLine();  
+                                }
+                                else
+                                {
+                                    EditMovie(result);
+                                }
+                            }
+                            if (option2 == 2)
+                            {
+                                MovieMenu.Search(true);
+                            }
+                            
+                            else if (option2 == 3)
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                    else if (option == 4)
+                    {
+                        PrintMovies(_movies, true);
+                    }
+
+                    else if (option == 5)
+                    {
+                        break;
+                    }
                 }
             }
-            else if (MovieOptions == 5)
+            else if (MovieOptions == 3)
             {
                 break;
             }

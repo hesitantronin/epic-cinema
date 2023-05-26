@@ -1,8 +1,11 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 static class SeatAccess
 {
+    static string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/seatPrices.json"));
+
     public static void PrintAuditorium(string[][] auditorium)
     {
         // Print the column names
@@ -99,6 +102,12 @@ static class SeatAccess
         } 
 
         else return new Dictionary<int, (string, double)>();
+    }
+
+    public static void WriteGlobalSeatData(Dictionary<int, (string, double)> seatdata)
+    {
+        string json = JsonConvert.SerializeObject(seatdata, Formatting.Indented);
+        File.WriteAllText(path, json);
     }
     
     public static string[][] LoadAuditorium(string auditoriumPath)

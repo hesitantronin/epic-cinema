@@ -134,27 +134,55 @@ class CateringLogic
             foodInfoList.Add($"Name: {foodItem.Name}");
             foodInfoList.Add($"Type: {foodItem.Type}");
             foodInfoList.Add($"Price: {foodItem.Price}");
-            foodInfoList.Add($"Description: {foodItem.Description}");
+            foodInfoList.Add($"Description: {MovieLogic.SpliceText(foodItem.Description, "   ")}\n");
             foodInfoList.Add("\u001b[31mRemove Item\u001b[0m");
             int edit = OptionsMenu.DisplaySystem(foodInfoList, "Edit food item", "Select which field to edit, or choose to delete this item.", true, true);
             if (edit == 1)
             {
-                Console.Write("New name: ");
-                string newName = Console.ReadLine() + "";
-                if (!string.IsNullOrEmpty(newName))
+                while (true)
                 {
-                    foodItem.Name = newName;
+                    OptionsMenu.Logo("edit food item");
+
+                    Console.Write("New name: ");
+                    string newName = Console.ReadLine() + "";
+                    if (!string.IsNullOrEmpty(newName))
+                    {
+                        foodItem.Name = newName;
+                        break;
+                    }
+                    Console.WriteLine("\nThe name can't be empty.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
                 }
+
                 break;
             }
             else if (edit == 2)
             {
-                Console.Write("New type: ");
-                string newType = Console.ReadLine() + "";
-                if (!string.IsNullOrEmpty(newType))
+                while (true)
                 {
-                    foodItem.Type = newType;
+                    OptionsMenu.Logo("edit food item");
+
+                    Console.Write("New type: ");
+                    string newType = Console.ReadLine() + "";
+                    if (!string.IsNullOrEmpty(newType))
+                    {
+                        foodItem.Type = newType;
+                        break;
+                    }
+                    Console.WriteLine("\nThe type can't be empty.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
                 }
+
                 break;
             }
             else if (edit == 3)
@@ -162,6 +190,8 @@ class CateringLogic
                 double price;
                 while (true)
                 {
+                    OptionsMenu.Logo("edit food item");
+
                     Console.Write($"New price (old price was {foodItem.Price}): ");
                     string priceInput = Console.ReadLine() + "";
 
@@ -172,17 +202,37 @@ class CateringLogic
                     }
 
                     Console.WriteLine("Invalid price. Please enter a valid decimal number.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
                 }
                 break;
             }
             else if (edit == 4)
             {
-                Console.Write("New description: ");
-                string newDescription = Console.ReadLine() + "";
-                if (!string.IsNullOrEmpty(newDescription))
+                while (true)
                 {
-                    foodItem.Description = newDescription;
+                    OptionsMenu.Logo("edit food item");
+
+                    Console.Write("New description: ");
+                    string newDescription = Console.ReadLine() + "";
+                    if (!string.IsNullOrEmpty(newDescription))
+                    {
+                        foodItem.Description = newDescription;
+                        break;
+                    }
+                    Console.WriteLine("\nThe description can't be empty.");
+                    
+                    // prints a fake return option hehe
+                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                
+                    // actually returns you to the main menu
+                    Console.ReadLine();
                 }
+
                 break;
             }
             else if (edit == 5)
@@ -200,7 +250,6 @@ class CateringLogic
             }
         }
         
-
         // Find the index of the movie to update
         int index = _menu.FindIndex(c => c.Id == foodItem.Id);
 
@@ -598,7 +647,6 @@ class CateringLogic
             {
                 Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: {existingFood.Price}");
             }
-            Console.WriteLine("\nPress enter to continue");
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
         
@@ -609,7 +657,7 @@ class CateringLogic
         {
             OptionsMenu.Logo("Items added");
 
-            Console.WriteLine("Food items have been succesfully added.\n\nPress enter to continue");
+            Console.WriteLine("Food items have been succesfully added.\n");
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
         
@@ -719,7 +767,7 @@ class CateringLogic
             Console.WriteLine("Enter the food details.");
 
             Console.Write("Type: ");
-            type = Console.ReadLine() + "";
+            type = Console.ReadLine();
             
             if (type != "")
             {
@@ -922,7 +970,77 @@ class CateringLogic
             else if (MenuOptions == 2)
             {
                 LoadCatering();
-                PrintMenu(_menu, true);
+                while (true)
+                {
+                    // list of options to display
+                    List<string> OptionList = new List<string>()
+                    {
+                    "Sort",
+                    "Filter",
+                    "Search",
+                    "Show Whole Menu"
+                    };
+
+                    // the necessary info gets used in the display method
+                    int option = OptionsMenu.DisplaySystem(OptionList, "edit CATERING");
+
+                    // depending on the option that was chosen, it will clear the console and call the right function
+                    if (option == 1)
+                    {
+                        CateringMenu.Sort(true);
+                    }
+                    else if (option == 2)
+                    {
+                        CateringMenu.Filter(true);
+                    }
+                    else if (option == 3)
+                    {
+                        while (true)
+                        {
+                            List<string> id_or_else = new(){"Id", "Other"};
+                            int option2 = OptionsMenu.DisplaySystem(id_or_else, "Search by", "What do you want to search by?");
+
+                            if (option2 == 1)
+                            {
+                                CateringModel result = CateringMenu.SearchId();
+                                if (result == null)
+                                {
+                                    OptionsMenu.Logo("ID NOT FOUND");
+                                    Console.WriteLine("No item with this id was found.");
+
+                                    // prints a fake return option hehe
+                                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+                                
+                                    // actually returns you to the main menu
+                                    Console.ReadLine();  
+                                }
+                                else
+                                {
+                                    EditCatering(result);
+                                }
+                            }
+                            if (option2 == 2)
+                            {
+                                CateringMenu.Search(true);
+                            }
+                            
+                            else if (option2 == 3)
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                    else if (option == 4)
+                    {
+                        PrintMenu(_menu, true);
+                    }
+
+                    else if (option == 5)
+                    {
+                        break;
+                    }
+                }
             }
             else if (MenuOptions == 3)
             {

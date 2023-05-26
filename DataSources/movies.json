@@ -1,25 +1,14 @@
 [
   {
     "id": 1,
-    "title": "Jackass: The Movie",
-    "genre": "Action",
+    "title": "w",
+    "genre": "e",
     "rating": 6.6,
     "description": "Johnny Knoxville and his band of maniacs perform a variety of stunts and gross-out gags on the big screen for the first time.",
     "age": 18,
     "viewing_date": "0001-01-01T00:00:00",
     "publish_date": "0001-01-01T00:00:00",
     "movie_price": 15
-  },
-  {
-    "id": 2,
-    "title": "Creed",
-    "genre": "Action",
-    "rating": 7.6,
-    "description": "The former World Heavyweight Champion Rocky Balboa serves as a trainer and mentor to Adonis Johnson, the son of his late friend and former rival Apollo Creed.",
-    "age": 16,
-    "viewing_date": "0001-01-01T00:00:00",
-    "publish_date": "0001-01-01T00:00:00",
-    "movie_price": 10.99
   },
   {
     "id": 3,
@@ -261,6 +250,39 @@
     "age": 13,
     "viewing_date": "0001-01-01T00:00:00",
     "publish_date": "0001-01-01T00:00:00",
+    "movie_price": 10.99
+  },
+  {
+    "id": 7,
+    "title": "Scream",
+    "genre": "Horror",
+    "rating": 3.3,
+    "description": "everybody screams",
+    "age": 5,
+    "viewing_date": "2023-12-23T16:30:00",
+    "publish_date": "2004-12-02T13:00:00",
+    "movie_price": 10.99
+  },
+  {
+    "id": 8,
+    "title": "future movie",
+    "genre": "Action",
+    "rating": 4.4,
+    "description": "future movie",
+    "age": 3,
+    "viewing_date": "2023-10-02T12:11:00",
+    "publish_date": "2004-03-03T12:12:00",
+    "movie_price": 10.99
+  },
+  {
+    "id": 9,
+    "title": "e",
+    "genre": "e",
+    "rating": 1,
+    "description": "e",
+    "age": 1,
+    "viewing_date": "0111-11-11T12:11:00",
+    "publish_date": "3333-02-23T00:00:00",
     "movie_price": 10.99
   }
 ]

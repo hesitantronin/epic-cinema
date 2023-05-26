@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 class CateringMenu
@@ -48,7 +49,7 @@ class CateringMenu
         }
     }
 
-    static public void Sort()
+    static public void Sort(bool IsEmployee = false)
     {
         while (true)
         {
@@ -97,13 +98,13 @@ class CateringMenu
                     switch (option)
                     {
                         case 1: // sort based on name
-                            cateringlogic.PrintMenu(cateringlogic.SortBy("NAME", ascending));
+                            cateringlogic.PrintMenu(cateringlogic.SortBy("NAME", ascending), IsEmployee);
                             break;
                         case 2: // type
-                            cateringlogic.PrintMenu(cateringlogic.SortBy("TYPE", ascending));
+                            cateringlogic.PrintMenu(cateringlogic.SortBy("TYPE", ascending), IsEmployee);
                             break;
                         case 3: // price
-                            cateringlogic.PrintMenu(cateringlogic.SortBy("PRICE", ascending));
+                            cateringlogic.PrintMenu(cateringlogic.SortBy("PRICE", ascending), IsEmployee);
                             break;
                     }
                 }
@@ -111,7 +112,7 @@ class CateringMenu
         }
     }
 
-    static public void Filter()
+    static public void Filter(bool IsEmployee = false)
     {
         while (true)
         {
@@ -139,20 +140,20 @@ class CateringMenu
                 switch (option)
                 {
                     case 1:
-                        cateringlogic.PrintMenu(cateringlogic.FilterBy("Snack"));
+                        cateringlogic.PrintMenu(cateringlogic.FilterBy("Snack"), IsEmployee);
                         break;
                     case 2:
-                        cateringlogic.PrintMenu(cateringlogic.FilterBy("Beverage"));
+                        cateringlogic.PrintMenu(cateringlogic.FilterBy("Beverage"), IsEmployee);
                         break;
                     case 3:
-                        cateringlogic.PrintMenu(cateringlogic.FilterBy("Candy"));
+                        cateringlogic.PrintMenu(cateringlogic.FilterBy("Candy"), IsEmployee);
                         break;
                 }
             }
         }
     }
 
-    static public void Search()
+    static public void Search(bool IsEmployee = false)
     {
         Console.Clear();
         Console.CursorVisible = true;
@@ -164,8 +165,41 @@ class CateringMenu
         Console.WriteLine("Search: ");
         string query = Console.ReadLine() + "";
 
-        cateringlogic.PrintMenu(cateringlogic.SearchBy(query));
+        cateringlogic.PrintMenu(cateringlogic.SearchBy(query), IsEmployee);
 
         Console.CursorVisible = false;
+    }
+
+    static public CateringModel? SearchId()
+    {
+        Console.Clear();
+        Console.CursorVisible = true;
+
+        int id;
+        while (true)
+        {
+            // shows banner and title
+            OptionsMenu.Logo("SEARCH MENU");
+
+            // asks for an input to search for and searches for it
+            Console.WriteLine("Search: ");
+            string query = Console.ReadLine() + "";
+
+            if (int.TryParse(query.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out id))
+            {
+                break;
+            }
+
+            Console.WriteLine("\nInvalid ID. Please enter a valid number.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+        }
+        CateringLogic cl = new();
+        return cl.GetById(id);
+
     }
 }

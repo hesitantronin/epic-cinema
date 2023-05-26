@@ -1,3 +1,5 @@
+using System.Globalization;
+
 class MovieMenu
 {
     public static MovieLogic movielogic = new MovieLogic();
@@ -45,7 +47,7 @@ class MovieMenu
         }
     }
 
-    static public void Sort()
+    static public void Sort(bool IsEmployee = false)
     {
         while (true)
         {
@@ -98,30 +100,30 @@ class MovieMenu
 
                     if (option == 1)
                     {
-                        movielogic.PrintMovies(movielogic.SortBy("DATE", ascending));
+                        movielogic.PrintMovies(movielogic.SortBy("DATE", ascending), IsEmployee);
                     }
                     else if (option == 2)
                     {
-                        movielogic.PrintMovies(movielogic.SortBy("GENRE", ascending));
+                        movielogic.PrintMovies(movielogic.SortBy("GENRE", ascending), IsEmployee);
                     }
                     else if (option == 3)
                     {
-                        movielogic.PrintMovies(movielogic.SortBy("NAME", ascending));
+                        movielogic.PrintMovies(movielogic.SortBy("NAME", ascending), IsEmployee);
                     }
                     else if (option == 4)
                     {
-                        movielogic.PrintMovies(movielogic.SortBy("RATING", ascending));
+                        movielogic.PrintMovies(movielogic.SortBy("RATING", ascending), IsEmployee);
                     }
                     else if (option == 5)
                     {
-                        movielogic.PrintMovies(movielogic.SortBy("PUBLISH", ascending));
+                        movielogic.PrintMovies(movielogic.SortBy("PUBLISH", ascending), IsEmployee);
                     }
                 }
             }
         }
     }
 
-    static public void Filter()
+    static public void Filter(bool IsEmployee = false)
     {
         while (true)
         {
@@ -167,17 +169,17 @@ class MovieMenu
                 // depending on the option that was chosen, it will clear the console and call the right function
                 if (option2 == 1)
                 {
-                    movielogic.PrintMovies(movielogic.FilterBy(Genres[option - 1], true));
+                    movielogic.PrintMovies(movielogic.FilterBy(Genres[option - 1], true), IsEmployee);
                 }
                 else if (option2 == 2)
                 {
-                    movielogic.PrintMovies(movielogic.FilterBy(Genres[option - 1], false));
+                    movielogic.PrintMovies(movielogic.FilterBy(Genres[option - 1], false), IsEmployee);
                 }
             }
         }  
     }
 
-    static public void Search()
+    static public void Search(bool IsEmployee = false)
     {
         Console.Clear();
         Console.CursorVisible = true;
@@ -189,8 +191,41 @@ class MovieMenu
         Console.WriteLine("Search: ");
         string query = Console.ReadLine() + "";
 
-        movielogic.PrintMovies(movielogic.SearchBy(query));
+        movielogic.PrintMovies(movielogic.SearchBy(query), IsEmployee);
 
         Console.CursorVisible = false;
+    }
+
+    static public MovieModel? SearchId()
+    {
+        Console.Clear();
+        Console.CursorVisible = true;
+
+        int id;
+        while (true)
+        {
+            // shows banner and title
+            OptionsMenu.Logo("SEARCH MENU");
+
+            // asks for an input to search for and searches for it
+            Console.WriteLine("Search: ");
+            string query = Console.ReadLine() + "";
+
+            if (int.TryParse(query.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out id))
+            {
+                break;
+            }
+
+            Console.WriteLine("\nInvalid ID. Please enter a valid number.");
+            
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+        }
+        MovieLogic ml = new();
+        return ml.GetById(id);
+
     }
 }
