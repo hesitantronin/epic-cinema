@@ -577,16 +577,7 @@ class MovieLogic
         // Check what to sort by per subject
         if (input.ToUpper() == "DATE")
         {
-            //This is if the user is a customer, they cannot see movies that have already played anymore.
-            DateTime currentDateTime = DateTime.Now;
-            if (ascending)
-            {
-                return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderBy(m => m.PublishDate).ToList();
-            }
-            if (!ascending)
-            {
-                return unsorted.Where(m => m.PublishDate >= currentDateTime).OrderByDescending(m => m.PublishDate).ToList();
-            }
+            return (ascending) ? unsorted.OrderBy(m => m.ViewingDate).ToList() : unsorted.OrderByDescending(m => m.ViewingDate).ToList();
         }
         else if (input.ToUpper() == "GENRE")
         {

@@ -8,7 +8,7 @@
   },
   {
     "id": 2,
-    "name": "Coca cola",
+    "name": "Coca Cola",
     "type": "Beverage",
     "price": 1.99,
     "description": "Carbonated soft drink"
@@ -40,5 +40,19 @@
     "type": "Candy",
     "price": 0.99,
     "description": "Long twisted pieces of an unknown substance, most likely toxic"
+  },
+  {
+    "id": 7,
+    "name": "Pizza",
+    "type": "Snack",
+    "price": 5.99,
+    "description": "It\u0027s pizza, and it\u0027s good."
+  },
+  {
+    "id": 8,
+    "name": "Pepsi",
+    "type": "Beverage",
+    "price": 0.99,
+    "description": "Carbonated soft drink. It\u0027s cheaper, but not necessarily better.."
   }
 ]

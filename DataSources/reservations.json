@@ -28,5 +28,44 @@
     "reservationCode": 7231844,
     "totalPrice": 10.99,
     "cancelled": false
+  },
+  {
+    "id": 2,
+    "emailAddress": "Ben@hotmail.com",
+    "fullName": "Ben Bingus",
+    "movie": {
+      "id": 29,
+      "title": "Seven Samurai",
+      "genre": "Action",
+      "rating": 8.6,
+      "description": "Farmers from a village exploited by bandits hire a veteran samurai for protection, who gathers six other samurai to join him.",
+      "age": 12,
+      "viewing_date": "2023-07-29T18:00:00",
+      "publish_date": "1954-12-27T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "F11",
+        "Price": 5,
+        "SeatTypeValue": 2,
+        "SeatTypeName": "SeatType2"
+      },
+      {
+        "Id": "G11",
+        "Price": 5,
+        "SeatTypeValue": 2,
+        "SeatTypeName": "SeatType2"
+      }
+    ],
+    "cateringReservation": {
+      "Potato chips": "2",
+      "Coca cola": "1"
+    },
+    "accessibilityRequest": "",
+    "viewing_date": "2023-07-29T18:00:00",
+    "reservationCode": 5469634,
+    "totalPrice": 35.95,
+    "cancelled": false
   }
 ]
