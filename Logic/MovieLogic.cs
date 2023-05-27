@@ -1107,17 +1107,26 @@ class MovieLogic
             Console.WriteLine("Viewing Time: (ex. 16:30)");
             string[] times = Console.ReadLine().Split(":");
 
-            if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
+            if (times.Length != 2 || !int.TryParse(times[0], out int hour) || !int.TryParse(times[1], out int minute)
+            || (hour < 0 || hour > 23) || (minute < 0 || minute > 59))
             {
-                Console.WriteLine("Invalid time format. Please try again.");
+                if (times[0].Length > 2 || times[1].Length > 2)
+                {
+                    Console.WriteLine("Invalid time format. Please try again.");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid time format. Hours should be between 0 and 23. Minutes should be between 0 and 59.");
+                }
 
-                // prints a fake return option hehe
+                // prints a fake return option
                 Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
+
                 // actually returns you to the main menu
                 Console.ReadLine();
                 continue;
             }
+
 
             try
             {

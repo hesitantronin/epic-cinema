@@ -111,12 +111,50 @@ class ReservationMenu
         }
 
         AccountsLogic accountslogic = new AccountsLogic();
-
+        
         List<string> ReturnList = new List<string>()
         {
             "Yes",
             "No"
         };
+
+        bool discount = false;
+        int discountOption = OptionsMenu.DisplaySystem(ReturnList, "", "\nWould you like to apply a discount code?", true, false);
+
+        if (discountOption == 1)
+        {
+            string discountCode;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nPlease enter a discount code.");
+                discountCode = Console.ReadLine();
+
+                if (discountCode != "STUDENT")
+                {
+                    List<string> EList = new List<string>() { "Continue"};
+                    Console.Clear();
+                    int option = OptionsMenu.DisplaySystem(EList, "", "\nInvalid promo code. Please enter a valid promo code.", true, true);
+
+                    if (option == 1)
+                    {
+                        continue;
+                    }
+                    else if (option == 2)
+                    {
+                        break;
+                    }
+                }
+            }
+            while (discountCode != "STUDENT");
+
+            discount = true;
+        }
+        else if (discountOption == 2)
+        {
+            //do nothing;
+        }
+
 
         // This is for accessibility, customers can input a special request here
         int option1 = OptionsMenu.DisplaySystem(ReturnList, "", "\nWill you need any special assistance to make going to our cinema a more accessible experience for you?");
@@ -194,9 +232,16 @@ class ReservationMenu
         {
             Console.WriteLine($"\nREQUEST: {AccountsLogic.CurrentAccount.AccessibilityRequest}");
         }
-
-        Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
-
+        if (discount)
+        {
+            //if there is a discount then there will be a 10% discount
+            Console.WriteLine($"\nDISCOUNT: {System.Math.Round(finalPrice * 0.1, 2)} euros");
+            Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice * 0.9, 2)} euros");
+        }
+        else
+        {
+            Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
+        }
 
 
         // ADD RESERVATION TO JSON FILE
