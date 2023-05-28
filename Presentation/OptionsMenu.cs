@@ -26,7 +26,7 @@ static class OptionsMenu
         {
 
             // menu layout 1, for if the user isnt logged in yet
-            if (AccountsLogic.CurrentAccount == null)
+            if (AccountsLogic.CurrentAccount == null || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
             {
 
                 // list of options that will be displayed in start
@@ -83,6 +83,7 @@ static class OptionsMenu
                     "Logout",
                     "Continue",
                     "Info",
+                    "View Reservations"
                 };
 
                 // the necessary info gets used in the display method
@@ -118,9 +119,16 @@ static class OptionsMenu
                     InfoPage();
                 }
 
+                else if (option == 4)
+                {
+                    // View reservations
+                    ReservationsLogic reservationsLogic = new ReservationsLogic();
+                    List<ReservationsModel> reservations = reservationsLogic.GetOwnReservations();
+                    reservationsLogic.PrintReservations(reservations);
+                }
                 // asks the user if they want to log out.
                 // If the return of the logout functiun is true, the program quits by breaking out of the loop
-                else if (option == 4)
+                else if (option == 5)
                 {
                     if (AccountsLogic.CurrentAccount != null)
                     {
@@ -491,6 +499,97 @@ static class OptionsMenu
             }
 
             // this will show the return button
+            Console.WriteLine($"\n{(option == list.Count() + returncount ? decorator : "   ")}Return\u001b[0m");
+
+            // sees what key has been pressed
+            key = Console.ReadKey(false);
+
+            // a switch case that changes the value from 'option', depending on the key input
+            switch (key.Key)
+            {
+                // moves one up
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? list.Count() + returncount : option - 1;
+                    break;
+                    
+                // moves one down
+                case ConsoleKey.DownArrow:
+                    option = option == list.Count() + returncount ? 1 : option + 1;
+                    break;
+
+                // if enter is pressed, breaks out of the while loop
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
+            }
+        }
+
+        Console.CursorVisible = true;
+        return option;
+    }
+
+    static public int ReservationsDisplaySystem(List<ReservationsModel> list, string title, string question = "", bool showLogo = true, bool previousButton = false, bool nextButton = false, bool showReturn = true)
+    {
+        // makes the cursor invisible
+        Console.CursorVisible = false;
+        Console.OutputEncoding = Encoding.UTF8;
+
+        // prints the banner and title
+        if (showLogo)
+        {
+            OptionsMenu.Logo(title);
+        }
+
+        if (question != "")
+        {
+            Console.WriteLine($"{question}\n");
+        }
+
+        // gets the cursor position and sets option to 1
+        (int left, int top) = Console.GetCursorPosition();
+        int option = 1;
+        int returncount = 0;
+
+        // this is the decorator that will help you see where the cursor is at
+        var decorator = " > \u001b[32m";
+
+        // sets a variable for 'key' that will be used later
+        ConsoleKeyInfo key;
+
+        // the loop in which an option is chosen from a list
+        bool isSelected = false;
+        while (!isSelected)
+        {
+            // sets the cursor to the right position
+            Console.SetCursorPosition(left, top);
+
+            // prints the reservations one by one
+            for (int i = 0; i < list.Count(); i++)
+            {
+                // writes the movie title in red
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i].Movie.Title}\u001b[0m");
+                Console.ResetColor();
+
+                // prints the date and time of the reservation
+                Console.WriteLine($"    Date and time: {list[i].Movie.ViewingDate}\n");
+            }
+
+            returncount = 1;
+
+            // this will show the return button
+            if (previousButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Previous\u001b[0m");
+                returncount += 1;
+            }
+
+            if (nextButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Next\u001b[0m");
+                returncount += 1;
+            }
+
             Console.WriteLine($"\n{(option == list.Count() + returncount ? decorator : "   ")}Return\u001b[0m");
 
             // sees what key has been pressed
