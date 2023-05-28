@@ -2,12 +2,37 @@ using System.Globalization;
 
 class MovieMenu
 {
+    // makes a new instance of movielogic that can be used throughout this entire class
     public static MovieLogic movielogic = new MovieLogic();
+
+    // a list of possible genres, later also possibleused for the employee menu
+    public static List<string> Genres = new List<string>()
+    {
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Crime",
+        "Mystery",
+        "Fantasy",
+        "Historical",
+        "Horror",
+        "Romance",
+        "SciFi",
+        "Thriller"
+    };
+
+    // starts up the main movie menu
     static public void Start()
     {
+        // the while loop makes it possible for the return buttons to work
         while (true)
         {
-            Console.Clear();
+            // if the user comes back from the last reservation page, we want them to return to the start menu
+            // so thats what this boolean is for
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
 
             // list of options to display
             List<string> OptionList = new List<string>()
@@ -47,12 +72,11 @@ class MovieMenu
         }
     }
 
+    // the menu function for the sort option
     static public void Sort(bool IsEmployee = false)
     {
         while (true)
         {
-            Console.Clear();
-
             // list of options to display
             List<string> OptionList = new List<string>()
             {
@@ -66,15 +90,13 @@ class MovieMenu
             // the necessary info gets used in the display method
             int option = OptionsMenu.DisplaySystem(OptionList, "SORT MOVIES");
             
-            // depending on the option that was chosen, it will clear the console and call the right function
+            // if the user chose return, the loop will end, otherwise itll ask about the sort order
             if (option == 6)
             {
                 break;
             }
             else
             {
-                Console.Clear();
-
                 // list of options that will be displayed
                 List<string> AscDescList = new List<string>()
                 {
@@ -85,19 +107,17 @@ class MovieMenu
                 // the necessary info gets used in the display method
                 int option2 = OptionsMenu.DisplaySystem(AscDescList, "SORT MOVIES");
 
-                // depending on the option that was chosen, it will clear the console and call the right function
+                // the boolean gets changed according to the option chosen by the user
                 bool ascending = true;
-
                 if (option2 == 2)
                 {
                     ascending = false;
                 }
 
+                // depending on the selected options, the movies are sorted in the correct way
+                // the is employee boolean is there to start up the right menu later
                 if (option2 != 3)
                 {
-                    // depending on the option that was chosen, it will clear the console and call the right function
-                    Console.Clear();
-
                     if (option == 1)
                     {
                         movielogic.PrintMovies(movielogic.SortBy("DATE", ascending), IsEmployee);
@@ -123,28 +143,11 @@ class MovieMenu
         }
     }
 
+    // the menu for the filter function
     static public void Filter(bool IsEmployee = false)
     {
         while (true)
         {
-            Console.Clear();
-
-            // a list of possible genres
-            List<string> Genres = new List<string>()
-            {
-                "Action",
-                "Adventure",
-                "Comedy",
-                "Crime",
-                "Mystery",
-                "Fantasy",
-                "Historical",
-                "Horror",
-                "Romance",
-                "SciFi",
-                "Thriller"
-            };
-
             // the necessary info gets used in the display method
             int option = OptionsMenu.DisplaySystem(Genres, "FILTER MOVIES");
 
@@ -154,19 +157,10 @@ class MovieMenu
             }
             else
             {
-                Console.Clear();
-
-                // list of options that will be displayed
-                List<string> YesNoList = new List<string>()
-                {
-                    "Yes",
-                    "No"
-                };
-
                 // the necessary info gets used in the display method
-                int option2 = OptionsMenu.DisplaySystem(YesNoList, "FILTER MOVIES", "Show movies with mature rating:");
+                int option2 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "FILTER MOVIES", "Show movies with mature rating:");
 
-                // depending on the option that was chosen, it will clear the console and call the right function
+                // depending on the option that was chosen, it will call the right function
                 if (option2 == 1)
                 {
                     movielogic.PrintMovies(movielogic.FilterBy(Genres[option - 1], true), IsEmployee);
@@ -179,9 +173,9 @@ class MovieMenu
         }  
     }
 
+    // search menu for the search function
     static public void Search(bool IsEmployee = false)
     {
-        Console.Clear();
         Console.CursorVisible = true;
 
         // shows banner and title
@@ -196,6 +190,7 @@ class MovieMenu
         Console.CursorVisible = false;
     }
 
+    // an extra search function only used for employees and admin, to easily find a movie by id
     static public MovieModel? SearchId()
     {
         Console.Clear();
@@ -216,16 +211,12 @@ class MovieMenu
                 break;
             }
 
-            Console.WriteLine("\nInvalid ID. Please enter a valid number.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
+            OptionsMenu.FakeContinue("Invalid ID. Please enter a valid number.");
         }
-        MovieLogic ml = new();
-        return ml.GetById(id);
+
+        Console.CursorVisible = false;
+
+        return movielogic.GetById(id);
 
     }
 }

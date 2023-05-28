@@ -173,7 +173,7 @@ static class SeatLogic
             }
 
         }
-        Console.Clear();
+
         OptionsMenu.Logo("Seat selection");
 
         // Going to food reservations and saving the reserved seats/movie to the current account
@@ -193,13 +193,36 @@ static class SeatLogic
             accountslogic.UpdateList(AccountsLogic.CurrentAccount);
         }
 
+        double seatsPrice = 0.0;
+
+        string seatReservations = "";
+        foreach (var seat in AccountsLogic.CurrentAccount.SeatReservation)
+        {
+            seatReservations += $"{seat.Id} ({seat.SeatTypeName})  ----  € {AccountsLogic.CurrentAccount.Movie.MoviePrice} (+ € {seat.Price})\n";
+
+            seatsPrice += AccountsLogic.CurrentAccount.Movie.MoviePrice;
+            seatsPrice += seat.Price;
+        }
+        seatReservations += $"\nSubtotal Movie Seats: ----  € {Math.Round(seatsPrice, 2)}";
+
+        Console.WriteLine($"{seatReservations}");
+        Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate}");
+
         List<string> ReturnList = new List<string>
         {
             "Yes",
             "No"
         };
 
-        int option4 = OptionsMenu.DisplaySystem(ReturnList, "", "\nWould you like to reserve catering menu items?", true, false);
+        int option3_5 = OptionsMenu.DisplaySystem(ReturnList, "movie selection", $"You've selected these movie seats for \nthe movie \u001b[31m{AccountsLogic.CurrentAccount.Movie.Title}\u001b[0m:\n\n{seatReservations}\n\nAre you satisfied with this selection?", true, false);
+
+        if (option3_5 == 2)
+        {
+            return;
+        }
+
+
+        int option4 = OptionsMenu.DisplaySystem(ReturnList, "Catering", "Would you like to reserve catering menu items?", true, false);
 
         switch(option4)
         {

@@ -1,125 +1,140 @@
-using System.Text;
 using System.Text.RegularExpressions;
 
 class ReservationMenu
 {
+    // boolean so the user gets send back to the start menu after reservation.
+    public static bool reservationMade = false;
+
+    public static AccountsLogic accountsLogic = new AccountsLogic();
+    public static ReservationsLogic reservationsLogic = new ReservationsLogic();
+
+
+    // starts up the final reservation menu
     static public void Start()
     {
-        AccountsLogic accountsLogic = new AccountsLogic();
-        CateringAccess cateringAccess = new CateringAccess();
-
         // With a guest account, we won't have any information about the person who's making a reservation. So when they're finishing their reservation, they're asked to make an account
         // this way, you can look at your options without having to create an account, but won't have to go back to create an account if you do decide to make a reservation
         if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
         {
-            Console.Clear();
-            OptionsMenu.Logo("registration");
-            Console.WriteLine("In order to finalize your reservation, please create an account.");
+            List<string> LoginOrRegister = new() {"Login", "Register"};
+            int optione = OptionsMenu.DisplaySystem(LoginOrRegister, "registration/login", "In order to finalize your reservation, please create an account or login.");
 
-            Console.CursorVisible = true;
-            string email = "";
-
-            while(true)
+            if (optione == 1)
             {
-                Console.WriteLine("Email Address:");
-                email = Console.ReadLine() + "";
+                GuestToLogin();
+            }
+            else if (optione == 2)
+            {
+                GuestToRegister();
+            }
+            else
+            {
+                return;
+            }
+        }
 
-                 if (!accountsLogic.IsEmailValid(email))
+        // !the code below has been split up into functions to make things easier to read!
+        // (now that i see it, its not that convenient with the transfering of data between the overview and write to json)
+
+        // asks the user if the would need assistance when they come to the cinema
+        AssistanceOption();
+
+        bool discount = ApplyDiscount();
+        
+        // final reservation overview
+        (int, double) reservationInfo = ReservationOverview(discount);
+
+        // Add reservation to json
+        ReservationToJson(reservationInfo.Item1, reservationInfo.Item2);
+
+        // updates the seat csv
+        UpdateSeatCsv();
+
+
+        // Reservation data is temporarily stored in a users account. After the reservation is finalized, the data is removed from their account
+        // This way, they can create multiple reservations
+        reservationsLogic.RemoveReservationFromAccount();
+
+        // return has been fixed thanks to the reservation boolean, would appreciate it if someone could give feedback
+        List<string> emptyList = new List<string>(){"Return to Start"};
+        int brek = OptionsMenu.DisplaySystem(emptyList, "", $"", false, false, "");
+        if (brek == 1)
+        {
+            reservationMade = true;
+        }
+    }
+
+    // a login that transports the reservation data from the guest acc to the acc that has been logged in
+    public static void GuestToLogin()
+    {
+        Console.CursorVisible = true;
+
+        string email = "";
+        string password = "";
+
+        while (true)
+        {
+            OptionsMenu.Logo("login");
+
+            Console.WriteLine("Email address: ");
+            email = Console.ReadLine() + "";
+
+            Console.WriteLine("\nPassword: ");
+            password = accountsLogic.GetMaskedPassword();
+
+            //Return authorized accountmodel that matches both credentials. If no matching account is found, return an empty unauthorized account
+            AccountModel currentAccount;
+            List<AccountModel> accounts = AccountsAccess.LoadAll();
+            AccountModel? accountModel = accounts.Find(a => a.EmailAddress == email && a.Password == AccountsLogic.HashPassword(password));
+
+            if(AccountsLogic.IsLoginValid(email, password) && accountModel != null) 
+            { 
+                accountModel.Authorize();
+
+                // transfers the reservation data
+                accountModel.AccessibilityRequest = AccountsLogic.CurrentAccount.AccessibilityRequest;
+                accountModel.CateringReservation = AccountsLogic.CurrentAccount.CateringReservation;
+                accountModel.SeatReservation = AccountsLogic.CurrentAccount.SeatReservation;
+                accountModel.Movie = AccountsLogic.CurrentAccount.Movie;
+
+                currentAccount = accountModel;
+
+                OptionsMenu.StrayGuestAccKiller();
+
+                if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
                 {
-                    List<string> EList = new List<string>(){"Continue"};
+                    accountsLogic.SetCurrentAccount(currentAccount);
 
-                    int option = OptionsMenu.DisplaySystem(EList, "", "\nInvalid email, please try again.", false, true);
-
-                    if (option == 2)
-                    {
-                        return;
-                    }
-                }
-                else if(accountsLogic.IsEmailInUse(email))
-                {
-                    List<string> EList = new List<string>(){"Continue"};
-
-                    int option = OptionsMenu.DisplaySystem(EList, "", "\nThis email is already in use, please try again.", false, true);
-
-                    if (option == 2)
-                    {
-                        return;
-                    }
                 }
                 else
+                {
+                    OptionsMenu.Logo("Wrong account");
+                    Console.WriteLine("This login is for customers only.\nIf you want to log in with a different account, go back to the main menu.");
+                    Console.ReadLine();
+                }
+                break;
+            }
+            else
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, true);
+                
+                currentAccount = new AccountModel(0, email, password, string.Empty);
+
+                if (option == 2)
                 {
                     break;
                 }
             }
-
-            string password = "";
-            string confirmedPassword = "no match";
-
-            while (password != confirmedPassword)
-            {
-                Console.Clear();
-
-                OptionsMenu.Logo("registration");
-                Console.WriteLine("Password:");
-
-                password = accountsLogic.GetMaskedPassword();
-                if (accountsLogic.IsPasswordValid(password))
-                {
-                    Console.Clear();
-                    OptionsMenu.Logo("registration");
-
-                    Console.WriteLine("Confirm Password:");
-                    confirmedPassword = accountsLogic.GetMaskedPassword();
-
-                    if (password != confirmedPassword)
-                    {
-                        List<string> BList = new List<string>() { "Continue" };
-
-                        int option = OptionsMenu.DisplaySystem(BList, "", "\nPasswords do not match, please try again.", false, true);
-
-                        if (option == 2)
-                        {
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    List<string> CList = new List<string>() { "Continue" };
-                    int option = OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, one capital letter and one special character", false, true);
-
-                    if (option == 2)
-                    {
-                        return;
-                    }
-                }
-            }
-
-            Console.Clear();
-            OptionsMenu.Logo("Registration");
-            Console.WriteLine("Please enter your name:");
-            string fullName = Console.ReadLine() + "";
-
-            // Update the info from the guest account, which was previously just "" or null, to the entered information
-            AccountsLogic.CurrentAccount.EmailAddress = email;
-            AccountsLogic.CurrentAccount.Password = accountsLogic.HashPassword(password);
-            AccountsLogic.CurrentAccount.FullName = fullName;
-
-            // Since they're no longer a guest, their account type is also switched from guest to customer
-            AccountsLogic.CurrentAccount.Type = AccountModel.AccountType.CUSTOMER;
-            accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
         }
+        Console.CursorVisible = false;
+    }
 
-        AccountsLogic accountslogic = new AccountsLogic();
-        
-        List<string> ReturnList = new List<string>()
-        {
-            "Yes",
-            "No"
-        };
-
+    public static bool ApplyDiscount()
+    {
         bool discount = false;
-        int discountOption = OptionsMenu.DisplaySystem(ReturnList, "", "\nWould you like to apply a discount code?", true, false);
+        int discountOption = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Discounts", "Would you like to apply a discount code?", true, false);
 
         if (discountOption == 1)
         {
@@ -132,9 +147,7 @@ class ReservationMenu
 
                 if (discountCode != "STUDENT")
                 {
-                    List<string> EList = new List<string>() { "Continue"};
-                    Console.Clear();
-                    int option = OptionsMenu.DisplaySystem(EList, "", "\nInvalid promo code. Please enter a valid promo code.", true, true);
+                    int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nInvalid promo code. Please enter a valid promo code.", false, true);
 
                     if (option == 1)
                     {
@@ -154,10 +167,107 @@ class ReservationMenu
         {
             //do nothing;
         }
+        return discount;
+    }
 
+    // a login that transports the reservation data from the guest acc to the acc that has been created
+    public static void GuestToRegister()
+    {
+        Console.CursorVisible = true;
+        string email = "";
 
+        while(true)
+        {
+            Console.WriteLine("Email Address:");
+            email = Console.ReadLine() + "";
+
+            if (!accountsLogic.IsEmailValid(email))
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nInvalid email, please try again.", false, true);
+
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+            else if(accountsLogic.IsEmailInUse(email))
+            {
+                List<string> EList = new List<string>(){"Continue"};
+
+                int option = OptionsMenu.DisplaySystem(EList, "", "\nThis email is already in use, please try again.", false, true);
+
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        string password = "";
+        string confirmedPassword = "no match";
+
+        while (password != confirmedPassword)
+        {
+            OptionsMenu.Logo("registration");
+            Console.WriteLine("Password:");
+
+            password = accountsLogic.GetMaskedPassword();
+            if (accountsLogic.IsPasswordValid(password))
+            {
+                OptionsMenu.Logo("registration");
+
+                Console.WriteLine("Confirm Password:");
+                confirmedPassword = accountsLogic.GetMaskedPassword();
+
+                if (password != confirmedPassword)
+                {
+                    List<string> BList = new List<string>() { "Continue" };
+
+                    int option = OptionsMenu.DisplaySystem(BList, "", "\nPasswords do not match, please try again.", false, true);
+
+                    if (option == 2)
+                    {
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                List<string> CList = new List<string>() { "Continue" };
+                int option = OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, one capital letter and one special character", false, true);
+
+                if (option == 2)
+                {
+                    return;
+                }
+            }
+        }
+
+        OptionsMenu.Logo("Registration");
+        Console.WriteLine("Please enter your name:");
+        string fullName = Console.ReadLine() + "";
+
+        // Update the info from the guest account, which was previously just "" or null, to the entered information
+        AccountsLogic.CurrentAccount.EmailAddress = email;
+        AccountsLogic.CurrentAccount.Password = AccountsLogic.HashPassword(password);
+        AccountsLogic.CurrentAccount.FullName = fullName;
+
+        // Since they're no longer a guest, their account type is also switched from guest to customer
+        AccountsLogic.CurrentAccount.Type = AccountModel.AccountType.CUSTOMER;
+        accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
+    }
+
+    // asks the user if they would need any help
+    public static void AssistanceOption()
+    {   
         // This is for accessibility, customers can input a special request here
-        int option1 = OptionsMenu.DisplaySystem(ReturnList, "", "\nWill you need any special assistance to make going to our cinema a more accessible experience for you?");
+        int option1 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Accessibility", "\nWill you need any special assistance to make going to our cinema a more accessible experience for you?");
 
         if (option1 == 1)
         {
@@ -172,10 +282,11 @@ class ReservationMenu
                     accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
                 }
         }
+    }
 
-        // final reservation overview
-        Console.Clear();
-
+    // an overview of the final reservation, calculates the final price and returns it, together with the reservation code, so it doesnt have to be calculated twice
+    public static (int, double) ReservationOverview(bool discount)
+    {
         Console.CursorVisible = true;
         OptionsMenu.Logo("reservation");
         Console.WriteLine("Here are the details of your reservation:\n");
@@ -225,6 +336,7 @@ class ReservationMenu
         }
 
         Random random = new Random();
+        
         int resCode = random.Next(1000000, 9999999);
         Console.WriteLine($"RESERVATION CODE: {resCode}");
 
@@ -243,9 +355,16 @@ class ReservationMenu
             Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
         }
 
+        Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
 
-        // ADD RESERVATION TO JSON FILE
+        Console.WriteLine("");
 
+        return (resCode, finalPrice);
+    }
+
+    // writes the final reservation to a separate json
+    public static void ReservationToJson(int resCode, double finalPrice)
+    {
         // Get reservations already present in file
         List<ReservationsModel> originalReservations = ReservationsAccess.LoadAll();
         // Get maximum ID from the original reservations
@@ -260,14 +379,14 @@ class ReservationMenu
         }
 
         // Update reservations.json to include this new reservation
-        ReservationsLogic reservationsLogic = new ReservationsLogic();
         ReservationsModel newReservation = new ReservationsModel(maxId + 1, AccountsLogic.CurrentAccount.EmailAddress, AccountsLogic.CurrentAccount.FullName, AccountsLogic.CurrentAccount.Movie, AccountsLogic.CurrentAccount.SeatReservation, AccountsLogic.CurrentAccount.CateringReservation, AccountsLogic.CurrentAccount.AccessibilityRequest, AccountsLogic.CurrentAccount.Movie.ViewingDate, resCode, System.Math.Round(finalPrice, 2));
         reservationsLogic.UpdateList(newReservation);
 
+    }
 
-
-        // UPDATE SEATS CSV
-
+    // updates the seats from the reservation to unavailable/taken
+    public static void UpdateSeatCsv()
+    {
         // Update the values in the CSV to show that the seats have been booked
         string movieTitle = Regex.Replace(AccountsLogic.CurrentAccount.Movie.Title, @"[^0-9a-zA-Z\._]", string.Empty);
         string[] movieViewingDate1 = AccountsLogic.CurrentAccount.Movie.ViewingDate.ToString().Split(" ");
@@ -284,16 +403,5 @@ class ReservationMenu
         }
 
         SeatAccess.WriteToCSV(auditorium, pathToCsv);
-
-
-
-        // Reservation data is temporarily stored in a users account. After the reservation is finalized, the data is removed from their account
-        // This way, they can create multiple reservations
-        reservationsLogic.RemoveReservationFromAccount();
-
-        // Temporary end of the program? without displaying anything it automatically goes back to another menu (seatMenu/movieMenu/cateringMenu) so this is to prevent that
-        // if you press enter itll still go to a menu though
-        List<string> emptyList = new List<string>(){};
-        OptionsMenu.DisplaySystem(emptyList, "", $"\n", false, false, "");
     }
 }

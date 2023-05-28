@@ -1,13 +1,28 @@
 using System.Globalization;
-using System.Text;
 
 class CateringMenu
 {
+    // makes a new instance of cateringlogic that can be used throughout this entire class
     public static CateringLogic cateringlogic = new CateringLogic();
+
+    // this list can later be reused for the employee menu
+    public static List<string> types = new List<string>()
+    {
+        "Snack",
+        "Beverage",
+        "Candy"
+    };
+
+    // starts up catering menu
     static public void Start()
     {
         while (true)
         {
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
+
             // list of options to display
             List<string> OptionList = new List<string>()
             {
@@ -20,28 +35,25 @@ class CateringMenu
             // the necessary info gets used in the display method
             int option = OptionsMenu.DisplaySystem(OptionList, "CATERING");
 
-            // depending on the option that was chosen, it will clear the console and call the right function
+            // depending on the option that was chosen, it will call the right function
             if (option == 1)
             {
-                Console.Clear();
                 Sort();
             }
             else if (option == 2)
             {
-                Console.Clear();
                 Filter();
             }
             else if (option == 3)
             {
-                Console.Clear();
                 Search();
             }
             else if (option == 4)
             {
-                Console.Clear();
                 cateringlogic.PrintMenu();
             }
 
+            // breaks out of the while loop if return is selected
             else if (option == 5)
             {
                 break;
@@ -53,8 +65,6 @@ class CateringMenu
     {
         while (true)
         {
-            Console.Clear();
-
             // list of options to sort by
             List<string> OptionList = new List<string>()
             {
@@ -116,16 +126,6 @@ class CateringMenu
     {
         while (true)
         {
-            Console.Clear();
-
-            // list of possible types
-            List<string> types = new List<string>()
-            {
-                "Snack",
-                "Beverage",
-                "Candy"
-            };
-
             int option = OptionsMenu.DisplaySystem(types, "FILTER MENU");
 
             if (option == 4) // 4 = return/go back
@@ -155,7 +155,6 @@ class CateringMenu
 
     static public void Search(bool IsEmployee = false)
     {
-        Console.Clear();
         Console.CursorVisible = true;
 
         // shows banner and title
@@ -172,7 +171,6 @@ class CateringMenu
 
     static public CateringModel? SearchId()
     {
-        Console.Clear();
         Console.CursorVisible = true;
 
         int id;
@@ -190,16 +188,12 @@ class CateringMenu
                 break;
             }
 
-            Console.WriteLine("\nInvalid ID. Please enter a valid number.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
+            OptionsMenu.FakeContinue("Invalid ID. Please enter a valid number.");
+
         }
-        CateringLogic cl = new();
-        return cl.GetById(id);
+        Console.CursorVisible = false;
+
+        return cateringlogic.GetById(id);
 
     }
 }

@@ -4,8 +4,6 @@ class AdminMenu : EmployeeMenu
     {
         while (true)
         {
-            Console.Clear();
-
             // Combine the StartList from AdminMenu and EmployeeMenu
             List<string> startList = new List<string>()
             {
@@ -14,7 +12,6 @@ class AdminMenu : EmployeeMenu
                 "Remove accounts"
             };
             
-
             startList.AddRange(StartList); // Add the options from EmployeeMenu
 
             // Display the menu and get the selected option
@@ -50,10 +47,6 @@ class AdminMenu : EmployeeMenu
             {
                 break;
             }
-            else
-            {
-                Console.WriteLine("Invalid option");
-            }
         }
     }
 
@@ -66,7 +59,6 @@ class AdminMenu : EmployeeMenu
         };
 
         int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "What type of account do you want to add", true, true);
-        Console.Clear();
 
         // Handle the selected option
         if (option == 1)
@@ -160,16 +152,8 @@ class AdminMenu : EmployeeMenu
             {
                 WriteLogo(Convert.ToString(option));
 
-                OptionsMenu.Logo("logo updated");
-                Console.WriteLine("The logo has been updated.");
-                
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
+                OptionsMenu.FakeContinue("The logo has been updated.", "logo updated");
                 break;
-
             }
             else
             {

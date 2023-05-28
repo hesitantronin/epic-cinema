@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 class EmployeeMenu
@@ -14,19 +13,17 @@ class EmployeeMenu
         "Catering",
         "Global seat data and heat map"
     };
+
     public static void StartEmployee()
     {
         while (true)
         {
-            Console.Clear();
-
             // the necessary info gets used in the display method
             int option = OptionsMenu.DisplaySystem(StartList, "Editing menu", "Select what category you want to edit.", true, true);
 
             // depending on the option that was chosen, it will clear the console and call the right function
             if (option == 1)
             {
-                Console.Clear();
                 movie.EmployeeMovies();
             } 
             
@@ -47,15 +44,17 @@ class EmployeeMenu
         }
     }
 
+    // a function that allows you to edit the heatmap and global seat data
     public static void EditGlobalSeatData()
     {
         while (true)
         {
-            List<string> ew = new() {"Global Seat Data", "Edit Heat Map", "Reset Heat Map"};
+            List<string> SeatDataOptions = new() {"Global Seat Data", "Edit Heat Map", "Reset Heat Map"};
 
-            int weh = OptionsMenu.DisplaySystem(ew, "edit auditorium", "What would you like tho change?");
+            int option2 = OptionsMenu.DisplaySystem(SeatDataOptions, "edit auditorium", "What would you like tho change?");
             
-            if (weh == 1)
+            // global seat data
+            if (option2 == 1)
             {
                 while (true)
                 {
@@ -81,30 +80,25 @@ class EmployeeMenu
                         List<string> change = new() {$"Name: {SeatData[key].Item1}", $"Price: {SeatData[key].Item2}"};
                         while (true)
                         {
-                            int option2 = OptionsMenu.DisplaySystem(change, "edit seat info", "Select what field you want to edit.", true, true);
-                            if (option2 == 1)
+                            int option3 = OptionsMenu.DisplaySystem(change, "edit seat info", "Select what field you want to edit.", true, true);
+                            if (option3 == 1)
                             {
                                 while (true)
                                 {
                                     OptionsMenu.Logo("edit seat info");
                                     Console.Write("New name: ");
                                     string newName = Console.ReadLine();
+
                                     if (!string.IsNullOrEmpty(newName))
                                     {
                                         SeatData[key] = (newName, SeatData[key].Item2);
                                         break;
                                     }
 
-                                    Console.WriteLine("\nThe name can't be empty.");
-                                    
-                                    // prints a fake return option hehe
-                                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                                
-                                    // actually returns you to the main menu
-                                    Console.ReadLine();
+                                    OptionsMenu.FakeContinue("\nThe name can't be empty.");
                                 }
                             }
-                            else if (option2 == 2)
+                            else if (option3 == 2)
                             {
                                 while (true)
                                 {
@@ -120,13 +114,7 @@ class EmployeeMenu
                                         break;
                                     }
 
-                                    Console.WriteLine("Invalid price. Please enter a valid decimal number.");
-                                    
-                                    // prints a fake return option hehe
-                                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                                
-                                    // actually returns you to the main menu
-                                    Console.ReadLine();
+                                    OptionsMenu.FakeContinue("\nInvalid price. Please enter a valid decimal number.");
                                 }
                             }
                             else
@@ -136,21 +124,16 @@ class EmployeeMenu
 
                             SeatAccess.WriteGlobalSeatData(SeatData);
                     
-                            OptionsMenu.Logo("Seat data updated");
+                            OptionsMenu.FakeContinue("Seat Data updated successfully.", "Seat data updated");
 
-                            Console.WriteLine("Seat Data updated successfully.");
-                            
-                            // prints a fake return option hehe
-                            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                        
-                            // actually returns you to the main menu
-                            Console.ReadLine();
                             break;
                         }
                     }
                 }
             }
-            else if (weh == 2)
+
+            // edit heat map
+            else if (option2 == 2)
             {
                 List<string> range = new() {"Range 1", "Range 2", "Range 3"};
 
@@ -325,13 +308,7 @@ class EmployeeMenu
                         SeatAccess.PrintAuditorium(auditoriumArray);
                         SeatsMenu.SeatLegendDefault();
 
-                        Console.WriteLine("The seats have been updated.");
-
-                        // prints a fake return option hehe
-                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                    
-                        // actually returns you to the main menu
-                        Console.ReadLine();  
+                        OptionsMenu.FakeContinue("The seats have been updated.");
                         break;
                     }
                     else
@@ -340,7 +317,7 @@ class EmployeeMenu
                     }
                 }
             }
-            else if (weh == 3)
+            else if (option2 == 3)
             {
                 string pathToCsv = $@"DataSources/DefaultAuditorium/ResetAuditorium.csv";
                 string pathToCsv2 = $@"DataSources/DefaultAuditorium/Auditorium.csv";
@@ -357,13 +334,7 @@ class EmployeeMenu
                 SeatAccess.PrintAuditorium(defaultAu);
                 SeatsMenu.SeatLegendDefault();
 
-                Console.WriteLine("The heatmap has been reset");
-
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();  
+                OptionsMenu.FakeContinue("The heatmap has been reset");
                 break;
             }
             else

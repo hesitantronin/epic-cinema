@@ -71,13 +71,8 @@ class AccountsLogic
             // Remove the account with the specified ID
             _accounts.RemoveAt(index);
             AccountsAccess.WriteAll(_accounts);
-            OptionsMenu.Logo("Account removed");
-            Console.WriteLine("Account removed successfully.");
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();        
+       
+            OptionsMenu.FakeContinue("Account removed successfully.", "Account removed");
         }
         else
         {
@@ -93,7 +88,7 @@ class AccountsLogic
     }
 
     // Return false if either of the parameters are empty or null
-    public bool IsLoginValid(string email, string password)
+    public static bool IsLoginValid(string email, string password)
     {
         return (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password));
     }
@@ -107,7 +102,6 @@ class AccountsLogic
 
         while (true)
         {
-            Console.Clear();
             OptionsMenu.Logo("login");
 
             Console.WriteLine("Email address: ");
@@ -121,7 +115,6 @@ class AccountsLogic
 
             if(IsLoginValid(email, password) && accountModel != null) 
             { 
-                Console.Clear();
                 
                 List<string> EList = new List<string>(){"Continue"};
 
@@ -183,8 +176,6 @@ class AccountsLogic
 
         while(true) 
         {
-            Console.Clear();
-
             OptionsMenu.Logo(isEmployeeRegistration ? "Employee account registration" : isAdminRegistration ? "Admin account registration" : "Registration");
 
             Console.WriteLine("Email Address:");
@@ -223,7 +214,6 @@ class AccountsLogic
 
         while (password != confirmedPassword)
         {
-            Console.Clear();
 
             OptionsMenu.Logo("registration");
             Console.WriteLine("Password:");
@@ -231,7 +221,6 @@ class AccountsLogic
             password = accountsLogic.GetMaskedPassword();
             if (accountsLogic.IsPasswordValid(password))
             {
-                Console.Clear();
                 OptionsMenu.Logo("registration");
 
                 Console.WriteLine("Confirm Password:");
@@ -261,30 +250,19 @@ class AccountsLogic
             }
         }
 
-        Console.Clear();
         OptionsMenu.Logo("registration");
         Console.WriteLine("Name:");
         string fullName = Console.ReadLine() + "";
 
         AccountModel.AccountType accountType = isEmployeeRegistration ? AccountModel.AccountType.EMPLOYEE : isAdminRegistration ? AccountModel.AccountType.ADMIN : AccountModel.AccountType.CUSTOMER;
-        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, accountsLogic.HashPassword(password), fullName, accountType);
+        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, AccountsLogic.HashPassword(password), fullName, accountType);
         accountsLogic.UpdateList(acc);
         
         if (!isEmployeeRegistration && !isAdminRegistration) accountsLogic.SetCurrentAccount(acc);
 
-        Console.Clear();
-
         List<string> DList = new List<string>(){"Continue"};
 
         OptionsMenu.DisplaySystem(DList, "welcome page", isEmployeeRegistration || isAdminRegistration ? $"Succesfully created {acc.Type} account: {acc.FullName}!":$"Account created successfully!\nWelcome, {fullName}.", true, false);
-        // if (isEmployeeRegistration)
-        // {
-        //     EmployeeMenu.StartEmployee();
-        // }
-        // else if (isAdminRegistration)
-        // {
-        //     AdminMenu.StartAdmin();
-        // }
         if (!isAdminRegistration && !isEmployeeRegistration)
         {
             MovieMenu.Start();     
@@ -351,7 +329,7 @@ class AccountsLogic
         return password;
     }
 
-    public string HashPassword(string raw) 
+    public static string HashPassword(string raw) 
     {
         // Using statement to ensure proper disposal of SHA256 instance.
         // Create SHA256 instance to generate hash

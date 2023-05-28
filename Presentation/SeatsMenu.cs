@@ -1,5 +1,6 @@
 static class SeatsMenu
 {
+    // legend for customers
     public static void SeatLegend(MovieModel movie)
     {
         Dictionary<int, (string, double)> seatdata = SeatAccess.LoadGlobalSeatData();
@@ -33,6 +34,7 @@ static class SeatsMenu
         Console.Write($" - SELECTED SEATS\n\n");
     }
 
+    // legend for heatmap editing
     public static void SeatLegendDefault()
     {
         Dictionary<int, (string, double)> seatdata = SeatAccess.LoadGlobalSeatData();

@@ -64,5 +64,16 @@
     "cateringReservation": {},
     "seatReservation": [],
     "accessibilityRequest": ""
+  },
+  {
+    "id": 7,
+    "accountType": 1,
+    "emailAddress": "alal@.",
+    "password": "df0c094ed3591747dacd3def36fa9a38ec2bcc9afbbdce18e7918e3504a089f3",
+    "fullName": "Alysha",
+    "movieReservation": null,
+    "cateringReservation": {},
+    "seatReservation": [],
+    "accessibilityRequest": ""
   }
 ]

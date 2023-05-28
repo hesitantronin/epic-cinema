@@ -5,6 +5,8 @@ class MovieLogic
 {
     private List<MovieModel> _movies = new();
     static public MovieModel? CurrentMovie { get; private set; }
+    public static List<string> ContinueList = new List<string>() { "Continue" };
+
 
     public MovieLogic()
     {
@@ -16,26 +18,26 @@ class MovieLogic
         _movies = MovieAccess.LoadAll();
     }
 
-    public void UpdateList(MovieModel mov)
-    {
-        // finds if there is already a movie with the same id
-        int index = _movies.FindIndex(s => s.Id == mov.Id);
+    // public void UpdateList(MovieModel mov)
+    // {
+    //     // finds if there is already a movie with the same id
+    //     int index = _movies.FindIndex(s => s.Id == mov.Id);
 
-        // if the index exists, itll update the movie, otherwhise itll add a new one
-        if (index != -1)
-        {
-            // updates existing movie
-            _movies[index] = mov;
-        }
-        else
-        {
-            //adds new movie
-            _movies.Add(mov);
-        }
+    //     // if the index exists, itll update the movie, otherwhise itll add a new one
+    //     if (index != -1)
+    //     {
+    //         // updates existing movie
+    //         _movies[index] = mov;
+    //     }
+    //     else
+    //     {
+    //         //adds new movie
+    //         _movies.Add(mov);
+    //     }
 
-        // writes the changed data to the json file
-        MovieAccess.WriteAll(_movies);
-    }
+    //     // writes the changed data to the json file
+    //     MovieAccess.WriteAll(_movies);
+    // }
 
     public MovieModel? GetById(int id)
     {
@@ -45,6 +47,7 @@ class MovieLogic
 
     public void PrintMovies(List<MovieModel> TempMovieList, bool IsEmployee = false, bool IsEdit = false, bool SeatEdit = false)
     {
+        // checks whether the acc is admin or customer, if customer, only future movies get shown, otherwise all movies get shown
         List<MovieModel> MovieList = new();
         if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
         {
@@ -63,7 +66,10 @@ class MovieLogic
         
         while (true)
         {
-            Console.Clear();
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
 
             // prints an error message if nothing was found
             if (MovieList.Count() == 0)
@@ -91,6 +97,11 @@ class MovieLogic
 
                 while (BaseLine < MovieList.Count())
                 {
+                    if (ReservationMenu.reservationMade)
+                    {
+                        return;
+                    }
+                    
                     if (BaseLine + 5 > MovieList.Count())
                     {
                         MaxItems = MovieList.Count() % 5;
@@ -145,9 +156,7 @@ class MovieLogic
                         }
                         else if (IsEmployee && !IsEdit)
                         {
-                            LoadMovies();
                             EditMovie(subList[option - 1]);
-                            return;
                         }
                         else if (SeatEdit)
                         {
@@ -166,11 +175,11 @@ class MovieLogic
     {
         bool seatEdit = false;
         bool remove = false;
-
+        bool Return = false;
 
         while (true)
         {
-            Console.Clear();
+            Return = false;
 
             // shows the banner and title
             OptionsMenu.Logo(movie.Title);
@@ -185,7 +194,7 @@ class MovieLogic
             movieInfoList.Add($"Viewing Date: {movie.ViewingDate}");
             movieInfoList.Add($"Base Price: {movie.MoviePrice}");
             movieInfoList.Add("Auditorium seat editer\n");
-            movieInfoList.Add("\u001b[31mRemove Item\u001b[0m");
+            movieInfoList.Add("\u001b[31mRemove Movie\u001b[0m");
 
             int edit = OptionsMenu.DisplaySystem(movieInfoList, "Edit movie", "Select which field to edit, or choose to delete this movie.", true, true);
             if (edit == 1)
@@ -193,6 +202,7 @@ class MovieLogic
                 while (true)
                 {
                     OptionsMenu.Logo("edit movie");
+
                     Console.Write("New Title: ");
                     string newTitle = Console.ReadLine() + "";
                     if (!string.IsNullOrEmpty(newTitle))
@@ -201,15 +211,14 @@ class MovieLogic
                         break;
                     }
 
-                    Console.WriteLine("\nThe title can't be empty.");
-                    
-                    // prints a fake return option hehe
-                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                
-                    // actually returns you to the main menu
-                    Console.ReadLine();
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nThe title can't be empty.", false, true);
+
+                    if (Answer == 2)
+                    {
+                        Return = true;
+                        break;
+                    }
                 }
-                break;
             }
             else if (edit == 2)
             {
@@ -225,15 +234,14 @@ class MovieLogic
                         break;
                     }
                     
-                    Console.WriteLine("\nThe genre can't be empty.");
-                    
-                    // prints a fake return option hehe
-                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                
-                    // actually returns you to the main menu
-                    Console.ReadLine();
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nThe genre can't be empty.", false, true);
+
+                    if (Answer == 2)
+                    {
+                        Return = true;
+                        break;
+                    }                    
                 }
-                break;
             }
             else if (edit == 3)
             {
@@ -250,14 +258,14 @@ class MovieLogic
                         movie.Rating = rating;
                         break;
                     }
-
-                    Console.WriteLine("Invalid rating. Please enter a valid decimal number.");
                     
-                    // prints a fake return option hehe
-                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                
-                    // actually returns you to the main menu
-                    Console.ReadLine();
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid rating. Please enter a valid decimal number.", false, true);
+
+                    if (Answer == 2)
+                    {
+                        Return = true;
+                        break;
+                    }
                 }
             }
             else if (edit == 4)
@@ -276,13 +284,13 @@ class MovieLogic
                         break;
                     }
 
-                    Console.WriteLine("Invalid age. Please enter a valid number.");
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid age. Please enter a valid number.", false, true);
 
-                    // prints a fake return option hehe
-                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                
-                    // actually returns you to the main menu
-                    Console.ReadLine();
+                    if (Answer == 2)
+                    {
+                        Return = true;
+                        break;
+                    }
                 }
             }
             else if (edit == 5)
@@ -297,13 +305,13 @@ class MovieLogic
 
                     if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
                     {
-                        Console.WriteLine("Invalid date format. Please try again.");
-                        
-                        // prints a fake return option hehe
-                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                    
-                        // actually returns you to the main menu
-                        Console.ReadLine();
+                        int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date format. Please try again.", false, true);
+
+                        if (Answer == 2)
+                        {
+                            Return = true;
+                            break;
+                        }
                         continue;
                     }
 
@@ -314,13 +322,14 @@ class MovieLogic
                     }
                     catch (ArgumentOutOfRangeException)
                     {
-                        Console.WriteLine("Invalid date. Please try again.");
+                        OptionsMenu.FakeContinue("\nInvalid date. Please try again.");
+                        int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date. Please try again.", false, true);
 
-                        // prints a fake return option hehe
-                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                    
-                        // actually returns you to the main menu
-                        Console.ReadLine();
+                        if (Answer == 2)
+                        {
+                            Return = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -337,15 +346,15 @@ class MovieLogic
                         movie.Description = newDescription;
                         break;
                     }
-                        Console.WriteLine("The description can't be empty.");
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nThe description can't be empty.", false, true);
 
-                        // prints a fake return option hehe
-                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                    
-                        // actually returns you to the main menu
-                        Console.ReadLine();
+                    if (Answer == 2)
+                    {
+                        Return = true;
+                        break;
+                    }
+
                 }
-                break;
             }
             else if (edit == 7)
             {
@@ -359,12 +368,13 @@ class MovieLogic
 
                     if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
                     {
-                        Console.WriteLine("Invalid date format. Please try again.");
-                        // prints a fake return option hehe
-                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                    
-                        // actually returns you to the main menu
-                        Console.ReadLine();
+                        int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date format. Please try again.", false, true);
+
+                        if (Answer == 2)
+                        {
+                            Return = true;
+                            break;
+                        }
                         continue;
                     }
 
@@ -373,12 +383,13 @@ class MovieLogic
 
                     if (times.Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
                     {
-                        Console.WriteLine("Invalid time format. Please try again.");
-                        // prints a fake return option hehe
-                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                    
-                        // actually returns you to the main menu
-                        Console.ReadLine();
+                        int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid time format. Please try again.", false, true);
+
+                        if (Answer == 2)
+                        {
+                            Return = true;
+                            break;
+                        }
                         continue;
                     }
 
@@ -389,12 +400,13 @@ class MovieLogic
                     }
                     catch (ArgumentOutOfRangeException)
                     {
-                        Console.WriteLine("Invalid date or time. Please try again.");
-                        // prints a fake return option hehe
-                        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                    
-                        // actually returns you to the main menu
-                        Console.ReadLine();
+                        int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date or time. Please try again.", false, true);
+
+                        if (Answer == 2)
+                        {
+                            Return = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -414,13 +426,13 @@ class MovieLogic
                         break;
                     }
 
-                    Console.WriteLine("Invalid price. Please enter a valid decimal number.");
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid price. Please enter a valid decimal number.", false, true);
 
-                    // prints a fake return option hehe
-                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                
-                    // actually returns you to the main menu
-                    Console.ReadLine();
+                    if (Answer == 2)
+                    {
+                        Return = true;
+                        break;
+                    }
                 }   
             }
             else if (edit == 9)
@@ -430,74 +442,54 @@ class MovieLogic
             }
             else if (edit == 10)
             {
-                int removeOptions = OptionsMenu.DisplaySystem(YN, "confirm", "Are you sure you want to delete this item?", true, false);
+                int removeOptions = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "confirm", "Are you sure you want to delete this item?", true, false);
                 if (removeOptions == 1)
                 {
                     remove = true;
                     break;
+                }
+                else
+                {
+                    Return = true;
                 }
             }
             else
             {
                 return;
             }
-        }
 
-
-        // Find the index of the movie to update
-        int index = _movies.FindIndex(m => m.Id == movie.Id);
-
-        if (!remove)
-        {
-            // Update the movie in the list
-            _movies[index] = movie;
-
-            // Write the updated movie list to the JSON file
-            MovieAccess.WriteAll(_movies);
-            Console.Clear();
-            if (seatEdit)
+            if (!Return)
             {
-                OptionsMenu.Logo("seats updated");
+                // Find the index of the movie to update
+                int index = _movies.FindIndex(m => m.Id == movie.Id);
 
-                Console.WriteLine("Auditorium updated successfully.");
-                
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
+                if (!remove)
+                {
+                    // Update the movie in the list
+                    _movies[index] = movie;
+                    
+                    // Write the updated movie list to the JSON file
+                    MovieAccess.WriteAll(_movies);
+                    if (seatEdit)
+                    {
+                        OptionsMenu.FakeContinue("Auditorium updated successfully.", "seats updated");
+                    }
+                    else
+                    {
+                        OptionsMenu.FakeContinue("Movie updated successfully.", "movie updated");
+
+                    }
+                }
+                else
+                {
+                    _movies.Remove(_movies[index]);
+
+                    MovieAccess.WriteAll(_movies);
+                    
+                    OptionsMenu.FakeContinue("Movie deleted successfully.", "movie deleted");
+
+                }
             }
-            else
-            {
-                OptionsMenu.Logo("movie updated");
-
-                Console.WriteLine("Movie updated successfully.");
-
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
-            }
-        }
-        else
-        {
-            Console.CursorVisible = false;
-
-            _movies.Remove(_movies[index]);
-
-            MovieAccess.WriteAll(_movies);
-            
-            OptionsMenu.Logo("movie deleted");
-            Console.WriteLine("Movie deleted successfully.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
-
-            Console.CursorVisible = true;
         }
     }
 
@@ -507,7 +499,10 @@ class MovieLogic
     {
         while (true)
         {
-            Console.Clear();
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
 
             // shows the banner and title
             OptionsMenu.Logo(movie.Title);
@@ -548,15 +543,8 @@ class MovieLogic
             Console.ResetColor();
             Console.WriteLine($" {movie.MoviePrice}\n");
 
-            // list of options that will be displayed
-            List<string> ReturnList = new List<string>()
-            {
-                "Yes",
-                "No"
-            };
-
             // the necessary info gets used in the display method
-            int option = OptionsMenu.DisplaySystem(ReturnList, "", "\nDo you want to select this movie?", false, false);
+            int option = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "", "\nDo you want to select this movie?", false, false);
 
             // depending on the option that was chosen, it will clear the console and call the right function
             if (option == 1)
@@ -645,6 +633,7 @@ class MovieLogic
         }
         return finalString;
     }
+
     public static void AddMultipleMoviesJSON()
     {
         string filename;
@@ -659,7 +648,7 @@ class MovieLogic
             if (!File.Exists(filename))
             {
                 List<string> EList = new List<string>() { "Continue" };
-                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile {jsonFile} not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.json'", false, true);
+                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile '{jsonFile}.json' not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.json'", false, true);
                 if (option == 2)
                 {
                     return;
@@ -714,21 +703,20 @@ class MovieLogic
             {
                 Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
             }
+
+            Console.CursorVisible = false;
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
         
             // actually returns you to the main menu
-            Console.ReadLine(); 
+            Console.ReadLine();
+
+            Console.CursorVisible = true; 
         }
         else
         {
-            OptionsMenu.Logo("Items added");
-            Console.WriteLine("Movies have been succesfully added.");
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();           }  
+            OptionsMenu.FakeContinue("Movies have been succesfully added.", "Movies added");          
+        }  
     }
     public static string ReadJSON(string filename)
     {
@@ -767,7 +755,7 @@ class MovieLogic
             {
                 Console.Clear();
                 List<string> EList = new List<string>() { "Continue" };
-                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile {csvFile} not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.csv'", false, true);
+                int option = OptionsMenu.DisplaySystem(EList, "", $"\nFile '{csvFile}.csv' not found in directory: {filename}, make sure the file is saved in DataSources and the input is without '.csv'", false, true);
                 if (option == 2)
                 {
                     return;
@@ -835,112 +823,114 @@ class MovieLogic
             {
                 Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
             }
+
+            Console.CursorVisible = false;
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
         
             // actually returns you to the main menu
             Console.ReadLine();
+
+            Console.CursorVisible = true;
         }
         else
         {
-            OptionsMenu.Logo("movies added");
-            Console.WriteLine("Movies have been succesfully added.\n\nPress enter to continue");
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();        }
+            OptionsMenu.FakeContinue("Movies have been succesfully added.", "movies added");      
+        }
     }
-    private static void RemoveMovie()
-    {
-        List<MovieModel> movies = MovieAccess.LoadAll();
+    
+    // private static void RemoveMovie()
+    // {
+    //     List<MovieModel> movies = MovieAccess.LoadAll();
 
-        // Retrieve and display the movies
-        List<string> movieList = new List<string>();
-        foreach (MovieModel movie in movies)
-        {
-            string MovieInfo = $"ID: {movie.Id}\nTitle: {movie.Title}\nGenre: {movie.Genre}\nAge: {movie.Age}\nViewing Date: {movie.ViewingDate}\nPublish Date: {movie.PublishDate}\n";
-            movieList.Add(MovieInfo);
+    //     // Retrieve and display the movies
+    //     List<string> movieList = new List<string>();
+    //     foreach (MovieModel movie in movies)
+    //     {
+    //         string MovieInfo = $"ID: {movie.Id}\nTitle: {movie.Title}\nGenre: {movie.Genre}\nAge: {movie.Age}\nViewing Date: {movie.ViewingDate}\nPublish Date: {movie.PublishDate}\n";
+    //         movieList.Add(MovieInfo);
             
-        }
+    //     }
 
-        int option = OptionsMenu.DisplaySystem(movieList, "Current movies", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected movie:", true, true);
+    //     int option = OptionsMenu.DisplaySystem(movieList, "Current movies", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected movie:", true, true);
 
-        if (option >= 1 && option <= movieList.Count)
-        {
-            // Get the index of the selected option (adjusted for 0-based indexing)
-            int selectedOptionIndex = option - 1;
+    //     if (option >= 1 && option <= movieList.Count)
+    //     {
+    //         // Get the index of the selected option (adjusted for 0-based indexing)
+    //         int selectedOptionIndex = option - 1;
 
-            // Extract the movie ID from the selected option string
-            string selectedOption = movieList[selectedOptionIndex];
-            int startIndex = selectedOption.IndexOf("ID: ") + 4;
-            int endIndex = selectedOption.IndexOf('\n', startIndex);
-            string idString = selectedOption.Substring(startIndex, endIndex - startIndex).Trim();
+    //         // Extract the movie ID from the selected option string
+    //         string selectedOption = movieList[selectedOptionIndex];
+    //         int startIndex = selectedOption.IndexOf("ID: ") + 4;
+    //         int endIndex = selectedOption.IndexOf('\n', startIndex);
+    //         string idString = selectedOption.Substring(startIndex, endIndex - startIndex).Trim();
 
-            int idToRemove;
-            bool isValidId = int.TryParse(idString, out idToRemove);
+    //         int idToRemove;
+    //         bool isValidId = int.TryParse(idString, out idToRemove);
 
-            if (isValidId)
-            {
-                // Remove the movie with the specified ID
-                MovieModel? movieToRemove = movies.Find(movie => movie.Id == idToRemove);
-                if (movieToRemove != null)
-                {
-                    movies.Remove(movieToRemove);
-                    MovieAccess.WriteAll(movies);
-                    Console.WriteLine("Movie removed successfully.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid ID found for the selected movie.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Invalid option selected.");
-        }
-    }
-    public void RemoveMovieID()
-    {
-        int removeID;
+    //         if (isValidId)
+    //         {
+    //             // Remove the movie with the specified ID
+    //             MovieModel? movieToRemove = movies.Find(movie => movie.Id == idToRemove);
+    //             if (movieToRemove != null)
+    //             {
+    //                 movies.Remove(movieToRemove);
+    //                 MovieAccess.WriteAll(movies);
+    //                 Console.WriteLine("Movie removed successfully.");
+    //             }
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("Invalid ID found for the selected movie.");
+    //         }
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Invalid option selected.");
+    //     }
+    // }
 
-        do
-        {
-            Console.Clear();
-            Console.WriteLine("Please enter the movie ID you would like to remove.");
-            if (!int.TryParse(Console.ReadLine(), out removeID))
-            {
-                Console.WriteLine("Invalid ID. Please enter a valid integer ID.");
-                continue;
-            }
+    // public void RemoveMovieID()
+    // {
+    //     int removeID;
 
-            // Find the index of the movie with the specified ID
-            int index = _movies.FindIndex(s => s.Id == removeID);
+    //     do
+    //     {
+    //         Console.Clear();
+    //         Console.WriteLine("Please enter the movie ID you would like to remove.");
+    //         if (!int.TryParse(Console.ReadLine(), out removeID))
+    //         {
+    //             Console.WriteLine("Invalid ID. Please enter a valid integer ID.");
+    //             continue;
+    //         }
 
-            if (index != -1)
-            {
-                // Remove the movie from the list
-                _movies.RemoveAt(index);
+    //         // Find the index of the movie with the specified ID
+    //         int index = _movies.FindIndex(s => s.Id == removeID);
 
-                // Update the JSON file
-                MovieAccess.WriteAll(_movies);
+    //         if (index != -1)
+    //         {
+    //             // Remove the movie from the list
+    //             _movies.RemoveAt(index);
 
-                Console.WriteLine("Movie removed successfully.\n\nPress enter to continue.");
-                Console.ReadLine();
-                break;
-            }
-            else
-            {
-                List<string> EList = new List<string>() { "Continue" };
-                int option = OptionsMenu.DisplaySystem(EList, "", $"\nID {removeID} not found, make sure to enter a valid ID", false, true);
-                if (option == 2)
-                {
-                    return;
-                }
-            }
-        } while (true);
-    }
+    //             // Update the JSON file
+    //             MovieAccess.WriteAll(_movies);
+
+    //             Console.WriteLine("Movie removed successfully.\n\nPress enter to continue.");
+    //             Console.ReadLine();
+    //             break;
+    //         }
+    //         else
+    //         {
+    //             List<string> EList = new List<string>() { "Continue" };
+    //             int option = OptionsMenu.DisplaySystem(EList, "", $"\nID {removeID} not found, make sure to enter a valid ID", false, true);
+    //             if (option == 2)
+    //             {
+    //                 return;
+    //             }
+    //         }
+    //     } while (true);
+    // }
+
     public static void AddOrUpdateMovie()
     {
         List<MovieModel> movies = MovieAccess.LoadAll();
@@ -959,17 +949,10 @@ class MovieLogic
 
             if (existingMovie != null)
             {
-                int YNQ = OptionsMenu.DisplaySystem(YN, "Movie already exists", $"Movie with the title '{title}' already exists, do you want to update the details instead?", true, false);
+                int YNQ = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Movie already exists", $"Movie with the title '{title}' already exists, do you want to update the details instead?", true, false);
                 if (YNQ == 2)
                 {
-                    OptionsMenu.Logo("Canceled");
-                    Console.WriteLine("Update operation cancelled.");
-
-                    // prints a fake return option hehe
-                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                
-                    // actually returns you to the main menu
-                    Console.ReadLine();
+                    OptionsMenu.FakeContinue("Update operation cancelled.", "Canceled");
                     return;
                 }
             }
@@ -978,13 +961,12 @@ class MovieLogic
                 break;
             }
 
-            Console.WriteLine("\nThe title can't be empty.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
+            int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nThe title can't be empty.", false, true);
+
+            if (Answer == 2)
+            {
+                return;
+            }
         }
 
         string genre;
@@ -1001,13 +983,12 @@ class MovieLogic
                 break;
             }
 
-            Console.WriteLine("\nThe genre can't be empty.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
+            int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nThe genre can't be empty.", false, true);
+
+            if (Answer == 2)
+            {
+                return;
+            }
         }
         
         double rating;
@@ -1024,13 +1005,13 @@ class MovieLogic
                 break;
             }
 
-            Console.WriteLine("Invalid rating. Please enter a valid decimal number.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
+            int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid rating. Please enter a valid decimal number.", false, true);
+
+            if (Answer == 2)
+            {
+                return;
+            }
+
         }
 
         string description;
@@ -1047,15 +1028,14 @@ class MovieLogic
                 break;
             }
 
-            Console.WriteLine("\nThe description can't be empty.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
-        }
+            int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nThe description can't be empty.", false, true);
 
+            if (Answer == 2)
+            {
+                return;
+            }
+
+        }
 
         int age;
         while (true)
@@ -1071,13 +1051,12 @@ class MovieLogic
                 break;
             }
 
-            Console.WriteLine("Invalid age. Please enter a valid mumber.");
-            
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
+            int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid age. Please enter a valid mumber.", false, true);
+
+            if (Answer == 2)
+            {
+                return;
+            }
         }
 
         DateTime viewingDate;
@@ -1091,13 +1070,13 @@ class MovieLogic
 
             if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
             {
-                Console.WriteLine("Invalid date format. Please try again.");
-                
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
+                int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date format. Please try again.", false, true);
+
+                if (Answer == 2)
+                {
+                    return;
+                }
+
                 continue;
             }
 
@@ -1112,18 +1091,21 @@ class MovieLogic
             {
                 if (times[0].Length > 2 || times[1].Length > 2)
                 {
-                    Console.WriteLine("Invalid time format. Please try again.");
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid time format. Please try again.", false, true);
+                    if (Answer == 2)
+                    {
+                        return;
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid time format. Hours should be between 0 and 23. Minutes should be between 0 and 59.");
+                    int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid time format. Hours should be between 0 and 23. Minutes should be between 0 and 59.", false, true);
+                    if (Answer == 2)
+                    {
+                        return;
+                    }
                 }
 
-                // prints a fake return option
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-
-                // actually returns you to the main menu
-                Console.ReadLine();
                 continue;
             }
 
@@ -1135,13 +1117,12 @@ class MovieLogic
             }
             catch (ArgumentOutOfRangeException)
             {
-                Console.WriteLine("Invalid date or time. Please try again.");
+                int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date or time. Please try again.", false, true);
 
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
+                if (Answer == 2)
+                {
+                    return;
+                }
             }
         }
 
@@ -1156,13 +1137,13 @@ class MovieLogic
 
             if (date.Length != 3 || !int.TryParse(date[0], out int month) || !int.TryParse(date[1], out int day) || !int.TryParse(date[2], out int year))
             {
-                Console.WriteLine("Invalid date format. Please try again.");
+                int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date format. Please try again.", false, true);
 
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
+                if (Answer == 2)
+                {
+                    return;
+                }
+
                 continue;
             }
             try
@@ -1172,13 +1153,12 @@ class MovieLogic
             }
             catch (ArgumentOutOfRangeException)
             {
-                Console.WriteLine("Invalid date. Please try again.");
+                int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date. Please try again.", false, true);
 
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
+                if (Answer == 2)
+                {
+                    return;
+                }
             }
         }
 
@@ -1195,14 +1175,7 @@ class MovieLogic
             existingMovie.ViewingDate = viewingDate;
             existingMovie.PublishDate = publishDate;
             
-            OptionsMenu.Logo("movie updated");
-            Console.WriteLine("Movie updated successfully!");
-
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();  
+            OptionsMenu.FakeContinue("Movie updated successfully!", "movie updated");
         }
         else
         {
@@ -1210,69 +1183,58 @@ class MovieLogic
             MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate);
             movies.Add(newMovie);
 
-            OptionsMenu.Logo("movie added");
-            Console.WriteLine("Movie added successfully!");
-
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine(); 
+            OptionsMenu.FakeContinue("Movie added successfully!", "movie added");
         }
         // Save the updated movies list
         MovieAccess.WriteAll(movies);
     }
-    protected static List<string> MovieEditorList = new List<string>()
-    {
-        "Add movies",
-        "Edit/Remove Movies and seats",
-    };
-    protected static List<string> YN = new List<string>()
-    {
-        "Yes",
-        "No"
-    };
-    protected static List<string> AddMovieList = new List<string>()
-    {
-        "Single movie entry",
-        "JSON File",
-        "CSV File"
-       
-    };
-    protected static List<string> RemoveList = new List<string>()
-    {
-        "Remove movie selection",
-        "Remove movie by ID"
-    };
+
     public void EmployeeMovies()
     {
         while (true)
         {
-            Console.Clear();
+            List<string> MovieEditorList = new List<string>()
+            {
+                "Add movies",
+                "Edit/Remove Movies and seats",
+            };
+
             int MovieOptions = OptionsMenu.DisplaySystem(MovieEditorList, "edit Movies", "Select what you want to do.", true, true);
             if (MovieOptions == 1)
             {
-                Console.Clear();
-                int addOptions = OptionsMenu.DisplaySystem(AddMovieList, "Add movies", "To add movies by file, please save the json or csv file in the DataSources folder", true, true);
+                while (true)
+                {
+                    List<string> AddMovieList = new List<string>()
+                    {
+                        "Single movie entry",
+                        "JSON File",
+                        "CSV File"
+                    };
 
-                if (addOptions == 1)
-                {
-                    AddOrUpdateMovie();
-                }
-                else if (addOptions == 2)
-                {
-                    Console.Clear();
-                    AddMultipleMoviesJSON();
-                }
-                else if (addOptions == 3)
-                {
-                    Console.Clear();
-                    AddMultipleMoviesCSV();
+                    int addOptions = OptionsMenu.DisplaySystem(AddMovieList, "Add movies", "To add movies by file, please save the json or csv file in the DataSources folder", true, true);
+
+                    if (addOptions == 1)
+                    {
+                        AddOrUpdateMovie();
+                    }
+                    else if (addOptions == 2)
+                    {
+                        Console.Clear();
+                        AddMultipleMoviesJSON();
+                    }
+                    else if (addOptions == 3)
+                    {
+                        Console.Clear();
+                        AddMultipleMoviesCSV();
+                    }
+                    else 
+                    {
+                        break;
+                    }
                 }
             }
             else if (MovieOptions == 2)
             {
-                LoadMovies();
                 while (true)
                 {
                     // list of options to display
@@ -1281,7 +1243,7 @@ class MovieLogic
                     "Sort",
                     "Filter",
                     "Search",
-                    "Show Whole Menu"
+                    "Show All Movies"
                     };
 
                     // the necessary info gets used in the display method
@@ -1308,14 +1270,7 @@ class MovieLogic
                                 MovieModel result = MovieMenu.SearchId();
                                 if (result == null)
                                 {
-                                    OptionsMenu.Logo("ID NOT FOUND");
-                                    Console.WriteLine("No item with this id was found.");
-
-                                    // prints a fake return option hehe
-                                    Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-                                
-                                    // actually returns you to the main menu
-                                    Console.ReadLine();  
+                                    OptionsMenu.FakeContinue("No item with this id was found.", "ID NOT FOUND"); 
                                 }
                                 else
                                 {
