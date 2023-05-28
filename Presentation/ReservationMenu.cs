@@ -14,63 +14,57 @@ class ReservationMenu
     {
         // With a guest account, we won't have any information about the person who's making a reservation. So when they're finishing their reservation, they're asked to make an account
         // this way, you can look at your options without having to create an account, but won't have to go back to create an account if you do decide to make a reservation
-        if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+        bool IsLoggedIn = false; 
+        while (true)
         {
-            List<string> LoginOrRegister = new() {"Login", "Register"};
-            int optione = OptionsMenu.DisplaySystem(LoginOrRegister, "registration/login", "In order to finalize your reservation, please create an account or login.");
-
-            if (optione == 1)
-            {
-                GuestToLogin();
-            }
-            else if (optione == 2)
-            {
-                GuestToRegister();
-            }
-            else
+            if (ReservationMenu.reservationMade)
             {
                 return;
             }
-        }
 
-        // !the code below has been split up into functions to make things easier to read!
-        // (now that i see it, its not that convenient with the transfering of data between the overview and write to json)
+            if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+            {
+                List<string> LoginOrRegister = new() {"Login", "Register"};
+                int optione = OptionsMenu.DisplaySystem(LoginOrRegister, "registration/login", "In order to finalize your reservation, please create an account or login.");
 
-        // asks the user if the would need assistance when they come to the cinema
-        AssistanceOption();
+                if (optione == 1)
+                {
+                    IsLoggedIn = GuestToLogin();
+                    
+                }
+                else if (optione == 2)
+                {
+                    IsLoggedIn = GuestToRegister();
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                IsLoggedIn = true;
+            }
+            
+            if (IsLoggedIn)
+            {
+                if (!AssistanceOption())
+                {
+                    return;
+                }
+            }
 
-        bool discount = ApplyDiscount();
-        
-        // final reservation overview
-        (int, double) reservationInfo = ReservationOverview(discount);
-
-        // Add reservation to json
-        ReservationToJson(reservationInfo.Item1, reservationInfo.Item2);
-
-        // updates the seat csv
-        UpdateSeatCsv();
-
-
-        // Reservation data is temporarily stored in a users account. After the reservation is finalized, the data is removed from their account
-        // This way, they can create multiple reservations
-        reservationsLogic.RemoveReservationFromAccount();
-
-        // return has been fixed thanks to the reservation boolean, would appreciate it if someone could give feedback
-        List<string> emptyList = new List<string>(){"Return to Start"};
-        int brek = OptionsMenu.DisplaySystem(emptyList, "", $"", false, false, "");
-        if (brek == 1)
-        {
-            reservationMade = true;
         }
     }
 
     // a login that transports the reservation data from the guest acc to the acc that has been logged in
-    public static void GuestToLogin()
+    public static bool GuestToLogin()
     {
         Console.CursorVisible = true;
 
         string email = "";
         string password = "";
+        bool loggedin = false;
 
         while (true)
         {
@@ -104,13 +98,14 @@ class ReservationMenu
                 if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
                 {
                     accountsLogic.SetCurrentAccount(currentAccount);
-
+                    loggedin = true;
                 }
                 else
                 {
                     OptionsMenu.Logo("Wrong account");
-                    Console.WriteLine("This login is for customers only.\nIf you want to log in with a different account, go back to the main menu.");
+                    Console.WriteLine("This login is for customers only.\nIf you want to log in with a different kind of account, go back to the main menu.");
                     Console.ReadLine();
+
                 }
                 break;
             }
@@ -128,56 +123,21 @@ class ReservationMenu
                 }
             }
         }
+
         Console.CursorVisible = false;
-    }
 
-    public static bool ApplyDiscount()
-    {
-        bool discount = false;
-        int discountOption = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Discounts", "Would you like to apply a discount code?", true, false);
-
-        if (discountOption == 1)
-        {
-            string discountCode;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("\nPlease enter a discount code.");
-                discountCode = Console.ReadLine();
-
-                if (discountCode != "STUDENT")
-                {
-                    int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nInvalid promo code. Please enter a valid promo code.", false, true);
-
-                    if (option == 1)
-                    {
-                        continue;
-                    }
-                    else if (option == 2)
-                    {
-                        break;
-                    }
-                }
-            }
-            while (discountCode != "STUDENT");
-
-            discount = true;
-        }
-        else if (discountOption == 2)
-        {
-            //do nothing;
-        }
-        return discount;
+        return loggedin;
     }
 
     // a login that transports the reservation data from the guest acc to the acc that has been created
-    public static void GuestToRegister()
+    public static bool GuestToRegister()
     {
         Console.CursorVisible = true;
         string email = "";
 
         while(true)
         {
+            OptionsMenu.Logo("registration");
             Console.WriteLine("Email Address:");
             email = Console.ReadLine() + "";
 
@@ -189,7 +149,7 @@ class ReservationMenu
 
                 if (option == 2)
                 {
-                    return;
+                    return false;
                 }
             }
             else if(accountsLogic.IsEmailInUse(email))
@@ -200,7 +160,7 @@ class ReservationMenu
 
                 if (option == 2)
                 {
-                    return;
+                    return false;
                 }
             }
             else
@@ -233,7 +193,7 @@ class ReservationMenu
 
                     if (option == 2)
                     {
-                        return;
+                        return false;
                     }
                 }
             }
@@ -244,7 +204,7 @@ class ReservationMenu
 
                 if (option == 2)
                 {
-                    return;
+                    return false;
                 }
             }
         }
@@ -261,17 +221,25 @@ class ReservationMenu
         // Since they're no longer a guest, their account type is also switched from guest to customer
         AccountsLogic.CurrentAccount.Type = AccountModel.AccountType.CUSTOMER;
         accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
+
+        return true;
     }
 
     // asks the user if they would need any help
-    public static void AssistanceOption()
+    public static bool AssistanceOption()
     {   
-        // This is for accessibility, customers can input a special request here
-        int option1 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Accessibility", "\nWill you need any special assistance to make going to our cinema a more accessible experience for you?");
-
-        if (option1 == 1)
+        while (true)
         {
-            Console.WriteLine("\nPlease write down how we can be of assistance");
+            if (ReservationMenu.reservationMade)
+            {
+                return false;
+            }
+            // This is for accessibility, customers can input a special request here
+            int option1 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Accessibility", "Will you need any special assistance to make going to our cinema a more accessible experience for you?");
+
+            if (option1 == 1)
+            {
+                Console.WriteLine("\nPlease write down how we can be of assistance");
                 string? accessibilityReq = Console.ReadLine();
                 Console.WriteLine("");
 
@@ -281,26 +249,87 @@ class ReservationMenu
                     AccountsLogic.CurrentAccount.AccessibilityRequest = accessibilityReq;
                     accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
                 }
+            }
+            else if (option1 == 3)
+            {
+                return false;
+            }
+          
+            ApplyDiscount();
         }
+
+    }
+
+    public static void ApplyDiscount()
+    {
+        while (true)
+        {
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
+            int discountOption = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Discounts", "Would you like to apply a discount code?");
+
+            if (discountOption == 1)
+            {
+                string discountCode;
+                while (true)
+                {
+                    OptionsMenu.Logo("Discounts");
+                    Console.WriteLine("Please enter a discount code.");
+                    discountCode = Console.ReadLine();
+
+                    if (discountCode == "STUDENT2023" || discountCode == "PETTYME110" || discountCode == "WE-HATE-OLD-PEOPLE")
+                    {
+                        OptionsMenu.FakeContinue("Your discount code has been added to your reservation.", "Discounts");
+                        break;
+                    }
+                    else
+                    {
+                        int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nInvalid promo code. Please enter a valid promo code.", false, true);
+
+                        if (option == 1)
+                        {
+                            continue;
+                        }
+                        else if (option == 2)
+                        {
+                            break;
+                        }
+                    }
+                }
+                ReservationOverview(true);
+
+            }
+            else if (discountOption == 2)
+            {
+                ReservationOverview(false);
+            }
+            else if (discountOption == 3)
+            {
+                return;
+            }
+        }
+        
     }
 
     // an overview of the final reservation, calculates the final price and returns it, together with the reservation code, so it doesnt have to be calculated twice
-    public static (int, double) ReservationOverview(bool discount)
+    public static void ReservationOverview(bool discount)
     {
         Console.CursorVisible = true;
         OptionsMenu.Logo("reservation");
         Console.WriteLine("Here are the details of your reservation:\n");
         Console.WriteLine($"NAME: {AccountsLogic.CurrentAccount.FullName}");
-        Console.WriteLine($"MOVIE: {AccountsLogic.CurrentAccount.Movie.Title} ({AccountsLogic.CurrentAccount.SeatReservation.Count()}pers. X {AccountsLogic.CurrentAccount.Movie.MoviePrice})");
+        Console.WriteLine($"MOVIE: {AccountsLogic.CurrentAccount.Movie.Title} ({AccountsLogic.CurrentAccount.SeatReservation.Count()} X {AccountsLogic.CurrentAccount.Movie.MoviePrice})");
 
 
         double finalPrice = 0.0;
 
-        Console.WriteLine($"SEAT(S):");
+        Console.WriteLine($"\nSEAT(S):");
         string seatReservations = "";
         foreach (var seat in AccountsLogic.CurrentAccount.SeatReservation)
         {
-            seatReservations += $"    {seat.Id} ({seat.SeatTypeName} +{seat.Price})\n";
+            seatReservations += $"    [{seat.Id}] {seat.SeatTypeName} (+ € {seat.Price})\n";
 
             finalPrice += AccountsLogic.CurrentAccount.Movie.MoviePrice;
             finalPrice += seat.Price;
@@ -314,7 +343,7 @@ class ReservationMenu
         if (AccountsLogic.CurrentAccount.CateringReservation.Count > 0)
         {
 
-            Console.WriteLine($"CATERING:");
+            Console.WriteLine($"\nCATERING:");
 
             string menuReservations = "";
 
@@ -323,7 +352,7 @@ class ReservationMenu
             foreach (var item in AccountsLogic.CurrentAccount.CateringReservation)
             {
                 // Gets every catering reservation from the cateringReservation dictionary which is a part of their account, and adds it to a string so it can be shown in the overview
-                menuReservations += $"    {item.Key}: ({item.Value} X {Convert.ToDouble(cateringItems.Where(c => c.Name == item.Key).Select(c => c.Price).Sum())})\n";
+                menuReservations += $"    {item.Key}: ({item.Value} X € {Convert.ToDouble(cateringItems.Where(c => c.Name == item.Key).Select(c => c.Price).Sum())})\n";
 
                 // to get the total price, this finds the current catering item, locates it in cateringItems based on whether the name is the same as the current item (item.Key)
                 // and then once its selected the right cateringModel, it gets the price of one of those specific items. Then that price is multiplied by how many times the
@@ -342,24 +371,40 @@ class ReservationMenu
 
         if (AccountsLogic.CurrentAccount.AccessibilityRequest != "")
         {
-            Console.WriteLine($"\nREQUEST: {AccountsLogic.CurrentAccount.AccessibilityRequest}");
+            Console.WriteLine($"\nREQUEST: {MovieLogic.SpliceText(AccountsLogic.CurrentAccount.AccessibilityRequest, "  ")}");
         }
         if (discount)
         {
             //if there is a discount then there will be a 10% discount
-            Console.WriteLine($"\nDISCOUNT: {System.Math.Round(finalPrice * 0.1, 2)} euros");
-            Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice * 0.9, 2)} euros");
+            Console.WriteLine($"\nTOTAL PRICE: € {System.Math.Round(finalPrice, 2)}");
+            Console.WriteLine($"DISCOUNT: € {System.Math.Round(finalPrice * 0.1, 2)}");
+            Console.WriteLine($"\nFINAL PRICE: € {System.Math.Round(finalPrice * 0.9, 2)}");
         }
         else
         {
             Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
         }
 
-        Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
-
         Console.WriteLine("");
 
-        return (resCode, finalPrice);
+        // // Add reservation to json
+        ReservationToJson(resCode, finalPrice);
+
+        // updates the seat csv
+        UpdateSeatCsv();
+
+        // Reservation data is temporarily stored in a users account. After the reservation is finalized, the data is removed from their account
+        // This way, they can create multiple reservations
+        reservationsLogic.RemoveReservationFromAccount();
+
+        // return has been fixed thanks to the reservation boolean, would appreciate it if someone could give feedback
+        List<string> emptyList = new List<string>(){"Return to Start"};
+        int brek = OptionsMenu.DisplaySystem(emptyList, "", $"", false, false, "");
+        if (brek == 1)
+        {
+            reservationMade = true;
+        }
+
     }
 
     // writes the final reservation to a separate json

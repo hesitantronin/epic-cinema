@@ -457,5 +457,121 @@
     "reservationCode": 5639581,
     "totalPrice": 16.97,
     "cancelled": false
+  },
+  {
+    "id": 15,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 5,
+      "title": "12 Angry Men",
+      "genre": "Crime",
+      "rating": 9,
+      "description": "The jury in a New York City murder trial is frustrated by a single member whose skeptical caution forces them to more carefully consider the evidence before jumping to a hasty verdict.",
+      "age": 6,
+      "viewing_date": "2023-12-04T14:30:00",
+      "publish_date": "1957-10-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A6",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {
+      "Popcorn": "1"
+    },
+    "accessibilityRequest": "uyjythtgrdsfd",
+    "viewing_date": "2023-12-04T14:30:00",
+    "reservationCode": 5372516,
+    "totalPrice": 13.98,
+    "cancelled": false
+  },
+  {
+    "id": 16,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 4,
+      "title": "Schindler\u0027s List",
+      "genre": "Historical",
+      "rating": 9,
+      "description": "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.",
+      "age": 16,
+      "viewing_date": "2023-09-09T16:45:00",
+      "publish_date": "1993-10-25T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A6",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      },
+      {
+        "Id": "B6",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      },
+      {
+        "Id": "C6",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      },
+      {
+        "Id": "D6",
+        "Price": 5,
+        "SeatTypeValue": 2,
+        "SeatTypeName": "Medium Price"
+      }
+    ],
+    "cateringReservation": {
+      "Twizzlers": "2",
+      "Twizzlers 2.0": "3",
+      "Coca Cola": "1",
+      "Pepsi": "4",
+      "Pizza": "1"
+    },
+    "accessibilityRequest": "My kid doesn\u0027t like the dark, please keep the lights on during the movie. Thank you in advance.",
+    "viewing_date": "2023-09-09T16:45:00",
+    "reservationCode": 1151148,
+    "totalPrice": 65.85,
+    "cancelled": false
+  },
+  {
+    "id": 17,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 3,
+      "title": "The Dark Knight",
+      "genre": "Action",
+      "rating": 9,
+      "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+      "age": 13,
+      "viewing_date": "2023-08-13T01:15:00",
+      "publish_date": "2008-10-16T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A7",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?",
+    "viewing_date": "2023-08-13T01:15:00",
+    "reservationCode": 7838948,
+    "totalPrice": 10.99,
+    "cancelled": false
   }
 ]

@@ -199,6 +199,10 @@ static class SeatLogic
                         {
                             while (true)
                             {
+                                if (ReservationMenu.reservationMade)
+                                {
+                                    return;
+                                }
                                 int option4 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Catering", "Would you like to reserve catering menu items?", true, true);
 
                                 if (option4 == 1)
