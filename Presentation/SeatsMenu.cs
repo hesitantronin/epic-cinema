@@ -39,6 +39,7 @@ static class SeatsMenu
     {
         Dictionary<int, (string, double)> seatdata = SeatAccess.LoadGlobalSeatData();
 
+        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.DarkCyan;
         Console.Write("■");
         Console.ResetColor();
@@ -52,6 +53,6 @@ static class SeatsMenu
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.Write("■");
         Console.ResetColor();
-        Console.Write($" - {seatdata[3].Item1.ToUpper()}: + €{seatdata[3].Item2}\n");
+        Console.Write($" - {seatdata[3].Item1.ToUpper()}: + €{seatdata[3].Item2}\n\n");
     }
 }

@@ -8,10 +8,9 @@ static class SeatLogic
         "Add more seats",
         "Remove seats"
     };
+    
     public static void SeatSelection(MovieModel movie)
     {
-
-
         // Regex pattern for checking the validity of the input ID later in the selection process
         string pattern = @"^[a-l]([1-9]|1[0-4])$";
 
@@ -45,16 +44,16 @@ static class SeatLogic
         // Looping the selection of the seats until the user has selected all seats they'd want
         while (true)
         {
-            // Visualisation of the menu
-            OptionsMenu.Logo("Seat selection");
-            SeatAccess.PrintAuditorium(auditoriumArray);
-            SeatsMenu.SeatLegend(movie);
+                // Visualisation of the menu
+                OptionsMenu.Logo("Seat selection");
+                SeatAccess.PrintAuditorium(auditoriumArray);
+                SeatsMenu.SeatLegend(movie);
 
-            // Ask user for id of the seat
-            Console.WriteLine($"Selected seats: [{String.Join(", ", selectedChairs)}]");
-            Console.WriteLine($"Type in the ID of the seat you want to {(removingMode ? "remove from your selection" : "select")} (I.E. - A6)");
+                // Ask user for id of the seat
+                Console.WriteLine($"Selected seats: [{String.Join(", ", selectedChairs)}]");
+                Console.WriteLine($"Type in the ID of the seat you want to {(removingMode ? "remove from your selection" : "select")} (I.E. - A6)");
 
-            currentlySelectedChair = Console.ReadLine();
+                currentlySelectedChair = Console.ReadLine();
 
             // If removing mode is on the 4 check in the csv will be negated so you can remove your own selections
             // Otherwise if removing mode is off, the check will be on and you cannot select the seats you selected again
@@ -86,38 +85,6 @@ static class SeatLogic
                         {
                             SeatAccess.UpdateSeatValue(auditoriumArray, currentlySelectedChair.ToUpper(), SeatAccess.FindDefaultSeatValueArray(currentlySelectedChair.ToUpper()));
                             selectedChairs.Remove(currentlySelectedChair.ToUpper());
-                        }
-
-                        Console.Clear();
-                        OptionsMenu.Logo("Seat selection");
-                        SeatAccess.PrintAuditorium(auditoriumArray);
-                        SeatsMenu.SeatLegend(movie);
-                        
-                        // Prepare option for use in checking if there are any seats selected
-                        int optionInLoop = 0;
-
-                        // If there are no seats selected option 2 is automatically selected and the user is prompted to select a seat again
-                        if (!selectedChairs.Any()) optionInLoop = 2;
-                        
-                        else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) [{String.Join(", ", selectedChairs)}], are you satisfied with these selections?", false, true);
-
-                        if (optionInLoop == 1)
-                        {
-                            break;
-                        }
-                        else if (optionInLoop == 2)
-                        {
-                            removingMode = false;
-                        }
-
-                        else if (optionInLoop == 3)
-                        {
-                            removingMode = true;
-                        }
-
-                        else if (optionInLoop == 4)
-                        {
-                            return;
                         }
                     }
 
@@ -172,68 +139,109 @@ static class SeatLogic
                 }
             }
 
-        }
-
-        OptionsMenu.Logo("Seat selection");
-
-        // Going to food reservations and saving the reserved seats/movie to the current account
-        if (AccountsLogic.CurrentAccount != null)
-        {
-            List<SeatModel> finalSeatSelection = new();
-
-            foreach (string ID in selectedChairs)
+            while(true)
             {
-                SeatAccess.FindDefaultSeatValueArray(ID);
-                finalSeatSelection.Add(new SeatModel(ID, Convert.ToInt32(SeatAccess.FindDefaultSeatValueArray(ID))));
+                OptionsMenu.Logo("Seat selection");
+                SeatAccess.PrintAuditorium(auditoriumArray);
+                SeatsMenu.SeatLegend(movie);
+                
+                // Prepare option for use in checking if there are any seats selected
+                int optionInLoop = 0;
+
+                // If there are no seats selected option 2 is automatically selected and the user is prompted to select a seat again
+                if (!selectedChairs.Any()) optionInLoop = 2;
+                
+                else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) [{String.Join(", ", selectedChairs)}], are you satisfied with these selections?", false, true);
+
+                if (optionInLoop == 1)
+                {
+                    while (true)
+                    {
+                        OptionsMenu.Logo("Seat selection");
+
+                        // Going to food reservations and saving the reserved seats/movie to the current account
+                        if (AccountsLogic.CurrentAccount != null)
+                        {
+                            List<SeatModel> finalSeatSelection = new();
+
+                            foreach (string ID in selectedChairs)
+                            {
+                                SeatAccess.FindDefaultSeatValueArray(ID);
+                                finalSeatSelection.Add(new SeatModel(ID, Convert.ToInt32(SeatAccess.FindDefaultSeatValueArray(ID))));
+                            }
+
+                            AccountsLogic accountslogic = new AccountsLogic();
+                            AccountsLogic.CurrentAccount.Movie = movie;
+                            AccountsLogic.CurrentAccount.SeatReservation = finalSeatSelection;
+                            accountslogic.UpdateList(AccountsLogic.CurrentAccount);
+                        }
+
+                        // prints the movie overview and asks if the customer is satisfied
+                        double seatsPrice = 0.0;
+
+                        string seatReservations = "";
+                        foreach (var seat in AccountsLogic.CurrentAccount.SeatReservation)
+                        {
+                            seatReservations += $"{seat.Id} ({seat.SeatTypeName})  ----  € {AccountsLogic.CurrentAccount.Movie.MoviePrice} (+ € {seat.Price})\n";
+
+                            seatsPrice += AccountsLogic.CurrentAccount.Movie.MoviePrice;
+                            seatsPrice += seat.Price;
+                        }
+                        seatReservations += $"\nSubtotal Movie Seats: ----  € {Math.Round(seatsPrice, 2)}";
+
+                        Console.WriteLine($"{seatReservations}");
+                        Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate}");
+                    
+
+                        int option3_5 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "movie selection", $"You've selected these movie seats for \nthe movie \u001b[31m{AccountsLogic.CurrentAccount.Movie.Title}\u001b[0m:\n\n{seatReservations}\n\nAre you satisfied with this selection?", true, false);
+
+                        if (option3_5 == 1)
+                        {
+                            while (true)
+                            {
+                                int option4 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "Catering", "Would you like to reserve catering menu items?", true, true);
+
+                                if (option4 == 1)
+                                {
+                                    CateringMenu.Start();
+                                }
+                                else if (option4 == 2)
+                                {
+                                    ReservationMenu.Start();
+                                }
+                                else if (option4 == 3)
+                                {
+                                    break;
+                                }
+                            }
+
+                        }
+                        if (option3_5 == 2)
+                        {
+                            break;
+                        }
+
+                    }
+                }
+                else if (optionInLoop == 2)
+                {
+                    removingMode = false;
+                    break;
+                }
+
+                else if (optionInLoop == 3)
+                {
+                    removingMode = true;
+                    break;
+                }
+
+                else if (optionInLoop == 4)
+                {
+                    return;
+                }
             }
 
-            AccountsLogic accountslogic = new AccountsLogic();
-            AccountsLogic.CurrentAccount.Movie = movie;
-            AccountsLogic.CurrentAccount.SeatReservation = finalSeatSelection;
-            accountslogic.UpdateList(AccountsLogic.CurrentAccount);
-        }
-
-        double seatsPrice = 0.0;
-
-        string seatReservations = "";
-        foreach (var seat in AccountsLogic.CurrentAccount.SeatReservation)
-        {
-            seatReservations += $"{seat.Id} ({seat.SeatTypeName})  ----  € {AccountsLogic.CurrentAccount.Movie.MoviePrice} (+ € {seat.Price})\n";
-
-            seatsPrice += AccountsLogic.CurrentAccount.Movie.MoviePrice;
-            seatsPrice += seat.Price;
-        }
-        seatReservations += $"\nSubtotal Movie Seats: ----  € {Math.Round(seatsPrice, 2)}";
-
-        Console.WriteLine($"{seatReservations}");
-        Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate}");
-
-        List<string> ReturnList = new List<string>
-        {
-            "Yes",
-            "No"
-        };
-
-        int option3_5 = OptionsMenu.DisplaySystem(ReturnList, "movie selection", $"You've selected these movie seats for \nthe movie \u001b[31m{AccountsLogic.CurrentAccount.Movie.Title}\u001b[0m:\n\n{seatReservations}\n\nAre you satisfied with this selection?", true, false);
-
-        if (option3_5 == 2)
-        {
-            return;
-        }
-
-
-        int option4 = OptionsMenu.DisplaySystem(ReturnList, "Catering", "Would you like to reserve catering menu items?", true, false);
-
-        switch(option4)
-        {
-            case 1:
-                Console.Clear();
-                CateringMenu.Start();
-                break;
-            case 2:
-                Console.Clear();
-                ReservationMenu.Start();
-                break;
+            
         }
     }
 
@@ -313,37 +321,6 @@ static class SeatLogic
                             SeatAccess.UpdateSeatValue(auditoriumArray, currentlySelectedChair.ToUpper(), SeatAccess.FindDefaultSeatValueArray(currentlySelectedChair.ToUpper()));
                             selectedChairs.Remove(currentlySelectedChair.ToUpper());
                         }
-
-                        OptionsMenu.Logo("edit seats");
-                        SeatAccess.PrintAuditorium(auditoriumArray);
-                        SeatsMenu.SeatLegend(movie);
-                        
-                        // Prepare option for use in checking if there are any seats selected
-                        int optionInLoop = 0;
-
-                        // If there are no seats selected option 2 is automatically selected and the user is prompted to select a seat again
-                        if (!selectedChairs.Any()) optionInLoop = 2;
-                        
-                        else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) [{String.Join(", ", selectedChairs)}], are you satisfied with these selections?", false, true);
-
-                        if (optionInLoop == 1)
-                        {
-                            break;
-                        }
-                        else if (optionInLoop == 2)
-                        {
-                            removingMode = false;
-                        }
-
-                        else if (optionInLoop == 3)
-                        {
-                            removingMode = true;
-                        }
-
-                        else if (optionInLoop == 4)
-                        {
-                            return;
-                        }
                     }
 
                     else
@@ -396,70 +373,92 @@ static class SeatLogic
                     return;
                 }
             }
+
+            while (true)
+            {
+                OptionsMenu.Logo("edit seats");
+                SeatAccess.PrintAuditorium(auditoriumArray);
+                SeatsMenu.SeatLegend(movie);
+                
+                // Prepare option for use in checking if there are any seats selected
+                int optionInLoop = 0;
+
+                // If there are no seats selected option 2 is automatically selected and the user is prompted to select a seat again
+                if (!selectedChairs.Any()) optionInLoop = 2;
+                
+                else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) [{String.Join(", ", selectedChairs)}], are you satisfied with these selections?", false, true);
+
+                if (optionInLoop == 1)
+                {
+                    List<string> availa = new() {"Available", "Unavailable"};
+                    while (true)
+                    {
+                        OptionsMenu.Logo("edit seats");
+                        SeatAccess.PrintAuditorium(auditoriumArray);
+                        SeatsMenu.SeatLegend(movie);
+
+                        int av_opt = OptionsMenu.DisplaySystem(availa, "edit seats", "What do you want the status of the seat(s) to be?", false);
+
+                        if (av_opt == 1)
+                        {
+                            foreach (string seat in selectedChairs)
+                            {
+                                SeatAccess.UpdateSeatValue(auditoriumArray, seat, SeatAccess.FindDefaultSeatValueArray(seat));
+                            }
+
+                            SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
+
+
+                            OptionsMenu.Logo("edit seats");
+                            SeatAccess.PrintAuditorium(auditoriumArray);
+                            SeatsMenu.SeatLegend(movie);
+
+                            OptionsMenu.FakeContinue("The seats have been updated.");
+                            return; 
+
+                        }
+                        else if (av_opt == 2)
+                        {
+                            foreach (string seat in selectedChairs)
+                            {
+                                SeatAccess.UpdateSeatValue(auditoriumArray, seat, "0");
+                            }
+
+                            SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
+
+
+                            OptionsMenu.Logo("edit seats");
+                            SeatAccess.PrintAuditorium(auditoriumArray);
+                            SeatsMenu.SeatLegend(movie);
+
+                            OptionsMenu.FakeContinue("The seats have been updated.");
+                            return;  
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                else if (optionInLoop == 2)
+                {
+                    removingMode = false;
+                    break;
+                }
+
+                else if (optionInLoop == 3)
+                {
+                    removingMode = true;
+                    break;
+                }
+
+                else if (optionInLoop == 4)
+                {
+                    return;
+                }
+            }
         }
         
-
-        List<string> availa = new() {"Available", "Unavailable"};
-        while (true)
-        {
-            OptionsMenu.Logo("edit seats");
-            SeatAccess.PrintAuditorium(auditoriumArray);
-            SeatsMenu.SeatLegend(movie);
-
-            int av_opt = OptionsMenu.DisplaySystem(availa, "edit seats", "What do you want the status of the seat(s) to be?", false);
-
-            if (av_opt == 1)
-            {
-                foreach (string seat in selectedChairs)
-                {
-                    SeatAccess.UpdateSeatValue(auditoriumArray, seat, SeatAccess.FindDefaultSeatValueArray(seat));
-                }
-
-                SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
-
-
-                OptionsMenu.Logo("edit seats");
-                SeatAccess.PrintAuditorium(auditoriumArray);
-                SeatsMenu.SeatLegend(movie);
-
-                Console.WriteLine("The seats have been updated.");
-
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine(); 
-                break; 
-
-            }
-            else if (av_opt == 2)
-            {
-                foreach (string seat in selectedChairs)
-                {
-                    SeatAccess.UpdateSeatValue(auditoriumArray, seat, "0");
-                }
-
-                SeatAccess.WriteToCSV(auditoriumArray, pathToCsv);
-
-
-                OptionsMenu.Logo("edit seats");
-                SeatAccess.PrintAuditorium(auditoriumArray);
-                SeatsMenu.SeatLegend(movie);
-
-                Console.WriteLine("The seats have been updated.");
-
-                // prints a fake return option hehe
-                Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-            
-                // actually returns you to the main menu
-                Console.ReadLine();
-                break;  
-            }
-            else
-            {
-                break;
-            }
-        }
     }
 
     public static void UpdateHeatmap(string path)

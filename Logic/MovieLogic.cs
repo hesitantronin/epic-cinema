@@ -470,11 +470,7 @@ class MovieLogic
                     
                     // Write the updated movie list to the JSON file
                     MovieAccess.WriteAll(_movies);
-                    if (seatEdit)
-                    {
-                        OptionsMenu.FakeContinue("Auditorium updated successfully.", "seats updated");
-                    }
-                    else
+                    if (!seatEdit)
                     {
                         OptionsMenu.FakeContinue("Movie updated successfully.", "movie updated");
 
