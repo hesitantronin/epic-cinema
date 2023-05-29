@@ -384,6 +384,10 @@ class ReservationMenu
         {
             Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
         }
+        
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
+        Console.WriteLine("\nYour reservation has been made successfully!");
+        Console.ResetColor();
 
         Console.WriteLine("");
 

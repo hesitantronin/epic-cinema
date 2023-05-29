@@ -299,8 +299,14 @@ class CateringLogic
   
     public void CateringInfo(CateringModel foodItem)
     {
+        bool Return = false;
         while (true)
         {
+            if (Return)
+            {
+                return;
+            }
+            
             OptionsMenu.Logo(foodItem.Name);
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -320,7 +326,7 @@ class CateringLogic
 
             int option = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "", "\nDo you want to reserve this menu item?", false, false);
             
-            bool Return = false;
+            Return = false;
 
             if (option == 1)
             {
@@ -403,6 +409,7 @@ class CateringLogic
                         }
                         else
                         {
+                            Return = true;
                             break;
                         }
                     }
