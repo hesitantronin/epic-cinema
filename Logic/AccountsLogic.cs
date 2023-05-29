@@ -3,14 +3,19 @@ using System.Text;
 
 class AccountsLogic
 {
-    private List<AccountModel> _accounts;
+    private List<AccountModel> _accounts = new();
     public static AccountModel? CurrentAccount = null;
     private static AccountsLogic accountsLogic = new AccountsLogic();
 
     public AccountsLogic()
     {
+        LoadAccounts();
+    }
+    public void LoadAccounts()
+    {
         _accounts = AccountsAccess.LoadAll();
     }
+
 
     public void SetCurrentAccount(AccountModel account) 
     {
@@ -45,6 +50,37 @@ class AccountsLogic
         _accounts.Remove(_accounts[index]);
         AccountsAccess.WriteAll(_accounts);
     }
+    public void RemoveAccAdmin(int id)
+    {
+        // Get the ID of the currently logged-in account
+        int loggedInAccountId = CurrentAccount?.Id ?? 0;
+
+        if (id == loggedInAccountId)
+        {
+            Console.Clear();
+            Console.WriteLine("You cannot remove your own account.");
+            Console.ReadLine();
+            return;
+        }
+
+        // Find the index of the account with the specified ID
+        int index = _accounts.FindIndex(s => s.Id == id);
+
+        if (index != -1)
+        {
+            // Remove the account with the specified ID
+            _accounts.RemoveAt(index);
+            AccountsAccess.WriteAll(_accounts);
+       
+            OptionsMenu.FakeContinue("Account removed successfully.", "Account removed");
+        }
+        else
+        {
+            Console.Clear();
+            Console.WriteLine("Account not found.");
+            Console.ReadLine();
+        }
+    }
 
     public AccountModel? GetById(int id)
     {
@@ -52,7 +88,7 @@ class AccountsLogic
     }
 
     // Return false if either of the parameters are empty or null
-    public bool IsLoginValid(string email, string password)
+    public static bool IsLoginValid(string email, string password)
     {
         return (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password));
     }
@@ -66,7 +102,6 @@ class AccountsLogic
 
         while (true)
         {
-            Console.Clear();
             OptionsMenu.Logo("login");
 
             Console.WriteLine("Email address: ");
@@ -80,7 +115,6 @@ class AccountsLogic
 
             if(IsLoginValid(email, password) && accountModel != null) 
             { 
-                Console.Clear();
                 
                 List<string> EList = new List<string>(){"Continue"};
 
@@ -142,8 +176,6 @@ class AccountsLogic
 
         while(true) 
         {
-            Console.Clear();
-
             OptionsMenu.Logo(isEmployeeRegistration ? "Employee account registration" : isAdminRegistration ? "Admin account registration" : "Registration");
 
             Console.WriteLine("Email Address:");
@@ -182,7 +214,6 @@ class AccountsLogic
 
         while (password != confirmedPassword)
         {
-            Console.Clear();
 
             OptionsMenu.Logo("registration");
             Console.WriteLine("Password:");
@@ -190,7 +221,6 @@ class AccountsLogic
             password = accountsLogic.GetMaskedPassword();
             if (accountsLogic.IsPasswordValid(password))
             {
-                Console.Clear();
                 OptionsMenu.Logo("registration");
 
                 Console.WriteLine("Confirm Password:");
@@ -220,23 +250,23 @@ class AccountsLogic
             }
         }
 
-        Console.Clear();
         OptionsMenu.Logo("registration");
         Console.WriteLine("Name:");
         string fullName = Console.ReadLine() + "";
 
         AccountModel.AccountType accountType = isEmployeeRegistration ? AccountModel.AccountType.EMPLOYEE : isAdminRegistration ? AccountModel.AccountType.ADMIN : AccountModel.AccountType.CUSTOMER;
-        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, accountsLogic.HashPassword(password), fullName, accountType);
+        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, AccountsLogic.HashPassword(password), fullName, accountType);
         accountsLogic.UpdateList(acc);
-
-        accountsLogic.SetCurrentAccount(acc);
-
-        Console.Clear();
+        
+        if (!isEmployeeRegistration && !isAdminRegistration) accountsLogic.SetCurrentAccount(acc);
 
         List<string> DList = new List<string>(){"Continue"};
 
-        OptionsMenu.DisplaySystem(DList, "welcome page", $"Account created successfully!\nWelcome, {fullName}.", true, false);
-        MovieMenu.Start();     
+        OptionsMenu.DisplaySystem(DList, "welcome page", isEmployeeRegistration || isAdminRegistration ? $"Succesfully created {acc.Type} account: {acc.FullName}!":$"Account created successfully!\nWelcome, {fullName}.", true, false);
+        if (!isAdminRegistration && !isEmployeeRegistration)
+        {
+            MovieMenu.Start();     
+        }
         
         Console.CursorVisible = false;
     }
@@ -299,7 +329,7 @@ class AccountsLogic
         return password;
     }
 
-    public string HashPassword(string raw) 
+    public static string HashPassword(string raw) 
     {
         // Using statement to ensure proper disposal of SHA256 instance.
         // Create SHA256 instance to generate hash

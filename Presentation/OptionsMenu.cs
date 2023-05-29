@@ -2,15 +2,34 @@ using System.Text;
 
 static class OptionsMenu
 { 
+    // a list with the options yes and no, useful for the display system, since yes or no questions are common in this program
+    public static List<string> YesNoList = new List<string>()
+    {
+        "Yes",
+        "No"
+    };
+
+    // starts up the program
     public static void Start()
     {
+        // resets the boolean so that the return loops work again
+        ReservationMenu.reservationMade = false;
+
+        // deletes any movies or reservations where the viewing date was more than two weeks ago
+        DeleteOldData();
+
+        // a check that deletes any stray guest accounts
+        StrayGuestAccKiller();
+        
+        // main loop for the start menu
         while (true)
         {
-            if (AccountsLogic.CurrentAccount == null)
-            {
-                Console.Clear();
 
-                // list of options that will be displayed
+            // menu layout 1, for if the user isnt logged in yet
+            if (AccountsLogic.CurrentAccount == null || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+            {
+
+                // list of options that will be displayed in start
                 List<string> StartList = new List<string>()
                 {
                     "Login",
@@ -20,58 +39,64 @@ static class OptionsMenu
                 };
 
                 // the necessary info gets used in the display method
+                // depending on the option that was chosen, it will call the right function
                 int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
-                
-                // depending on the option that was chosen, it will clear the console and call the right function
+
+                // Login
                 if (option == 1)
                 {
                     AccountsLogic accLogic = new AccountsLogic();
                     accLogic.Login();
                 }
+
+                // Register
                 else if (option == 2)
                 {
                     AccountsLogic.Register();
                 }
+
+                // Guest Login
                 else if (option == 3)
                 {
                     AccountsLogic.Guest();
                 }
+
+                // Shows the Info Page
                 else if (option == 4)
                 {
                     InfoPage();
                 }
+
+                // exits the program by breaking out op the loop;
                 else if (option == 5)
                 {
-                    if (AccountsLogic.CurrentAccount != null)
-                    {
-                        if (LogOut())
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
+
+            // menu layout 2, for if the user IS logged in
             else
             {
-                Console.Clear();
-
+                // list of options that will be displayed in start
                 List<string> StartList = new List<string>()
                 {
                     "Logout",
                     "Continue",
                     "Info",
+                    "View Reservations"
                 };
 
+                // the necessary info gets used in the display method
+                // depending on the option that was chosen, it will call the right function
                 int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
 
+                // Logout
                 if (option == 1)
                 {
                     LogOut();
                 }
+
+                // depending on the kind of account, it will restart the right menu for you
                 else if (option == 2)
                 {
                     if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
@@ -87,11 +112,23 @@ static class OptionsMenu
                         AdminMenu.StartAdmin();
                     }
                 }
+
+                // Shows the Info Page
                 else if (option == 3)
                 {
                     InfoPage();
                 }
+
                 else if (option == 4)
+                {
+                    // View reservations
+                    ReservationsLogic reservationsLogic = new ReservationsLogic();
+                    List<ReservationsModel> reservations = reservationsLogic.GetOwnReservations();
+                    reservationsLogic.PrintReservations(reservations);
+                }
+                // asks the user if they want to log out.
+                // If the return of the logout functiun is true, the program quits by breaking out of the loop
+                else if (option == 5)
                 {
                     if (AccountsLogic.CurrentAccount != null)
                     {
@@ -101,34 +138,23 @@ static class OptionsMenu
                             break;
                         }
                     }
-                    else
-                    {
-                        break;
-                    }
                 }
             }
         }
     }
 
-    static public void Logo(string title = "")
+    // displays the current logo with account status
+    static public void Logo(string title)
     {
-        // prints logo in red
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine($@"      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.  ™");
-        Console.WriteLine($@"   ,-.--` , \  .-`.' ,`.  /==/_ /.' .' -   \         .' .' -   \  /==/_ //==/ \  .-._  ,-.--` , \ .-._ .'=.'\  .--.'  \");
-        Console.WriteLine($@"  |==|-  _.-` /==/, -   \|==|, |/==/  ,  ,-'        /==/  ,  ,-' |==|, | |==|, \/ /, /|==|-  _.-`/==/ \|==|  | \==\-/\ \");
-        Console.WriteLine($@"  |==|   `.-.|==| _ .=. ||==|  ||==|-   |  .        |==|-   |  . |==|  | |==|-  \|  | |==|   `.-.|==|,|  / - | /==/-|_\ |");
-        Console.WriteLine($@" /==/_ ,    /|==| , '=',||==|- ||==|_   `-' \       |==|_   `-' \|==|- | |==| ,  | -|/==/_ ,    /|==|  \/  , | \==\,   - \");
-        Console.WriteLine($@" |==|    .-' |==|-  '..' |==| ,||==|   _  , |       |==|   _  , ||==| ,| |==| -   _ ||==|    .-' |==|- ,   _ | /==/ -   ,|");
-        Console.WriteLine($@" |==|_  ,`-._|==|,  |    |==|- |\==\.       /       \==\.       /|==|- | |==|  /\ , ||==|_  ,`-._|==| _ /\   |/==/-  /\ - \");
-        Console.WriteLine($@" /==/ ,     //==/ - |    /==/. / `-.`.___.-'         `-.`.___.-' /==/. / /==/, | |- |/==/ ,     //==/  / / , /\==\ _.\=\.-'");
-        Console.WriteLine($@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`");
-        Console.ResetColor();
+        Console.Clear();
+        
+        // prints current logo in red
+        AdminMenu.SetLogo();
 
-        // prints acc name and acc type
+        // prints acc name and acc type beneath the logo
+        string accType = "";
         Console.ForegroundColor = ConsoleColor.DarkGray;
 
-        string accType = "";
         if (AccountsLogic.CurrentAccount != null)
         {
             if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
@@ -159,21 +185,15 @@ static class OptionsMenu
         }
         Console.ResetColor();
 
-        // prints a title if one is given
-        if (title != "")
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"\n{title.ToUpper()}\n");
-            Console.ResetColor();
-        }
+        // prints a title
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine($"\n{title.ToUpper()}\n");
+        Console.ResetColor();
     }
 
+    // displays all the info about the cinema
     static public void InfoPage()
     {
-        Console.Clear();
-        Console.CursorVisible = false;
-
-        // prints logo & title
         Logo("CINEMA INFO");
 
         // location info
@@ -193,30 +213,56 @@ static class OptionsMenu
         Console.WriteLine("\nOpening Hours");
         Console.ResetColor();
 
-        Console.WriteLine("Monday: Closed");
-        Console.WriteLine("Tuesday: 3:00 to 3:00.0001");
-        Console.WriteLine("Wednesday: Closed");
-        Console.WriteLine("Thursday: Closed");
-        Console.WriteLine("Friday: Closed");
-        Console.WriteLine("Saturday: Closed");
-        Console.WriteLine("Sunday: Closed");
+        Console.WriteLine("Monday: 9:00 to 23:00");
+        Console.WriteLine("Tuesday: 9:00 to 23:00");
+        Console.WriteLine("Wednesday: 9:00 to 23:00");
+        Console.WriteLine("Thursday: 9:00 to 23:00");
+        Console.WriteLine("Friday: 9:00 to 23:00");
+        Console.WriteLine("Saturday: 12:00 to 24:00");
+        Console.WriteLine("Sunday: 13:00 to 22:00");
+
+        FakeReturn();
+    }
+
+    // a quicker way of adding a visual return button
+    public static void FakeReturn()
+    {
+        Console.CursorVisible = false;
 
         // prints a fake return option hehe
         Console.WriteLine("\n > \u001b[32mReturn\u001b[0m");
         
-        // actually returns you to the main menu
+        // actually returns you >:)
         Console.ReadLine();
 
         Console.CursorVisible = true;
     }
 
+    // a quicker way of adding a visual continue button, with added option for logo display, if you want the message to be on a new page
+    public static void FakeContinue(string comment, string title = "")
+    {
+        Console.CursorVisible = false;
+
+        if (title != "")
+        {
+            Logo(title);
+        }
+
+        Console.WriteLine(comment);
+        
+        // prints a fake continue option hehe
+        Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+    
+        // actually lets you continue >:)
+        Console.ReadLine();
+
+        Console.CursorVisible = true;
+    }
+
+    // this function will allow you to display a list of options that the user can select between using the arrow keys
     static public int DisplaySystem(List<string> list, string title, string question = "", bool showlogo = true, bool showreturn = true, string returntext = "Return")
     {
-        if (showlogo)
-        {
-            Console.Clear();
-        }
-        
+  
         // makes the cursor invisible
         Console.CursorVisible = false;
         Console.OutputEncoding = Encoding.UTF8;
@@ -248,6 +294,7 @@ static class OptionsMenu
         bool isSelected = false;
         while (!isSelected)
         {
+
             // sets the cursor to the previously determined location
             Console.SetCursorPosition(left, top);
 
@@ -292,10 +339,9 @@ static class OptionsMenu
         return option;
     }
 
+    // an adapted version of the display system that has an added page system and can display info with the movie titles
     static public int MovieDisplaySystem(List<MovieModel> list, string title, string question = "", bool showlogo = true, bool previousButton = false, bool nextButton = false)
-    {
-        Console.Clear();
-        
+    {        
         // makes the cursor invisible
         Console.CursorVisible = false;
         Console.OutputEncoding = Encoding.UTF8;
@@ -339,7 +385,194 @@ static class OptionsMenu
                 Console.ResetColor();
 
                 // prints the description
-                Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}\n");
+                Console.WriteLine($"    Viewing Date: {list[i].ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n    Base Price: €{list[i].MoviePrice}\n");
+            }
+
+            returncount = 1;
+
+            // these two options get displayed depending on which page the user is.
+            // so if the user is on the last page, the next won't be displayed and vice versa
+            if (previousButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Previous\u001b[0m");
+                returncount += 1;
+            }
+            if (nextButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Next\u001b[0m");
+                returncount += 1;
+            }
+
+            // this will show the return button
+            Console.WriteLine($"\n{(option == list.Count() + returncount ? decorator : "   ")}Return\u001b[0m");
+
+            // sees what key has been pressed
+            key = Console.ReadKey(false);
+
+            // a switch case that changes the value from 'option', depending on the key input
+            switch (key.Key)
+            {
+                // moves one up
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? list.Count() + returncount : option - 1;
+                    break;
+                    
+                // moves one down
+                case ConsoleKey.DownArrow:
+                    option = option == list.Count() + returncount ? 1 : option + 1;
+                    break;
+
+                // if enter is pressed, breaks out of the while loop
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
+            }
+        }
+
+        Console.CursorVisible = true;
+        return option;
+    }
+
+    // a similarly adapted version of the display function, but this time for the catering system. 
+    static public int CateringDisplaySystem(List<CateringModel> list, string title, string question = "", bool showlogo = true, bool previousButton = false, bool nextButton = false, bool showreturn = true)
+    {
+        // makes the cursor invisible
+        Console.CursorVisible = false;
+        Console.OutputEncoding = Encoding.UTF8;
+
+        // prints the banner and the title
+        if (showlogo)
+        {
+            OptionsMenu.Logo(title);
+        }
+
+        // adds extra info if provided
+        if (question != "")
+        {
+            Console.WriteLine($"{question}\n");
+        }
+
+        // gets the cursor position and sets option to 1
+        (int left, int top) = Console.GetCursorPosition();
+        int option = 1;
+        int returncount = 0;
+
+        // this is the decorator that will help you see where the cursor is at
+        var decorator = " > \u001b[32m";
+
+        // sets a variable for 'key' that will be used later
+        ConsoleKeyInfo key;
+
+        // the loop in which an option is chosen from a list
+        bool isSelected = false;
+        while (!isSelected)
+        {
+            // sets the cursor to the right position
+            Console.SetCursorPosition(left, top);
+
+            // prints the movies one by one
+            for (int i = 0; i < list.Count(); i++)
+            {
+                // writes movie title in red
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i].Name}\u001b[0m");
+                Console.ResetColor();
+
+                // prints the description
+                Console.WriteLine($"    Type: {list[i].Type}");
+                Console.WriteLine($"    Price: ${(list[i].Price)}\n");
+            }
+
+            returncount = 1;
+
+            // these two options get displayed depending on which page the user is.
+            // so if the user is on the last page, the next won't be displayed and vice versa
+            if (previousButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Previous\u001b[0m");
+                returncount += 1;
+            }
+            if (nextButton)
+            {
+                Console.WriteLine($"{(option == list.Count() + returncount ? decorator : "   ")}Next\u001b[0m");
+                returncount += 1;
+            }
+
+            // this will show the return button
+            Console.WriteLine($"\n{(option == list.Count() + returncount ? decorator : "   ")}Return\u001b[0m");
+
+            // sees what key has been pressed
+            key = Console.ReadKey(false);
+
+            // a switch case that changes the value from 'option', depending on the key input
+            switch (key.Key)
+            {
+                // moves one up
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? list.Count() + returncount : option - 1;
+                    break;
+                    
+                // moves one down
+                case ConsoleKey.DownArrow:
+                    option = option == list.Count() + returncount ? 1 : option + 1;
+                    break;
+
+                // if enter is pressed, breaks out of the while loop
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
+            }
+        }
+
+        Console.CursorVisible = true;
+        return option;
+    }
+
+    static public int ReservationsDisplaySystem(List<ReservationsModel> list, string title, string question = "", bool showLogo = true, bool previousButton = false, bool nextButton = false, bool showReturn = true)
+    {
+        // makes the cursor invisible
+        Console.CursorVisible = false;
+        Console.OutputEncoding = Encoding.UTF8;
+
+        // prints the banner and title
+        if (showLogo)
+        {
+            OptionsMenu.Logo(title);
+        }
+
+        if (question != "")
+        {
+            Console.WriteLine($"{question}\n");
+        }
+
+        // gets the cursor position and sets option to 1
+        (int left, int top) = Console.GetCursorPosition();
+        int option = 1;
+        int returncount = 0;
+
+        // this is the decorator that will help you see where the cursor is at
+        var decorator = " > \u001b[32m";
+
+        // sets a variable for 'key' that will be used later
+        ConsoleKeyInfo key;
+
+        // the loop in which an option is chosen from a list
+        bool isSelected = false;
+        while (!isSelected)
+        {
+            // sets the cursor to the right position
+            Console.SetCursorPosition(left, top);
+
+            // prints the reservations one by one
+            for (int i = 0; i < list.Count(); i++)
+            {
+                // writes the movie title in red
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i].Movie.Title}\u001b[0m");
+                Console.ResetColor();
+
+                // prints the date and time of the reservation
+                Console.WriteLine($"    Date and time: {list[i].Movie.ViewingDate}\n");
             }
 
             returncount = 1;
@@ -386,115 +619,25 @@ static class OptionsMenu
         return option;
     }
 
-    static public int CateringDisplaySystem(List<CateringModel> list, string title, string question = "", bool showlogo = true, bool showreturn = true)
-    {
-        // makes the cursor invisible
-        Console.CursorVisible = false;
-        Console.OutputEncoding = Encoding.UTF8;
-
-        // prints the banner and the title
-        if (showlogo)
-        {
-            OptionsMenu.Logo(title);
-        }
-
-        // adds extra info if provided
-        if (question != "")
-        {
-            Console.WriteLine($"{question}\n");
-        }
-
-        // gets the cursor position and sets option to 1
-        (int left, int top) = Console.GetCursorPosition();
-        int option = 1;
-        int returncount = 0;
-
-        // this is the decorator that will help you see where the cursor is at
-        var decorator = " > \u001b[32m";
-
-        // sets a variable for 'key' that will be used later
-        ConsoleKeyInfo key;
-
-        // the loop in which an option is chosen from a list
-        bool isSelected = false;
-        while (!isSelected)
-        {
-            // sets the cursor to the right position
-            Console.SetCursorPosition(left, top);
-
-            // prints the movies one by one
-            for (int i = 0; i < list.Count(); i++)
-            {
-                // writes movie title in red
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine($"{(option == i + 1 ? decorator : "   ")}{list[i].Name}\u001b[0m");
-                Console.ResetColor();
-
-                // prints the description & price
-                Console.WriteLine($"    Description:\n    {MovieLogic.SpliceText(list[i].Description, "    ")}");
-                Console.WriteLine($"    Price:\n    ${(list[i].Price)}\n");
-            }
-
-            // this will show the return button
-            if (showreturn)
-            {
-                Console.WriteLine($"\n{(option == list.Count() + 1 ? decorator : "   ")}Return\u001b[0m");
-                returncount = 1;
-            }
-
-            // sees what key has been pressed
-            key = Console.ReadKey(false);
-
-            // a switch case that changes the value from 'option', depending on the key input
-            switch (key.Key)
-            {
-                // moves one up
-                case ConsoleKey.UpArrow:
-                    option = option == 1 ? list.Count() + returncount : option - 1;
-                    break;
-                    
-                // moves one down
-                case ConsoleKey.DownArrow:
-                    option = option == list.Count() + returncount ? 1 : option + 1;
-                    break;
-
-                // if enter is pressed, breaks out of the while loop
-                case ConsoleKey.Enter:
-                    isSelected = true;
-                    break;
-            }
-        }
-
-        Console.CursorVisible = true;
-        return option;
-    }
-
+    // a function that will reset the current account to null
     public static bool LogOut()
     {
         if (AccountsLogic.CurrentAccount != null)
         {
-            Console.Clear();
-
-            List<string> YNList = new List<string>()
-            {
-                "Yes",
-                "No"
-            };
-
-            int opt = OptionsMenu.DisplaySystem(YNList, "LOGOUT", "Are you sure you want to log out?", true, false);  
+            int opt = OptionsMenu.DisplaySystem(YesNoList, "LOGOUT", "Are you sure you want to log out?", true, false);  
 
             if (opt == 1)
             {
+                // if the account was a guest account, the guest account will be automaticly deleted, since it has becom unneccessary
                 if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
                 {
                     AccountsLogic accLog = new AccountsLogic();
                     accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
                 }
+
                 AccountsLogic.CurrentAccount = null;
 
-                List<string> EList = new List<string>(){"Continue"};
-
-                OptionsMenu.DisplaySystem(EList, "logout", "You have been logged out.", true, false);
+                FakeContinue("You have been logged out.", "logout");
 
                 return true;
             }
@@ -504,5 +647,48 @@ static class OptionsMenu
             }
         }
         return true;
+    }
+
+    // a function that is called at start up that will delete reservations and movies that were more than 2 weeks old
+    public static void DeleteOldData()
+    {
+        // deletes old movies
+        List<MovieModel> movies = MovieAccess.LoadAll();
+        List<MovieModel> newmovies = new();
+
+        foreach (MovieModel movie in movies)
+        {
+            if (movie.ViewingDate > DateTime.Now - TimeSpan.FromDays(14))
+            {
+                newmovies.Add(movie);
+            }
+        }
+        MovieAccess.WriteAll(newmovies);
+
+        // deletes old reservations
+        List<ReservationsModel> reservations = ReservationsAccess.LoadAll();
+        List<ReservationsModel> newres = new();
+        foreach (ReservationsModel reservation in reservations)
+        {
+            if (reservation.Movie.ViewingDate > DateTime.Now - TimeSpan.FromDays(14))
+            {
+                newres.Add(reservation);
+            }
+        }
+        ReservationsAccess.WriteAll(reservations);
+    }
+
+    // will delete any guest accounts that stay behind because of the program not quitting correctly
+    public static void StrayGuestAccKiller()
+    {
+        List<AccountModel> Accounts = AccountsAccess.LoadAll();
+        foreach (AccountModel acc in Accounts)
+        {
+            if (acc.Type == 0)
+            {
+                AccountsLogic accLog = new AccountsLogic();
+                accLog.RemoveAcc(acc.Id);
+            }
+        }
     }
 }

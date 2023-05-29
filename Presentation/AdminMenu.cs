@@ -1,36 +1,30 @@
 class AdminMenu : EmployeeMenu
 {
-    public static new void StartAdmin()
+    public static void StartAdmin()
     {
         while (true)
         {
-            Console.Clear();
-
             // Combine the StartList from AdminMenu and EmployeeMenu
             List<string> startList = new List<string>()
             {
                 "Change Cinema font",
-                "Create admin/ employee account",
+                "Create admin / employee account",
                 "Remove accounts"
             };
             
-            
-
-
             startList.AddRange(StartList); // Add the options from EmployeeMenu
 
             // Display the menu and get the selected option
-            int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Return");
-
-            Console.Clear();
+            int option = OptionsMenu.DisplaySystem(startList, "Admin Menu", "Select what you want to do.");
 
             // Handle the selected option
             if (option == 1)
             {
-                Console.WriteLine("Not yet implemented");
+                ChangeLogo();
             }
             else if (option == 2)
             {
+                account.LoadAccounts();
                 AccountCreator();
             }
             else if (option == 3)
@@ -39,37 +33,19 @@ class AdminMenu : EmployeeMenu
             }
             else if (option == 4)
             {
-                //movies
+                movie.EmployeeMovies();
             }
             else if (option == 5)
             {
-                //catering
+                food.EmployeeCatering();
             }
             else if (option == 6)
             {
-                //Seats
+                EmployeeMenu.EditGlobalSeatData();
             }
             else if (option == 7)
             {
-                // List<string> Confirmation = new List<string>()
-                // {
-                //     "Yes",
-                //     "No"
-                // };
-                // int LogoutConfirmation = OptionsMenu.DisplaySystem(Confirmation, "LOGOUT", "Are you sure you want to log out?", true, false);
-                // if (LogoutConfirmation == 2)
-                // {
-                //     continue;
-                // }
-                // else
-                // {
-                //     break;
-                // }
                 break;
-            }
-            else
-            {
-                Console.WriteLine("Invalid option");
             }
         }
     }
@@ -81,22 +57,30 @@ class AdminMenu : EmployeeMenu
             "Create Admin account",
             "Create Employee account",
         };
-        int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "Use ⬆ and ⬇ to navigate and press Enter to select account type to create:", true, true);
-        Console.Clear();
+
+        int option = OptionsMenu.DisplaySystem(account, "Account creator menu", "What type of account do you want to add", true, true);
 
         // Handle the selected option
         if (option == 1)
         {
-            AccountsLogic.Register(true);
+            AccountsLogic.Register(false, true);
         }
         else if (option == 2)
         {
-            AccountsLogic.Register(false, true);
+            AccountsLogic.Register(true);
         }
     }
     private static void RemoveEmployeeAccount()
     {
-        List<AccountModel> accounts = AccountsAccess.LoadAll();
+        List<AccountModel> tempaccounts = AccountsAccess.LoadAll();
+        List<AccountModel> accounts = new();
+        foreach (AccountModel acc in tempaccounts)
+        {
+            if (acc.Id != AccountsLogic.CurrentAccount.Id)
+            {
+                accounts.Add(acc);
+            }
+        }
 
         // Retrieve and display the employee accounts
         List<string> employeeList = new List<string>();
@@ -104,12 +88,12 @@ class AdminMenu : EmployeeMenu
         {
             if (account.Type == AccountModel.AccountType.EMPLOYEE || account.Type == AccountModel.AccountType.ADMIN)
             {
-                string employeeInfo = $"ID: {account.Id}\nName: {account.FullName}\nEmail: {account.EmailAddress}\nAccount Type: {account.Type}\n";
+                string employeeInfo = $"ID: {account.Id}\n   Name: {account.FullName}\n   Email: {account.EmailAddress}\n   Account Type: {account.Type}\n";
                 employeeList.Add(employeeInfo);
             }
         }
 
-        int option = OptionsMenu.DisplaySystem(employeeList, "Employee accounts", "Use ⬆ and ⬇ to navigate and press Enter to remove the selected account:", true, true);
+        int option = OptionsMenu.DisplaySystem(employeeList, "Employee / admin accounts", "Choose what account you want to remove");
 
         if (option >= 1 && option <= employeeList.Count)
         {
@@ -127,23 +111,174 @@ class AdminMenu : EmployeeMenu
 
             if (isValidId)
             {
-                // Remove the account with the specified ID
-                AccountModel accountToRemove = accounts.Find(account => account.Id == idToRemove);
-                if (accountToRemove != null)
-                {
-                    accounts.Remove(accountToRemove);
-                    AccountsAccess.WriteAll(accounts);
-                    Console.WriteLine("Employee account removed successfully.");
-                }
+                // Create an instance of AccountsLogic
+                AccountsLogic accountsLogic = new AccountsLogic();
+
+                // Call the RemoveAcc method on the instance
+                accountsLogic.RemoveAccAdmin(idToRemove);
             }
             else
             {
+                Console.Clear();
                 Console.WriteLine("Invalid ID found for the selected employee account.");
+                Console.ReadLine();
             }
         }
         else
         {
-            Console.WriteLine("Invalid option selected.");
+            return;
         }
+    }
+
+    public static void ChangeLogo()
+    {
+        while (true)
+        {
+            List<string> logoNames = new()
+            {
+                "Original",
+                "Swirly",
+                "Wobbly",
+                "Neat",
+                "Blocky",
+                "Old Timey",
+                "Horror",
+                "Simple"
+            };
+
+            int option = OptionsMenu.DisplaySystem(logoNames, "Change Logo", "Choose which font you want to have");
+
+            if (option != 9)
+            {
+                WriteLogo(Convert.ToString(option));
+
+                OptionsMenu.FakeContinue("The logo has been updated.", "logo updated");
+                break;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+    }
+ 
+    public static string ReadLogo()
+    {
+        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/logo.txt"));
+        return File.ReadAllText(path);
+    }
+
+    public static void WriteLogo(string choice)
+    {
+        string[] ch = {choice};
+        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/logo.txt"));
+        File.WriteAllLines(path, ch);
+    }
+
+    public static void SetLogo()
+    {
+        int choice = Convert.ToInt32(ReadLogo());
+        
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+
+        if (choice == 1)
+        {
+            Console.WriteLine($@"      ,----.      _ __     .=-.-.  _,.----.            _,.----.    .=-.-. .-._            ,----.         ___     ,---.  ™");
+            Console.WriteLine($@"   ,-.--` , \  .-`.' ,`.  /==/_ /.' .' -   \         .' .' -   \  /==/_ //==/ \  .-._  ,-.--` , \ .-._ .'=.'\  .--.'  \");
+            Console.WriteLine($@"  |==|-  _.-` /==/, -   \|==|, |/==/  ,  ,-'        /==/  ,  ,-' |==|, | |==|, \/ /, /|==|-  _.-`/==/ \|==|  | \==\-/\ \");
+            Console.WriteLine($@"  |==|   `.-.|==| _ .=. ||==|  ||==|-   |  .        |==|-   |  . |==|  | |==|-  \|  | |==|   `.-.|==|,|  / - | /==/-|_\ |");
+            Console.WriteLine($@" /==/_ ,    /|==| , '=',||==|- ||==|_   `-' \       |==|_   `-' \|==|- | |==| ,  | -|/==/_ ,    /|==|  \/  , | \==\,   - \");
+            Console.WriteLine($@" |==|    .-' |==|-  '..' |==| ,||==|   _  , |       |==|   _  , ||==| ,| |==| -   _ ||==|    .-' |==|- ,   _ | /==/ -   ,|");
+            Console.WriteLine($@" |==|_  ,`-._|==|,  |    |==|- |\==\.       /       \==\.       /|==|- | |==|  /\ , ||==|_  ,`-._|==| _ /\   |/==/-  /\ - \");
+            Console.WriteLine($@" /==/ ,     //==/ - |    /==/. / `-.`.___.-'         `-.`.___.-' /==/. / /==/, | |- |/==/ ,     //==/  / / , /\==\ _.\=\.-'");
+            Console.WriteLine($@" `--`-----`` `--`---'    `--`-`                                  `--`-`  `--`./  `--``--`-----`` `--`./  `--`  `--`");
+        }
+        else if (choice == 2)
+        {
+            Console.WriteLine(@"
+ ___                   ___                                 
+/ (_)      o          / (_)o                               
+\__     _      __    |         _  _    _   _  _  _    __,  
+/     |/ \_|  /      |     |  / |/ |  |/  / |/ |/ |  /  |  
+\___/ |__/ |_/\___/   \___/|_/  |  |_/|__/  |  |  |_/\_/|_/
+     /|                                                    
+     \|  ");
+        }
+        else if (choice == 3)
+        {
+            Console.WriteLine(@"
+ ___               _                       
+ )_    _  o  _    / ` o  _    _   _ _   _  
+(__   )_) ( (_   (_.  ( ) )  )_) ) ) ) (_( 
+     (                      (_  ");
+        }
+        else if (choice == 4)
+        {
+            Console.WriteLine(@"
+ _______ .______    __    ______      ______  __  .__   __.  _______ .___  ___.      ___      
+|   ____||   _  \  |  |  /      |    /      ||  | |  \ |  | |   ____||   \/   |     /   \     
+|  |__   |  |_)  | |  | |  ,----'   |  ,----'|  | |   \|  | |  |__   |  \  /  |    /  ^  \    
+|   __|  |   ___/  |  | |  |        |  |     |  | |  . `  | |   __|  |  |\/|  |   /  /_\  \   
+|  |____ |  |      |  | |  `----.   |  `----.|  | |  |\   | |  |____ |  |  |  |  /  _____  \  
+|_______|| _|      |__|  \______|    \______||__| |__| \__| |_______||__|  |__| /__/     \__\");
+        }
+        else if (choice == 5)
+        {
+            Console.WriteLine(@"
+ .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .-----------------.  .----------------.  .----------------.  .----------------.
+| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |
+| |  _________   | || |   ______     | || |     _____    | || |     ______   | || |     ______   | || |     _____    | || | ____  _____  | || |  _________   | || | ____    ____ | || |      __      | |
+| | |_   ___  |  | || |  |_   __ \   | || |    |_   _|   | || |   .' ___  |  | || |   .' ___  |  | || |    |_   _|   | || ||_   \|_   _| | || | |_   ___  |  | || ||_   \  /   _|| || |     /  \     | |
+| |   | |_  \_|  | || |    | |__) |  | || |      | |     | || |  / .'   \_|  | || |  / .'   \_|  | || |      | |     | || |  |   \ | |   | || |   | |_  \_|  | || |  |   \/   |  | || |    / /\ \    | |
+| |   |  _|  _   | || |    |  ___/   | || |      | |     | || |  | |         | || |  | |         | || |      | |     | || |  | |\ \| |   | || |   |  _|  _   | || |  | |\  /| |  | || |   / ____ \   | |
+| |  _| |___/ |  | || |   _| |_      | || |     _| |_    | || |  \ `.___.'\  | || |  \ `.___.'\  | || |     _| |_    | || | _| |_\   |_  | || |  _| |___/ |  | || | _| |_\/_| |_ | || | _/ /    \ \_ | |
+| | |_________|  | || |  |_____|     | || |    |_____|   | || |   `._____.'  | || |   `._____.'  | || |    |_____|   | || ||_____|\____| | || | |_________|  | || ||_____||_____|| || ||____|  |____|| |
+| |              | || |              | || |              | || |              | || |              | || |              | || |              | || |              | || |              | || |              | |
+| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |
+ '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'");
+        }
+        else if (choice == 6)
+        {
+            Console.WriteLine(@"
+      ..      .                      .                       ...             .                                                             
+   x88f` `..x88. .>                 @88>                  xH88'`~ .x8X      @88>                                                           
+ :8888   xf`*8888%   .d``           %8P                 :8888   .f'8888Hf   %8P      u.    u.                 ..    .     :                
+:8888f .888  `'`     @8Ne.   .u      .          .      :8888>  X8L  ^""`     .     x@88k u@88c.      .u     .888: x888  x888.        u     
+88888' X8888. >'8x   %8888:u@88N   .@88u   .udR88N     X8888  X888h        .@88u  ^'8888''8888'   ud8888.  ~`8888~'888X`?888f`    us888u.  
+88888  ?88888< 888>   `888I  888. ''888E` <888'888k    88888  !88888.     ''888E`   8888  888R  :888'8888.   X888  888X '888>  .@88 '8888' 
+88888   '88888 '8%     888I  888I   888E  9888 'Y'     88888   %88888       888E    8888  888R  d888 '88%'   X888  888X '888>  9888  9888  
+88888 '  `8888>        888I  888I   888E  9888         88888 '> `8888>      888E    8888  888R  8888.+'      X888  888X '888>  9888  9888  
+`8888> %  X88!       uW888L  888'   888E  9888         `8888L %  ?888   !   888E    8888  888R  8888L        X888  888X '888>  9888  9888  
+ `888X  `~""`   :   '*88888Nu88P    888&  ?8888u../     `8888  `-*""   /    888&   '*88*' 8888' '8888c. .+  '*88%''*88' '888!` 9888  9888  
+   '88k.      .~    ~ '88888F`      R888'  '8888P'        '888.      :'     R888'    ''   'Y'    '88888%      `~    ''    `'`   '888*''888' 
+     `''*==~~`         888 ^         ''      'P'            `''***~'`        ''                    'YP'                         ^Y'   ^Y'  
+                       *8E                                                                                                                ");
+        }
+        else if (choice == 7)
+        {
+            Console.WriteLine(@"
+▓█████  ██▓███   ██▓ ▄████▄      ▄████▄   ██▓ ███▄    █ ▓█████  ███▄ ▄███▓ ▄▄▄
+▓█   ▀ ▓██░  ██▒▓██▒▒██▀ ▀█     ▒██▀ ▀█  ▓██▒ ██ ▀█   █ ▓█   ▀ ▓██▒▀█▀ ██▒▒████▄
+▒███   ▓██░ ██▓▒▒██▒▒▓█    ▄    ▒▓█    ▄ ▒██▒▓██  ▀█ ██▒▒███   ▓██    ▓██░▒██  ▀█▄
+▒▓█  ▄ ▒██▄█▓▒ ▒░██░▒▓▓▄ ▄██▒   ▒▓▓▄ ▄██▒░██░▓██▒  ▐▌██▒▒▓█  ▄ ▒██    ▒██ ░██▄▄▄▄██ 
+░▒████▒▒██▒ ░  ░░██░▒ ▓███▀ ░   ▒ ▓███▀ ░░██░▒██░   ▓██░░▒████▒▒██▒   ░██▒ ▓█   ▓██▒
+░░ ▒░ ░▒▓▒░ ░  ░░▓  ░ ░▒ ▒  ░   ░ ░▒ ▒  ░░▓  ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░   ░  ░ ▒▒   ▓▒█░
+ ░ ░  ░░▒ ░      ▒ ░  ░  ▒        ░  ▒    ▒ ░░ ░░   ░ ▒░ ░ ░  ░░  ░      ░  ▒   ▒▒ ░
+   ░   ░░        ▒ ░░           ░         ▒ ░   ░   ░ ░    ░   ░      ░     ░   ▒
+   ░  ░          ░  ░ ░         ░ ░       ░           ░    ░  ░       ░         ░  ░");
+        }
+        else if (choice == 8)
+        {
+            Console.WriteLine(@"
+_____         _          ____  _                                
+| ____| _ __  (_)  ___   / ___|(_) _ __    ___  _ __ ___    __ _ 
+|  _|  | '_ \ | | / __| | |    | || '_ \  / _ \| '_ ` _ \  / _` |
+| |___ | |_) || || (__  | |___ | || | | ||  __/| | | | | || (_| |
+|_____|| .__/ |_| \___|  \____||_||_| |_| \___||_| |_| |_| \__,_|
+       |_|");
+        }
+        Console.ResetColor();
+
     }
 }

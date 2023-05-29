@@ -2,7 +2,7 @@ using System.Text.Json;
 
 class CateringAccess
 {
-    static string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"Datasources/catering.json"));
+    static string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, @"DataSources/catering.json"));
 
     public static List<CateringModel> LoadAll()
     {
@@ -16,10 +16,10 @@ class CateringAccess
             return new List<CateringModel>();
     }
 
-    public static void WriteAll(List<CateringModel> movies)
+    public static void WriteAll(List<CateringModel> menu)
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
-        string json = JsonSerializer.Serialize(movies, options);
+        string json = JsonSerializer.Serialize(menu, options);
         File.WriteAllText(path, json);
     }
 }
