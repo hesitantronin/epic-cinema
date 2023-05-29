@@ -5,8 +5,8 @@ static class SeatLogic
     public static List<string> answerList = new List<string>()
     {
         "Yes",
-        "Add more seats",
-        "Remove seats"
+        "Add seat",
+        "Remove seat"
     };
     
     public static void SeatSelection(MovieModel movie)

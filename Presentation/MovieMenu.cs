@@ -80,7 +80,7 @@ class MovieMenu
             // list of options to display
             List<string> OptionList = new List<string>()
             {
-                "Date",
+                "Viewing Date",
                 "Genre",
                 "Title",
                 "Rating",

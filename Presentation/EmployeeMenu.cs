@@ -290,16 +290,10 @@ class EmployeeMenu
                 // Prepare option for use in checking if there are any seats selected
                 int optionInLoop = 0;
 
-                List<string> answerList = new List<string>()
-                {
-                    "Yes",
-                    "Add more seats",
-                    "Remove seats"
-                };
                 // If there are no seats selected option 2 is automatically selected and the user is prompted to select a seat again
                 if (!selectedChairs.Any()) optionInLoop = 2;
                 
-                else optionInLoop = OptionsMenu.DisplaySystem(answerList, "", $"You've Selected seat(s) [{String.Join(", ", selectedChairs)}], are you satisfied with these selections?", false, true);
+                else optionInLoop = OptionsMenu.DisplaySystem(SeatLogic.answerList, "", $"You've Selected seat(s) [{String.Join(", ", selectedChairs)}], are you satisfied with these selections?", false, true);
 
                 if (optionInLoop == 1)
                 {

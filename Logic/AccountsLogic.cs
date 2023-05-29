@@ -115,9 +115,6 @@ class AccountsLogic
 
             if(IsLoginValid(email, password) && accountModel != null) 
             { 
-                
-                List<string> EList = new List<string>(){"Continue"};
-
                 accountModel.Authorize();
                 currentAccount = accountModel;
 
@@ -133,8 +130,10 @@ class AccountsLogic
                 {
                     accountsLogic.SetCurrentAccount(currentAccount);
                 }
+                
+                List<string> DList = new List<string>(){"Continue"};
 
-                OptionsMenu.DisplaySystem(EList, "welcome page", $"Welcome back, {accountModel.FullName}.\nYour email address is: {accountModel.EmailAddress}", true, false);
+                OptionsMenu.DisplaySystem(DList, "welcome page", $"Welcome back, {accountModel.FullName}.\nYour email address is: {accountModel.EmailAddress}", true, false);
                 
                 if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
                 {
@@ -153,9 +152,7 @@ class AccountsLogic
             }
             else
             {
-                List<string> EList = new List<string>(){"Continue"};
-
-                int option = OptionsMenu.DisplaySystem(EList, "", "\nNo account found with these credentials.", false, true);
+                int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nNo account found with these credentials.", false, true);
                 
                 currentAccount = new AccountModel(0, email, password, string.Empty);
 
@@ -183,9 +180,8 @@ class AccountsLogic
 
             if (!accountsLogic.IsEmailValid(email))
             {
-                List<string> EList = new List<string>(){"Continue"};
 
-                int option = OptionsMenu.DisplaySystem(EList, "", "\nInvalid email, please try again.", false, true);
+                int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nInvalid email, please try again.", false, true);
 
                 if (option == 2)
                 {
@@ -194,9 +190,7 @@ class AccountsLogic
             }
             else if(accountsLogic.IsEmailInUse(email))
             {
-                List<string> EList = new List<string>(){"Continue"};
-
-                int option = OptionsMenu.DisplaySystem(EList, "", "\nThis email is already in use, please try again.", false, true);
+                int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nThis email is already in use, please try again.", false, true);
 
                 if (option == 2)
                 {
@@ -228,9 +222,8 @@ class AccountsLogic
 
                 if (password != confirmedPassword)
                 {
-                    List<string> BList = new List<string>() { "Continue" };
 
-                    int option = OptionsMenu.DisplaySystem(BList, "", "\nPasswords do not match, please try again.", false, true);
+                    int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nPasswords do not match, please try again.", false, true);
 
                     if (option == 2)
                     {
@@ -240,8 +233,7 @@ class AccountsLogic
             }
             else
             {
-                List<string> CList = new List<string>() { "Continue" };
-                int option = OptionsMenu.DisplaySystem(CList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, one capital letter and one special character", false, true);
+                int option = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nPassword must be between 8 and 32 characters long and contain atleast one number, one capital letter and one special character", false, true);
             
                 if (option == 2)
                 {

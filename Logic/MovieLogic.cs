@@ -5,7 +5,7 @@ class MovieLogic
 {
     private List<MovieModel> _movies = new();
     static public MovieModel? CurrentMovie { get; private set; }
-    public static List<string> ContinueList = new List<string>() { "Continue" };
+    public static List<string> ContinueList = new List<string>() { "Retry" };
 
 
     public MovieLogic()
@@ -107,6 +107,10 @@ class MovieLogic
                         MaxItems = MovieList.Count() % 5;
                         nextButton = false;
                     }
+                    else if (BaseLine + 5 == MovieList.Count())
+                    {
+                        nextButton = false;
+                    }
                     else
                     {
                         MaxItems = 5;
@@ -128,10 +132,12 @@ class MovieLogic
                         previousButton = false;
                     }
 
+                    int totalPages = MovieList.Count() / 5;
+                    
                     // the necessary info gets used in the display method
                     List<MovieModel> subList = MovieList.GetRange(BaseLine, MaxItems);
 
-                    int option = OptionsMenu.MovieDisplaySystem(subList, "MOVIES", $"Page {pageNr}", true, previousButton, nextButton);
+                    int option = OptionsMenu.MovieDisplaySystem(subList, "MOVIES", $"Page {pageNr} (of {totalPages})", true, previousButton, nextButton);
 
                     // depending on the option that was chosen, it will clear the console and call the right function  
                     if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && previousButton && !nextButton) || (option == subList.Count() + 1 && previousButton && nextButton))
