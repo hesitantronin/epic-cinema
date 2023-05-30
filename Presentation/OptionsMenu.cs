@@ -690,4 +690,20 @@ static class OptionsMenu
             }
         }
     }
+
+    // if you log in and reserve things but don't complete your reservation, the data from the old reservation will be removed from your account so you can make a new reservation
+    public static void RemoveUnfinishedReservation()
+    {
+        if (AccountsLogic.CurrentAccount.Movie != null)
+        {
+            AccountsLogic accountsLogic = new AccountsLogic();
+            AccountsLogic.CurrentAccount.Movie = null;
+            AccountsLogic.CurrentAccount.CateringReservation = new Dictionary<string, string>();
+            AccountsLogic.CurrentAccount.SeatReservation = new List<SeatModel>();
+            AccountsLogic.CurrentAccount.AccessibilityRequest = "";
+
+            // update the json to reflect this change
+            accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
+        }
+    }
 }

@@ -145,6 +145,7 @@ class AccountsLogic
                 }
                 else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
                 {
+                    OptionsMenu.RemoveUnfinishedReservation();
                     MovieMenu.Start();
                 }
 
