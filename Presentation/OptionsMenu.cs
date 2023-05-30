@@ -384,7 +384,7 @@ static class OptionsMenu
                 Console.ResetColor();
 
                 // prints the description
-                Console.WriteLine($"    Viewing Date: {list[i].ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n    Base Price: €{list[i].MoviePrice}\n");
+                Console.WriteLine($"    Viewing Date: {list[i].ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n    Base Price: € {String.Format("{0:0.00}", list[i].MoviePrice)}\n");
             }
 
             returncount = 1;
@@ -479,7 +479,7 @@ static class OptionsMenu
 
                 // prints the description
                 Console.WriteLine($"    Type: {list[i].Type}");
-                Console.WriteLine($"    Price: ${(list[i].Price)}\n");
+                Console.WriteLine($"    Price: € {String.Format("{0:0.00}", (list[i].Price))}\n");
             }
 
             returncount = 1;

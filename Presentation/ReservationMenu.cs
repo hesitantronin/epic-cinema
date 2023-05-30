@@ -320,7 +320,7 @@ class ReservationMenu
         OptionsMenu.Logo("reservation");
         Console.WriteLine("Here are the details of your reservation:\n");
         Console.WriteLine($"NAME: {AccountsLogic.CurrentAccount.FullName}");
-        Console.WriteLine($"MOVIE: {AccountsLogic.CurrentAccount.Movie.Title} ({AccountsLogic.CurrentAccount.SeatReservation.Count()} X {AccountsLogic.CurrentAccount.Movie.MoviePrice})");
+        Console.WriteLine($"MOVIE: {AccountsLogic.CurrentAccount.Movie.Title} ({AccountsLogic.CurrentAccount.SeatReservation.Count()} X € {String.Format("{0:0.00}", AccountsLogic.CurrentAccount.Movie.MoviePrice)})");
 
 
         double finalPrice = 0.0;
@@ -329,7 +329,7 @@ class ReservationMenu
         string seatReservations = "";
         foreach (var seat in AccountsLogic.CurrentAccount.SeatReservation)
         {
-            seatReservations += $"    [{seat.Id}] {seat.SeatTypeName} (+ € {seat.Price})\n";
+            seatReservations += $"    [{seat.Id}] {seat.SeatTypeName} (+ € {String.Format("{0:0.00}", seat.Price)})\n";
 
             finalPrice += AccountsLogic.CurrentAccount.Movie.MoviePrice;
             finalPrice += seat.Price;
@@ -352,7 +352,7 @@ class ReservationMenu
             foreach (var item in AccountsLogic.CurrentAccount.CateringReservation)
             {
                 // Gets every catering reservation from the cateringReservation dictionary which is a part of their account, and adds it to a string so it can be shown in the overview
-                menuReservations += $"    {item.Key}: ({item.Value} X € {Convert.ToDouble(cateringItems.Where(c => c.Name == item.Key).Select(c => c.Price).Sum())})\n";
+                menuReservations += $"    {item.Key}: ({item.Value} X € {String.Format("{0:0.00}", Convert.ToDouble(cateringItems.Where(c => c.Name == item.Key).Select(c => c.Price).Sum()))})\n";
 
                 // to get the total price, this finds the current catering item, locates it in cateringItems based on whether the name is the same as the current item (item.Key)
                 // and then once its selected the right cateringModel, it gets the price of one of those specific items. Then that price is multiplied by how many times the
@@ -378,13 +378,13 @@ class ReservationMenu
         if (discount)
         {
             //if there is a discount then there will be a 10% discount
-            Console.WriteLine($"\nTOTAL PRICE: € {System.Math.Round(finalPrice, 2)}");
-            Console.WriteLine($"DISCOUNT: € {System.Math.Round(finalPrice * 0.1, 2)}");
-            Console.WriteLine($"\nFINAL PRICE: € {System.Math.Round(finalPrice * 0.9, 2)}");
+            Console.WriteLine($"\nTOTAL PRICE: € {String.Format("{0:0.00}", finalPrice)}");
+            Console.WriteLine($"DISCOUNT: € {String.Format("{0:0.00}", finalPrice * 0.1)}");
+            Console.WriteLine($"\nFINAL PRICE: € {String.Format("{0:0.00}", finalPrice * 0.9)}");
         }
         else
         {
-            Console.WriteLine($"\nTOTAL PRICE: {System.Math.Round(finalPrice, 2)} euros");
+            Console.WriteLine($"\nTOTAL PRICE: {String.Format("{0:0.00}", finalPrice)} euros");
         }
         
         Console.ForegroundColor = ConsoleColor.DarkCyan;

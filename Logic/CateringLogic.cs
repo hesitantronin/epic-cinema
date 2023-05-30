@@ -149,7 +149,7 @@ class CateringLogic
             List<string> foodInfoList = new List<string>();
             foodInfoList.Add($"Name: {foodItem.Name}");
             foodInfoList.Add($"Type: {foodItem.Type}");
-            foodInfoList.Add($"Price: {foodItem.Price}");
+            foodInfoList.Add($"Price: {String.Format("{0:0.00}", foodItem.Price)}");
             foodInfoList.Add($"Description: {MovieLogic.SpliceText(foodItem.Description, "   ")}\n");
             foodInfoList.Add("\u001b[31mRemove Item\u001b[0m");
 
@@ -323,7 +323,7 @@ class CateringLogic
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("Price");
             Console.ResetColor();
-            Console.WriteLine($" ${foodItem.Price}\n");
+            Console.WriteLine($" € {String.Format("{0:0.00}", foodItem.Price)}\n");
 
             int option = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "", "\nDo you want to reserve this menu item?", false, false);
             
@@ -338,7 +338,7 @@ class CateringLogic
                     Console.WriteLine("Please enter the amount that you would like to reserve: ");
                     string? amount = Console.ReadLine();
                     
-                    if (!String.IsNullOrEmpty(amount) && amount.All(Char.IsDigit)) // check if entered amount is a valid number (0-9)
+                    if (!String.IsNullOrEmpty(amount) && amount.All(Char.IsDigit) && amount != "0") // check if entered amount is a valid number (-9)
                     {
                         int numAmount = Convert.ToInt32(amount);
             
@@ -395,12 +395,12 @@ class CateringLogic
                             {
                                 if (item.Key == fooditem.Name)
                                 {
-                                    menuReservations += $"{item.Key}  ----  Amount: {item.Value} X € {fooditem.Price} (€ {Math.Round(Convert.ToDouble(item.Value) * fooditem.Price, 2)})\n";
-                                    totalCatering += Convert.ToDouble(item.Value) * fooditem.Price;
+                                    menuReservations += $"{item.Key}  ----  Amount: {item.Value} X € {String.Format("{0:0.00}", fooditem.Price)} (€ {String.Format("{0:0.00}", Convert.ToDouble(item.Value) * Convert.ToDouble(fooditem.Price))})\n";
+                                    totalCatering = Convert.ToDouble(item.Value) * Convert.ToDouble(fooditem.Price);
                                 }
                             }
                         }
-                        menuReservations += $"\nSubtotal Catering: ----  € {Math.Round(totalCatering, 2)}";
+                        menuReservations += $"\nSubtotal Catering: ----  € {String.Format("{0:0.00}", totalCatering)}";
 
                         int option2 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "catering selection", $"You've selected these menu items:\n\n{menuReservations}\n\nIs this all you want to reserve?", true, false);
 
