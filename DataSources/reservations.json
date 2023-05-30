@@ -573,5 +573,35 @@
     "reservationCode": 7838948,
     "totalPrice": 10.99,
     "cancelled": false
+  },
+  {
+    "id": 18,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 5,
+      "title": "12 Angry Men",
+      "genre": "Crime",
+      "rating": 9,
+      "description": "The jury in a New York City murder trial is frustrated by a single member whose skeptical caution forces them to more carefully consider the evidence before jumping to a hasty verdict.",
+      "age": 6,
+      "viewing_date": "2023-12-04T14:30:00",
+      "publish_date": "1957-10-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A7",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-12-04T14:30:00",
+    "reservationCode": 4642667,
+    "totalPrice": 10.99,
+    "cancelled": false
   }
 ]

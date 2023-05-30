@@ -132,7 +132,7 @@ class MovieLogic
                         previousButton = false;
                     }
 
-                    int totalPages = MovieList.Count() / 5;
+                    double totalPages = Math.Ceiling((double)MovieList.Count() / 5);
                     
                     // the necessary info gets used in the display method
                     List<MovieModel> subList = MovieList.GetRange(BaseLine, MaxItems);

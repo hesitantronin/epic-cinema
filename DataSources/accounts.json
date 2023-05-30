@@ -105,5 +105,16 @@
       }
     ],
     "accessibilityRequest": "Give me a ramp"
+  },
+  {
+    "id": 9,
+    "accountType": 0,
+    "emailAddress": "",
+    "password": "",
+    "fullName": "",
+    "movieReservation": null,
+    "cateringReservation": {},
+    "seatReservation": [],
+    "accessibilityRequest": ""
   }
 ]

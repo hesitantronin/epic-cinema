@@ -12,9 +12,6 @@ static class OptionsMenu
     // starts up the program
     public static void Start()
     {
-        // resets the boolean so that the return loops work again
-        ReservationMenu.reservationMade = false;
-
         // deletes any movies or reservations where the viewing date was more than two weeks ago
         DeleteOldData();
 
@@ -24,6 +21,8 @@ static class OptionsMenu
         // main loop for the start menu
         while (true)
         {
+            // resets the boolean so that the return loops work again
+            ReservationMenu.reservationMade = false;
 
             // menu layout 1, for if the user isnt logged in yet
             if (AccountsLogic.CurrentAccount == null || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)

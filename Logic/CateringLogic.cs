@@ -92,11 +92,11 @@ class CateringLogic
                         previousButton = false;
                     }
 
-                    int totalPages = FoodList.Count() / 5;
+                    double totalPages = Math.Ceiling((double)FoodList.Count() / 5);
 
                     // the necessary info gets used in the display method
                     List<CateringModel> subList = FoodList.GetRange(BaseLine, MaxItems);
-
+                    
                     int option = OptionsMenu.CateringDisplaySystem(subList, "Catering", $"Page {pageNr} (of {totalPages})", true, previousButton, nextButton);
 
                     // depending on the option that was chosen, it will clear the console and call the right function  
