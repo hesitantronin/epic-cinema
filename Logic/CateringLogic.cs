@@ -255,7 +255,6 @@ class CateringLogic
                 if (removeOptions == 1)
                 {
                     remove = true;
-                    break;
                 }
                 else
                 {
@@ -290,6 +289,8 @@ class CateringLogic
                     CateringAccess.WriteAll(_menu);
                     
                     OptionsMenu.FakeContinue("Item deleted successfully.", "item deleted");
+
+                    return;
                 }
             }
         }

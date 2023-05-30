@@ -448,11 +448,11 @@ class MovieLogic
             }
             else if (edit == 10)
             {
+
                 int removeOptions = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "confirm", "Are you sure you want to delete this item?", true, false);
                 if (removeOptions == 1)
                 {
                     remove = true;
-                    break;
                 }
                 else
                 {
@@ -489,6 +489,8 @@ class MovieLogic
                     MovieAccess.WriteAll(_movies);
                     
                     OptionsMenu.FakeContinue("Movie deleted successfully.", "movie deleted");
+
+                    return;
 
                 }
             }
