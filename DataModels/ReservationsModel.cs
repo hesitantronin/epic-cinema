@@ -27,7 +27,7 @@ public class ReservationsModel
     public DateTime ViewingDate { get; set; }
 
     [JsonPropertyName("reservationCode")]
-    public int ReservationCode { get; set; }
+    public string ReservationCode { get; set; }
 
     [JsonPropertyName("totalPrice")]
     public double TotalPrice { get; set; }
@@ -35,7 +35,7 @@ public class ReservationsModel
     [JsonPropertyName("cancelled")]
     public bool Cancelled { get; set; }
 
-    public ReservationsModel(int id, string emailAddress, string fullName, MovieModel movie, List<SeatModel> seatReservation, Dictionary<string, string> cateringReservation, string accessibilityRequest, DateTime viewingDate, int reservationCode, double totalPrice)
+    public ReservationsModel(int id, string emailAddress, string fullName, MovieModel movie, List<SeatModel> seatReservation, Dictionary<string, string> cateringReservation, string accessibilityRequest, DateTime viewingDate, string reservationCode, double totalPrice)
     {
         this.Id = id;
         this.EmailAddress = emailAddress;

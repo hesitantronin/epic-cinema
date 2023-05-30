@@ -364,9 +364,11 @@ class ReservationMenu
             Console.WriteLine($"{menuReservations}");
         }
 
+        // added date to make the uniqueness more foolproof
         Random random = new Random();
-        
-        int resCode = random.Next(1000000, 9999999);
+        string randomCode = Convert.ToString(random.Next(1000000, 9999999));
+        string resCode = DateTime.Now.ToString("dd-MM-yyyy HH:mm/") + randomCode;
+
         Console.WriteLine($"RESERVATION CODE: {resCode}");
 
         if (AccountsLogic.CurrentAccount.AccessibilityRequest != "")
@@ -412,7 +414,7 @@ class ReservationMenu
     }
 
     // writes the final reservation to a separate json
-    public static void ReservationToJson(int resCode, double finalPrice)
+    public static void ReservationToJson(string resCode, double finalPrice)
     {
         // Get reservations already present in file
         List<ReservationsModel> originalReservations = ReservationsAccess.LoadAll();
