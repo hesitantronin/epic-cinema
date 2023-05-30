@@ -182,12 +182,12 @@ static class SeatLogic
                         string seatReservations = "";
                         foreach (var seat in AccountsLogic.CurrentAccount.SeatReservation)
                         {
-                            seatReservations += $"{seat.Id} ({seat.SeatTypeName})  ----  € {AccountsLogic.CurrentAccount.Movie.MoviePrice} (+ € {seat.Price})\n";
+                            seatReservations += $"{seat.Id} ({seat.SeatTypeName})  ----  € {String.Format("{0:0.00}", AccountsLogic.CurrentAccount.Movie.MoviePrice)} (+ € {String.Format("{0:0.00}", seat.Price)})\n";
 
                             seatsPrice += AccountsLogic.CurrentAccount.Movie.MoviePrice;
                             seatsPrice += seat.Price;
                         }
-                        seatReservations += $"\nSubtotal Movie Seats: ----  € {Math.Round(seatsPrice, 2)}";
+                        seatReservations += $"\nSubtotal Movie Seats: ----  € {String.Format("{0:0.00}", Math.Round(seatsPrice, 2))}";
 
                         Console.WriteLine($"{seatReservations}");
                         Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate}");

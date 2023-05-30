@@ -545,7 +545,7 @@ class MovieLogic
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine($"Base Price");
             Console.ResetColor();
-            Console.WriteLine($" {movie.MoviePrice}\n");
+            Console.WriteLine($" € {String.Format("{0:0.00}", movie.MoviePrice)}\n");
 
             // the necessary info gets used in the display method
             int option = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "", "\nDo you want to select this movie?", false, false);
