@@ -52,7 +52,7 @@ class MovieLogic
         if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
         {
             foreach (MovieModel movie in TempMovieList)
-            {
+            {   
                 if (movie.ViewingDate > DateTime.Now)
                 {
                     MovieList.Add(movie);
@@ -75,10 +75,10 @@ class MovieLogic
             if (MovieList.Count() == 0)
             {
                 // list of options that will be displayed
-                List<string> ReturnList = new List<string>();
+                List<string> ReturnList = new List<string>() {"Return"};
 
                 // the necessary info gets used in the display method
-                int option = OptionsMenu.DisplaySystem(ReturnList, "MOVIES", "No movies were found that matched the criteria.");
+                int option = OptionsMenu.DisplaySystem(ReturnList, "MOVIES", "No movies were found that matched the criteria.", true, false);
 
                 // depending on the option that was chosen, it will clear the console and call the right function
                 if (option == 1)
@@ -423,7 +423,7 @@ class MovieLogic
                 {
                     OptionsMenu.Logo("edit movie");
 
-                    Console.Write("Age: ");
+                    Console.Write("Base price: ");
                     string newAgeInput = Console.ReadLine() + "";
 
                     if (double.TryParse(newAgeInput, out price) && price >= 0)
@@ -1295,6 +1295,7 @@ class MovieLogic
                     }
                     else if (option == 4)
                     {
+                        LoadMovies();
                         PrintMovies(_movies, true);
                     }
 

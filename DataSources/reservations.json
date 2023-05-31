@@ -1,1 +1,220 @@
-[]
+[
+  {
+    "id": 1,
+    "emailAddress": "Ally@.",
+    "fullName": "Ally",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "31-05-2023 11:35/6362140",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 2,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "31-05-2023 11:36/2696714",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 3,
+    "emailAddress": "Ally@.",
+    "fullName": "Ally",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "31-05-2023 11:39/6702139",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 4,
+    "emailAddress": "Ally@.",
+    "fullName": "Ally",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "31-05-2023 11:42/8946598",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 5,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "31-05-2023 11:43/1736557",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 6,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "31-05-2023 11:48/6628430",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 7,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 30,
+      "title": "It\u0027s a Wonderful Life",
+      "genre": "Fantasy",
+      "rating": 8.6,
+      "description": "An angel is sent from Heaven to help a desperately frustrated businessman by showing him what life would have been like if he had never existed.",
+      "age": 10,
+      "viewing_date": "2023-06-27T23:00:00",
+      "publish_date": "1946-02-07T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "C13",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      },
+      {
+        "Id": "D13",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {
+      "Popcorn": "2"
+    },
+    "accessibilityRequest": "Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?Will you need any special assistance to make going to our cinema a more accessible experience for you?",
+    "viewing_date": "2023-06-27T23:00:00",
+    "reservationCode": "31-05-2023 12:08/8951527",
+    "totalPrice": 27.96,
+    "cancelled": false
+  }
+]

@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 class ReservationsLogic
 {
-    private List<ReservationsModel> _reservations = new List<ReservationsModel>();
+    private List<ReservationsModel> _reservations = new();
 
     public ReservationsLogic()
     {
@@ -71,7 +71,7 @@ class ReservationsLogic
         // Find a customers own reservations when they're logged in, and add them to the list
         foreach (ReservationsModel reservation in _reservations)
         {
-            if (reservation.FullName == CurrentAcc.FullName && reservation.EmailAddress == CurrentAcc.EmailAddress && reservation.Cancelled != true)
+            if (reservation.FullName == CurrentAcc.FullName && reservation.EmailAddress == CurrentAcc.EmailAddress)
             {
                 reservations.Add(reservation);
             }
@@ -89,20 +89,21 @@ class ReservationsLogic
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Movie");
         Console.ResetColor();
-        Console.WriteLine($" {reservation.Movie}\n");
+        Console.WriteLine($" {reservation.Movie.Title}\n");
 
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Seat(s)");
         Console.ResetColor();
         foreach (SeatModel seat in reservation.SeatReservation)
         {
-            Console.WriteLine($"    {seat.Id} ({seat.SeatTypeName} +{seat.Price})\n");
+            Console.WriteLine($" [{seat.Id}] {seat.SeatTypeName} (+ € {String.Format("{0:0.00}", seat.Price)})");
         }
+        Console.WriteLine();
 
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Date and time");
         Console.ResetColor();
-        Console.WriteLine($" {reservation.Movie.ViewingDate}");
+        Console.WriteLine($" {reservation.Movie.ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n");
 
         // Reserving catering is optional, so catering information will only be shown if the customer elected to reserve catering
         if (reservation.CateringReservation.Count > 0)
@@ -113,14 +114,15 @@ class ReservationsLogic
 
             foreach (var menuItem in reservation.CateringReservation)
             {
-                Console.WriteLine($"    {menuItem.Key}: x{menuItem.Value}\n");
+                Console.WriteLine($" {menuItem.Key}: X € {menuItem.Value}");
             }
         }
+        Console.WriteLine();
 
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Reservation code");
         Console.ResetColor();
-        Console.WriteLine(reservation.ReservationCode);
+        Console.WriteLine($" {reservation.ReservationCode}\n");
 
         // Accessibility requests are also optional, so that will also only be shown if the customer chose to input a request
         if (reservation.AccessibilityRequest != "")
@@ -128,71 +130,80 @@ class ReservationsLogic
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("Request");
             Console.ResetColor();
-            Console.WriteLine($" {reservation.AccessibilityRequest}\n");
+            Console.WriteLine($" {MovieLogic.SpliceText(reservation.AccessibilityRequest, " ")}");
         } 
 
-        // Displays a question with below it the options from ReturnList, the choice between those options is saved
-        int option = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "", "\nDo you want to cancel this reservation?", false, true);
-
-        switch (option)
+        if (!reservation.Cancelled)
         {
-            case 1: // Cancel
-                // reservations can only be cancelled 24+ hours in advance
-                if (reservation.ViewingDate > DateTime.Now.AddHours(24)) // attempt at cancelling is being made 24+ hours in advance
-                {
-                    // find index of reservation to remove
-                    int index = _reservations.FindIndex(r => r.Id == reservation.Id);
-                    
-                    // reservation will show up as "cancelled" in json
-                    _reservations[index].Cancelled = true;
-                    
-                    // update the json so that the reservation is no longer there
-                    ReservationsAccess.WriteAll(_reservations);
-                    LoadReservations();
+            // Displays a question with below it the options from ReturnList, the choice between those options is saved
+            int option = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "", "\nDo you want to cancel this reservation?", false, false);
 
-                    RemoveReservationFromCSV(reservation);
-
-                    // show confirmation that the reservation has been cancelled + return to go back to the menu
-                    List<string> emptyList = new List<string>();
-                    int option3 = OptionsMenu.DisplaySystem(emptyList, "reservation canceled", "Your reservation has been canceled.", true, true);
-
-                    if (option3 == 1)
+            switch (option)
+            {
+                case 1: // Cancel
+                    // reservations can only be cancelled 24+ hours in advance
+                    if (reservation.ViewingDate > DateTime.Now.AddHours(24)) // attempt at cancelling is being made 24+ hours in advance
                     {
-                        OptionsMenu.Start();
-                    }
-                }
-                else // attempt at cancelling is being made less than 24 hours in advance
-                {   
-                    // show that the reservation cannot be cancelled + return to go back to menu
-                    List<string> emptyList = new List<string>();
-                    int option3 = OptionsMenu.DisplaySystem(emptyList, "reservation cannot be canceled", "Reservations may only be canceled 24+ hours in advance of the reservation date.", true, true);
+                        // find index of reservation to remove
+                        int index = _reservations.FindIndex(r => r.ReservationCode == reservation.ReservationCode);
+                        
+                        // reservation will show up as "cancelled" in json
+                        _reservations[index].Cancelled = true;
+                        
+                        // update the json so that the reservation is no longer there
+                        ReservationsAccess.WriteAll(_reservations);
+                        // LoadReservations();
 
-                    if (option3 == 1)
-                    {   
-                        // Goes back to the menu
-                        OptionsMenu.Start();
+                        RemoveReservationFromCSV(reservation);
+
+                        // show confirmation that the reservation has been cancelled + return to go back to the menu
+                        List<string> emptyList = new List<string>() {"Return"};
+                        int option3 = OptionsMenu.DisplaySystem(emptyList, "reservation canceled", "Your reservation has been canceled.", true, false);
+
+                        if (option3 == 1)
+                        {
+                            return;
+                        }
                     }
-                }
-                break;
+                    else // attempt at cancelling is being made less than 24 hours in advance
+                    {   
+                        // show that the reservation cannot be cancelled + return to go back to menu
+                        List<string> emptyList = new List<string>();
+                        int option3 = OptionsMenu.DisplaySystem(emptyList, "reservation cannot be canceled", "Reservations may only be canceled 24+ hours in advance of the reservation date.", true, true);
+
+                        if (option3 == 1)
+                        {   
+                            // Goes back to the menu
+                            return;
+                        }
+                    }
+                    break;
+                
+                case 2: // Don't cancel
+                    // Goes back to the overview of their reservations
+                    break;
+            }   
+        }
+        else
+        {
+            OptionsMenu.FakeReturn();
             
-            case 2: // Don't cancel
-                // Goes back to the overview of their reservations
-                break;
-        }   
+            return;
+        }
+        
     }
+    public void PrintReservations() => PrintReservations(_reservations);
 
     public void PrintReservations(List<ReservationsModel> reservations)
-    {
+    {   
         while (true)
         {
-            Console.Clear();
-
             // prints an error message if no reservations were found
             if (reservations.Count() == 0)
             {
-                List<string> ReturnList = new List<string>();
+                List<string> ReturnList = new List<string>() {"Return"};
 
-                int option = OptionsMenu.DisplaySystem(ReturnList, "Reservations", "No reservations were found.");
+                int option = OptionsMenu.DisplaySystem(ReturnList, "Reservations", "No reservations were found.", true, false);
 
                 if (option == 1)
                 {
@@ -210,12 +221,17 @@ class ReservationsLogic
 
                 while (BaseLine < reservations.Count())
                 {   
+
                     // if there are more than 5 reservations in the list, a "next page" button will be visible and there will be multiple pages available
                     if (BaseLine + 5 > reservations.Count())
                     {
                         MaxItems = reservations.Count() % 5;
                         nextButton = false;
                     }
+                    else if (BaseLine + 5 == reservations.Count())
+                    {
+                        nextButton = false;
+                    }   
                     // if there are less than 5 reservations in the list, a "next page" button won't be shown and there will only be one page available
                     else
                     {
@@ -240,9 +256,11 @@ class ReservationsLogic
                         previousButton = false;
                     }
 
+                    double totalPages = Math.Ceiling((double)reservations.Count() / 5);
+
                     List<ReservationsModel> subList = reservations.GetRange(BaseLine, MaxItems);
 
-                    int option = OptionsMenu.ReservationsDisplaySystem(subList, "RESERVATIONS", $"Page {pageNr}", true, previousButton, nextButton);
+                    int option = OptionsMenu.ReservationsDisplaySystem(subList, "RESERVATIONS", $"Page {pageNr} (of {totalPages})", true, previousButton, nextButton);
 
                     if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && previousButton && !nextButton) || (option == subList.Count() + 1 && previousButton && nextButton))
                     {

@@ -135,20 +135,6 @@ class AccountsLogic
 
                 OptionsMenu.DisplaySystem(DList, "welcome page", $"Welcome back, {accountModel.FullName}.\nYour email address is: {accountModel.EmailAddress}", true, false);
                 
-                if(currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.ADMIN)
-                {
-                    AdminMenu.StartAdmin();
-                }
-                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.EMPLOYEE)
-                {
-                    EmployeeMenu.StartEmployee();
-                }
-                else if (currentAccount.Authorized == true && currentAccount.Type == AccountModel.AccountType.CUSTOMER)
-                {
-                    OptionsMenu.RemoveUnfinishedReservation();
-                    MovieMenu.Start();
-                }
-
                 break;
             }
             else

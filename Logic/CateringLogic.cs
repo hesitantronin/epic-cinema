@@ -1048,6 +1048,7 @@ class CateringLogic
                     }
                     else if (option == 4)
                     {
+                        LoadCatering();   
                         PrintMenu(_menu, true);
                     }
 

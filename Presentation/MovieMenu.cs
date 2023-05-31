@@ -77,6 +77,11 @@ class MovieMenu
     {
         while (true)
         {
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
+
             // list of options to display
             List<string> OptionList = new List<string>()
             {
@@ -148,6 +153,11 @@ class MovieMenu
     {
         while (true)
         {
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
+            
             // the necessary info gets used in the display method
             int option = OptionsMenu.DisplaySystem(Genres, "FILTER MOVIES");
 

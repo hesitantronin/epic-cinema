@@ -65,6 +65,10 @@ class CateringMenu
     {
         while (true)
         {
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
             // list of options to sort by
             List<string> OptionList = new List<string>()
             {
@@ -126,6 +130,11 @@ class CateringMenu
     {
         while (true)
         {
+            if (ReservationMenu.reservationMade)
+            {
+                return;
+            }
+            
             int option = OptionsMenu.DisplaySystem(types, "FILTER MENU");
 
             if (option == 4) // 4 = return/go back

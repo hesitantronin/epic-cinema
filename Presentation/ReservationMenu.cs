@@ -336,7 +336,7 @@ class ReservationMenu
         }
 
         Console.WriteLine($"{seatReservations}");
-        Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate}");
+        Console.WriteLine($"DATE AND TIME: {AccountsLogic.CurrentAccount.Movie.ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}");
 
 
         // A customer doesn't have to reserve catering items, so this checks whether or not they have
@@ -373,7 +373,7 @@ class ReservationMenu
 
         if (AccountsLogic.CurrentAccount.AccessibilityRequest != "")
         {
-            Console.WriteLine($"\nREQUEST: {MovieLogic.SpliceText(AccountsLogic.CurrentAccount.AccessibilityRequest, "  ")}");
+            Console.WriteLine($"\nREQUEST: {MovieLogic.SpliceText(AccountsLogic.CurrentAccount.AccessibilityRequest, "    ")}");
         }
         if (discount)
         {

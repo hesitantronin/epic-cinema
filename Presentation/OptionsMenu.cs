@@ -69,6 +69,14 @@ static class OptionsMenu
                 // exits the program by breaking out op the loop;
                 else if (option == 5)
                 {
+                    if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+                    {
+                        AccountsLogic accLog = new AccountsLogic();
+                        accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
+                    }
+
+                    AccountsLogic.CurrentAccount = null;
+
                     break;
                 }
             }
@@ -122,8 +130,7 @@ static class OptionsMenu
                 {
                     // View reservations
                     ReservationsLogic reservationsLogic = new ReservationsLogic();
-                    List<ReservationsModel> reservations = reservationsLogic.GetOwnReservations();
-                    reservationsLogic.PrintReservations(reservations);
+                    reservationsLogic.PrintReservations(reservationsLogic.GetOwnReservations());
                 }
                 // asks the user if they want to log out.
                 // If the return of the logout functiun is true, the program quits by breaking out of the loop
@@ -158,7 +165,7 @@ static class OptionsMenu
         {
             if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
             {
-                Console.WriteLine("\n(Logged in as Guest)");
+                Console.WriteLine("\n(Guest)");
             }
             else
             {
@@ -571,7 +578,14 @@ static class OptionsMenu
                 Console.ResetColor();
 
                 // prints the date and time of the reservation
-                Console.WriteLine($"    Date and time: {list[i].Movie.ViewingDate}\n");
+                if (list[i].Cancelled)
+                {
+                    Console.WriteLine($"    Canceled\n");
+                }
+                else
+                {
+                    Console.WriteLine($"    Date and time: {list[i].Movie.ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n    Tickets: {list[i].SeatReservation.Count()}\n");
+                }
             }
 
             returncount = 1;
@@ -627,13 +641,6 @@ static class OptionsMenu
 
             if (opt == 1)
             {
-                // if the account was a guest account, the guest account will be automaticly deleted, since it has becom unneccessary
-                if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
-                {
-                    AccountsLogic accLog = new AccountsLogic();
-                    accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
-                }
-
                 AccountsLogic.CurrentAccount = null;
 
                 FakeContinue("You have been logged out.", "logout");
