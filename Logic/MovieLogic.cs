@@ -1166,6 +1166,28 @@ class MovieLogic
             }
         }
 
+        double price;
+        while (true)
+        {
+            OptionsMenu.Logo("add movie");
+            Console.WriteLine("Enter the movie details.");
+
+            Console.Write("Base price: ");
+            string newAgeInput = Console.ReadLine() + "";
+
+            if (double.TryParse(newAgeInput, out price) && price >= 0)
+            {
+                break;
+            }
+
+            int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid price. Please enter a valid decimal number.", false, true);
+
+            if (Answer == 2)
+            {
+                return;
+            }
+        }   
+
         int maxId = movies.Count > 0 ? movies.Max(movie => movie.Id) : 0;
 
         if (existingMovie != null)
@@ -1178,13 +1200,14 @@ class MovieLogic
             existingMovie.Age = age;
             existingMovie.ViewingDate = viewingDate;
             existingMovie.PublishDate = publishDate;
+            existingMovie.MoviePrice = price;
             
             OptionsMenu.FakeContinue("Movie updated successfully!", "movie updated");
         }
         else
         {
             // Create a new movie with a unique ID
-            MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate);
+            MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate, price);
             movies.Add(newMovie);
 
             OptionsMenu.FakeContinue("Movie added successfully!", "movie added");
