@@ -69,13 +69,13 @@ static class OptionsMenu
                 // exits the program by breaking out op the loop;
                 else if (option == 5)
                 {
-                    if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+
+                    if (AccountsLogic.CurrentAccount != null && AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
                     {
                         AccountsLogic accLog = new AccountsLogic();
                         accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
+                        AccountsLogic.CurrentAccount = null;
                     }
-
-                    AccountsLogic.CurrentAccount = null;
 
                     break;
                 }
