@@ -103,8 +103,8 @@ static class OptionsMenu
                 {
                     "Logout",
                     menuOption,
-                    "Info",
-                    "View Reservations"
+                    "View Reservations",
+                    "Cinema information",
                 };
 
                 // the necessary info gets used in the display method
@@ -135,12 +135,12 @@ static class OptionsMenu
                 }
 
                 // Shows the Info Page
-                else if (option == 3)
+                else if (option == 4)
                 {
                     InfoPage();
                 }
 
-                else if (option == 4)
+                else if (option == 3)
                 {
                     // View reservations
                     ReservationsLogic reservationsLogic = new ReservationsLogic();
