@@ -101,7 +101,6 @@ static class OptionsMenu
                 // list of options that will be displayed in start
                 List<string> StartList = new List<string>()
                 {
-                    "Logout",
                     menuOption,
                     "View Reservations",
                     "Cinema information",
@@ -109,16 +108,16 @@ static class OptionsMenu
 
                 // the necessary info gets used in the display method
                 // depending on the option that was chosen, it will call the right function
-                int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
+                int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Logout");
 
-                // Logout
-                if (option == 1)
-                {
-                    LogOut();
-                }
+                // // Logout
+                // if (option == 1)
+                // {
+                //     LogOut();
+                // }
 
                 // depending on the kind of account, it will restart the right menu for you
-                else if (option == 2)
+                if (option == 1)
                 {
                     if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
                     {
@@ -135,12 +134,12 @@ static class OptionsMenu
                 }
 
                 // Shows the Info Page
-                else if (option == 4)
+                else if (option == 3)
                 {
                     InfoPage();
                 }
 
-                else if (option == 3)
+                else if (option == 2)
                 {
                     // View reservations
                     ReservationsLogic reservationsLogic = new ReservationsLogic();
@@ -148,7 +147,7 @@ static class OptionsMenu
                 }
                 // asks the user if they want to log out.
                 // If the return of the logout functiun is true, the program quits by breaking out of the loop
-                else if (option == 5)
+                else if (option == 4)
                 {
                     if (AccountsLogic.CurrentAccount != null)
                     {
