@@ -84,11 +84,25 @@ static class OptionsMenu
             // menu layout 2, for if the user IS logged in
             else
             {
+                string menuOption;
+
+                if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                {
+                    menuOption = "Employee Menu";
+                }
+                else if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.EMPLOYEE)
+                {
+                    menuOption = "Admin Menu";
+                }
+                else
+                {
+                    menuOption = "Make Reservation";
+                }
                 // list of options that will be displayed in start
                 List<string> StartList = new List<string>()
                 {
                     "Logout",
-                    "Continue",
+                    menuOption,
                     "Info",
                     "View Reservations"
                 };
@@ -644,7 +658,8 @@ static class OptionsMenu
                 AccountsLogic.CurrentAccount = null;
 
                 FakeContinue("You have been logged out.", "logout");
-
+                
+                StrayGuestAccKiller();
                 return true;
             }
             else
