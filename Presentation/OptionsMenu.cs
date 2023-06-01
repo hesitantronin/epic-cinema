@@ -34,7 +34,7 @@ static class OptionsMenu
                     "Login",
                     "Register",
                     "Guest",
-                    "Info",
+                    "Info page",
                 };
 
                 // the necessary info gets used in the display method
@@ -104,7 +104,7 @@ static class OptionsMenu
                     "Logout",
                     menuOption,
                     "View Reservations",
-                    "Cinema information",
+                    "Info page",
                 };
 
                 // the necessary info gets used in the display method
