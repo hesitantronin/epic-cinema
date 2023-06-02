@@ -215,6 +215,156 @@
     "viewing_date": "2023-06-27T23:00:00",
     "reservationCode": "31-05-2023 12:08/8951527",
     "totalPrice": 27.96,
+    "cancelled": true
+  },
+  {
+    "id": 8,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A6",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "01-06-2023 15:19/7749695",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 9,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "01-06-2023 15:24/9917868",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 10,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "01-06-2023 15:25/2486019",
+    "totalPrice": 10.99,
+    "cancelled": true
+  },
+  {
+    "id": 11,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "01-06-2023 15:28/1321266",
+    "totalPrice": 10.99,
+    "cancelled": false
+  },
+  {
+    "id": 12,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "movie_price": 10.99
+    },
+    "seatReservation": [
+      {
+        "Id": "A4",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "01-06-2023 15:28/6999985",
+    "totalPrice": 10.99,
     "cancelled": false
   }
 ]

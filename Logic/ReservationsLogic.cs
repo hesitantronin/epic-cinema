@@ -144,6 +144,8 @@ class ReservationsLogic
                     // reservations can only be cancelled 24+ hours in advance
                     if (reservation.ViewingDate > DateTime.Now.AddHours(24)) // attempt at cancelling is being made 24+ hours in advance
                     {
+                        LoadReservations();
+
                         // find index of reservation to remove
                         int index = _reservations.FindIndex(r => r.ReservationCode == reservation.ReservationCode);
                         
@@ -152,7 +154,6 @@ class ReservationsLogic
                         
                         // update the json so that the reservation is no longer there
                         ReservationsAccess.WriteAll(_reservations);
-                        // LoadReservations();
 
                         RemoveReservationFromCSV(reservation);
 
