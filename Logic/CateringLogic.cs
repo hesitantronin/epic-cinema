@@ -76,7 +76,7 @@ class CateringLogic
                         MaxItems = 5;
                         nextButton = true;
                     }
-                    
+
                     if (BaseLine < 0)
                     {
                         BaseLine = 0;
@@ -96,10 +96,10 @@ class CateringLogic
 
                     // the necessary info gets used in the display method
                     List<CateringModel> subList = FoodList.GetRange(BaseLine, MaxItems);
-                    
+
                     int option = OptionsMenu.CateringDisplaySystem(subList, "Catering", $"Page {pageNr} (of {totalPages})", true, previousButton, nextButton);
 
-                    // depending on the option that was chosen, it will clear the console and call the right function  
+                    // depending on the option that was chosen, it will clear the console and call the right function
                     if ((option == subList.Count() + Convert.ToInt32(previousButton) + Convert.ToInt32(nextButton) && previousButton && !nextButton) || (option == subList.Count() + 1 && previousButton && nextButton))
                     {
                         BaseLine -= 5;
@@ -197,7 +197,7 @@ class CateringLogic
                     {
                         Return = true;
                         break;
-                    }   
+                    }
                 }
             }
             else if (edit == 3)
@@ -279,7 +279,7 @@ class CateringLogic
 
                     // Write the updated movie list to the JSON file
                     CateringAccess.WriteAll(_menu);
-                    
+
                     OptionsMenu.FakeContinue("Menu updated successfully.", "menu updated");
                 }
                 else
@@ -287,19 +287,20 @@ class CateringLogic
                     _menu.Remove(_menu[index]);
 
                     CateringAccess.WriteAll(_menu);
-                    
+
                     OptionsMenu.FakeContinue("Item deleted successfully.", "item deleted");
 
                     return;
                 }
             }
         }
-        
+
     }
     public void PrintMenu() => PrintMenu(_menu);
-  
+
     public void CateringInfo(CateringModel foodItem)
     {
+        AccountsLogic accountslogic = new AccountsLogic();
         bool Return = false;
         while (true)
         {
@@ -307,7 +308,7 @@ class CateringLogic
             {
                 return;
             }
-            
+
             OptionsMenu.Logo(foodItem.Name);
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -326,7 +327,7 @@ class CateringLogic
             Console.WriteLine($" € {String.Format("{0:0.00}", foodItem.Price)}\n");
 
             int option = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "", "\nDo you want to reserve this menu item?", false, false);
-            
+
             Return = false;
 
             if (option == 1)
@@ -337,11 +338,11 @@ class CateringLogic
                     OptionsMenu.Logo(foodItem.Name);
                     Console.WriteLine("Please enter the amount that you would like to reserve: ");
                     string? amount = Console.ReadLine();
-                    
+
                     if (!String.IsNullOrEmpty(amount) && amount.All(Char.IsDigit) && amount != "0") // check if entered amount is a valid number (-9)
                     {
                         int numAmount = Convert.ToInt32(amount);
-            
+
                         if (AccountsLogic.CurrentAccount != null)
                         {
                             // takes the dictionary bound to the current account that contains its previous menu reservations & adds onto it
@@ -355,11 +356,11 @@ class CateringLogic
                             }
                             else
                             {
-                            TotalReservations.Add(foodItem.Name, amount);
+                                TotalReservations.Add(foodItem.Name, amount);
                             }
-        
+
                             // updates the json file so that the dictionary has the new/updated menu item
-                            AccountsLogic accountslogic = new AccountsLogic();
+
                             AccountsLogic.CurrentAccount.CateringReservation = TotalReservations;
                             accountslogic.UpdateList(AccountsLogic.CurrentAccount);
                         }
@@ -370,11 +371,11 @@ class CateringLogic
                     {
 
                         int option3 = OptionsMenu.DisplaySystem(MovieLogic.ContinueList, "", "\nPlease enter a valid number (ex. 5)", false);
-                        
+
                         if (option3 == 2)
                         {
                             Return = true;
-                            break; 
+                            break;
                         }
                     }
                 }
@@ -386,7 +387,9 @@ class CateringLogic
                         {
                             return;
                         }
-                        
+
+                        totalCatering = 0;
+
                         // show all currently reserved menu items and asks whether the customer would like to reserve more
                         string menuReservations = "";
                         foreach (var item in AccountsLogic.CurrentAccount.CateringReservation)
@@ -396,17 +399,47 @@ class CateringLogic
                                 if (item.Key == fooditem.Name)
                                 {
                                     menuReservations += $"{item.Key}  ----  Amount: {item.Value} X € {String.Format("{0:0.00}", fooditem.Price)} (€ {String.Format("{0:0.00}", Convert.ToDouble(item.Value) * Convert.ToDouble(fooditem.Price))})\n";
-                                    totalCatering = Convert.ToDouble(item.Value) * Convert.ToDouble(fooditem.Price);
+                                    totalCatering += Convert.ToDouble(item.Value) * Convert.ToDouble(fooditem.Price);
                                 }
                             }
                         }
+
                         menuReservations += $"\nSubtotal Catering: ----  € {String.Format("{0:0.00}", totalCatering)}";
 
-                        int option2 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "catering selection", $"You've selected these menu items:\n\n{menuReservations}\n\nIs this all you want to reserve?", true, false);
+                        List<string> finalOptionList = new() {"yes", "remove items", "Add more items"};
+
+                        int option2 = OptionsMenu.DisplaySystem(finalOptionList, "catering selection", $"You've selected these menu items:\n\n{menuReservations}\n\nAre you satisfied with these selections?", true, true);
+
+                        // Convert dictionary of catering items to display them in the DisplaySystem function
+                        List<string> currentCateringItems = new();
+
+                        foreach (KeyValuePair<string, string> pair in AccountsLogic.CurrentAccount.CateringReservation)
+                        {
+                            currentCateringItems.Add($"{pair.Key} X {pair.Value}");
+                        }
 
                         if (option2 == 1)
                         {
                             ReservationMenu.Start();
+                        }
+                        if (option2 == 2)
+                        {
+                            int index = OptionsMenu.DisplaySystem(currentCateringItems, "Remove catering items", "Select the item to remove");
+                            if (index != currentCateringItems.Count() + 1)
+                            {
+                                currentCateringItems.Remove(currentCateringItems[index - 1]);
+
+                                Dictionary<string, string> tempDict = new();
+                                foreach (string item in currentCateringItems)
+                                {
+                                    string[] food = item.Split(" X ");
+                                    tempDict.Add(food[0], food[1]);
+                                }
+
+                                AccountsLogic.CurrentAccount.CateringReservation = tempDict;
+                                accountslogic.UpdateList(AccountsLogic.CurrentAccount);
+                            }
+
                         }
                         else
                         {
@@ -423,6 +456,7 @@ class CateringLogic
             }
         }
     }
+
 
     // public void UpdateList(CateringModel foodItem)
     // {
@@ -558,15 +592,15 @@ class CateringLogic
             Console.CursorVisible = false;
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
+
             // actually returns you to the main menu
             Console.ReadLine();
 
-            Console.CursorVisible = true; 
+            Console.CursorVisible = true;
         }
         else
         {
-            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");        
+            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");
         }
     }
 
@@ -672,21 +706,21 @@ class CateringLogic
             {
                 Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: {existingFood.Price}");
             }
- 
+
             Console.CursorVisible = false;
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
+
             // actually returns you to the main menu
             Console.ReadLine();
 
-            Console.CursorVisible = true; 
+            Console.CursorVisible = true;
         }
         else
         {
             OptionsMenu.Logo("Items added");
 
-            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");        
+            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");
         }
     }
     public List<CateringModel> SortBy(string input, bool ascending)
@@ -783,7 +817,7 @@ class CateringLogic
 
             Console.Write("Type: ");
             type = Console.ReadLine();
-            
+
             if (type != "")
             {
                 break;
@@ -858,9 +892,9 @@ class CateringLogic
 
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
+
             // actually returns you to the main menu
-            Console.ReadLine();        
+            Console.ReadLine();
         }
         else
         {
@@ -873,7 +907,7 @@ class CateringLogic
 
             // prints a fake return option hehe
             Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
+
             // actually returns you to the main menu
             Console.ReadLine();
         }
@@ -1027,7 +1061,7 @@ class CateringLogic
                                 CateringModel result = CateringMenu.SearchId();
                                 if (result == null)
                                 {
-                                    OptionsMenu.FakeContinue("No item with this id was found.", "ID NOT FOUND"); 
+                                    OptionsMenu.FakeContinue("No item with this id was found.", "ID NOT FOUND");
                                 }
                                 else
                                 {
@@ -1038,7 +1072,7 @@ class CateringLogic
                             {
                                 CateringMenu.Search(true);
                             }
-                            
+
                             else if (option2 == 3)
                             {
                                 break;
@@ -1048,7 +1082,7 @@ class CateringLogic
                     }
                     else if (option == 4)
                     {
-                        LoadCatering();   
+                        LoadCatering();
                         PrintMenu(_menu, true);
                     }
 
@@ -1063,6 +1097,6 @@ class CateringLogic
                 break;
             }
         }
-        
+
     }
 }
