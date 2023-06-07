@@ -6,20 +6,7 @@ class MovieMenu
     public static MovieLogic movielogic = new MovieLogic();
 
     // a list of possible genres, later also possibleused for the employee menu
-    public static List<string> Genres = new List<string>()
-    {
-        "Action",
-        "Adventure",
-        "Comedy",
-        "Crime",
-        "Mystery",
-        "Fantasy",
-        "Historical",
-        "Horror",
-        "Romance",
-        "SciFi",
-        "Thriller"
-    };
+
 
     // starts up the main movie menu
     static public void Start()
@@ -151,36 +138,177 @@ class MovieMenu
     // the menu for the filter function
     static public void Filter(bool IsEmployee = false)
     {
+        List<string> filters = new() {"Genres", "Price Range", "Rating", "Date", "Continue with these filters"};
+
+        List<string> Genres = new List<string>()
+        {"Action", "Adventure", "Comedy", "Crime", "Mystery", "Fantasy", "Historical", "Horror", "Romance", "SciFi", "Thriller"};
+
+        Dictionary<string, string> selectedFilters = new() {};
+
+        bool Return = false;
+        double from = -1;
+        double to = 999;
+        double rating = 0;
+
+        string DisplaySelectedFilters()
+        {
+            return (@$"
+Active filters
+Genres: [{string.Join(", ", selectedFilters.Where(pair => pair.Value == "genre").Select(pair => pair.Key))}]
+Price Range: [{(from == -1 ? "" : from)} - {(to == 999 ? "" : to)}]
+Rating: [{(rating == 0 ? "" : rating)}]
+Date: []
+            ");
+        }
+
+        if (ReservationMenu.reservationMade)
+        {
+            return;
+        }
+
         while (true)
         {
-            if (ReservationMenu.reservationMade)
-            {
-                return;
-            }
-            
-            // the necessary info gets used in the display method
-            int option = OptionsMenu.DisplaySystem(Genres, "FILTER MOVIES");
+            int option = OptionsMenu.DisplaySystem(filters, $"SELECT FILTER", DisplaySelectedFilters());
 
-            if (option == 12)
+
+            if (option == 1)
+            {
+                if (ReservationMenu.reservationMade)
+                    {
+                        return;
+                    }
+
+                while (true)
+                {
+
+                    // the necessary info gets used in the display method
+                    option = OptionsMenu.DisplaySystem(Genres, "GENRES");
+                    
+                    if (option == 12)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        string selectedGenre = Genres[option - 1];
+
+                        if (!selectedFilters.ContainsKey(selectedGenre.Split(" ")[0]))
+                        {
+                            selectedFilters.Add(selectedGenre, "genre");
+                            Genres[option - 1] += " [selected]"; 
+                        }
+
+                        else
+                        {
+                            OptionsMenu.FakeContinue("You've already selected that filter!", "Continue");
+                        }
+                        
+                    }                
+                }  
+            }
+
+            else if (option == 2)
+            {
+                if (ReservationMenu.reservationMade)
+                {
+                    return;
+                }
+
+                while (true)
+                {
+                    OptionsMenu.Logo("PRICE RANGE");
+
+                    Console.WriteLine("From: ");
+                    string fromPrice = Console.ReadLine();
+
+                    if (double.TryParse(fromPrice.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out from))
+                    {
+                        break;
+                    }
+
+                    Console.WriteLine("\nInvalid price. Please enter a valid decimal number.");
+                }
+
+                while (true)
+                {
+                    OptionsMenu.Logo("PRICE RANGE");
+
+                    Console.WriteLine("To: ");
+                    string toPrice = Console.ReadLine();
+
+                    if (double.TryParse(toPrice.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out to))
+                    {
+                        if (from >= to)
+                        {
+                            OptionsMenu.FakeContinue("Value must exceed preceeding value");
+                        }
+
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    OptionsMenu.FakeContinue("\nInvalid price. Please enter a valid decimal number.");
+                }
+                
+            }
+
+            else if (option == 3)
+            {
+                OptionsMenu.Logo("Rating");
+
+                Console.WriteLine("What should the minimum rating be? (1/10)");
+                string toRating = Console.ReadLine();
+
+                if (double.TryParse(toRating.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
+                    {
+                        if (!(rating >= 1 && rating <= 10))
+                        {
+                            OptionsMenu.FakeContinue("Value must exceed preceeding value");
+                        }
+
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+            }
+
+            else if (option == 4)
+            {
+
+            }
+
+            else if (option == 5)
             {
                 break;
             }
-            else
-            {
-                // the necessary info gets used in the display method
-                int option2 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "FILTER MOVIES", "Show movies with mature rating:");
 
-                // depending on the option that was chosen, it will call the right function
-                if (option2 == 1)
-                {
-                    movielogic.PrintMovies(movielogic.FilterBy(Genres[option - 1], true), IsEmployee);
-                }
-                else if (option2 == 2)
-                {
-                    movielogic.PrintMovies(movielogic.FilterBy(Genres[option - 1], false), IsEmployee);
-                }
+            else if (option == 6)
+            {
+                Return = true;
+                break;
             }
-        }  
+
+        }
+
+        if (!Return)
+        {
+            // the necessary info gets used in the display method
+            int option2 = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "FILTER MOVIES", "Show movies with mature rating:");
+
+            // depending on the option that was chosen, it will call the right function
+            if (option2 == 1)
+            {
+                movielogic.PrintMovies(movielogic.FilterBy(selectedFilters, true), IsEmployee);
+            }
+            else if (option2 == 2)
+            {
+                movielogic.PrintMovies(movielogic.FilterBy(selectedFilters, false), IsEmployee);
+            }
+        }
     }
 
     // search menu for the search function

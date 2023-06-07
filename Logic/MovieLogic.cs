@@ -637,18 +637,24 @@ class MovieLogic
         return unsorted;
     }
 
-    public List<MovieModel> FilterBy(string? genre, bool? mature)
+    public List<MovieModel> FilterBy(Dictionary<string, string> filters, bool? mature)
     {
         // copies the original list
         List<MovieModel> filtered = _movies;
 
-        if (genre != null)
-            filtered = _movies.Where(movie => movie.Genre == genre).ToList();
+        // if (genres != null && genres.Any())
+        // {
+        //     filtered = filtered.Where(movie => genres.Contains(movie.Genre)).ToList();
+        // }
+
         if (mature == false)
+        {
             filtered = filtered.Where(movie => movie.Age < 18).ToList();
+        }
 
         return filtered;
     }
+
 
     public List<MovieModel> SearchBy(string query) 
     {
