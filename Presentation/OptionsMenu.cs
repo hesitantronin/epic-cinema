@@ -145,7 +145,17 @@ static class OptionsMenu
                 {
                     // View reservations
                     ReservationsLogic reservationsLogic = new ReservationsLogic();
-                    reservationsLogic.PrintReservations(reservationsLogic.GetOwnReservations());
+
+                    if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                    {
+                        reservationsLogic.PrintReservations(reservationsLogic.GetOwnReservations());
+                    }
+                    else
+                    {
+                        List<ReservationsModel> newList = ReservationsAccess.LoadAll();
+                        reservationsLogic.PrintReservations(newList);
+                    }
+
                 }
                 // asks the user if they want to log out.
                 // If the return of the logout functiun is true, the program quits by breaking out of the loop

@@ -17,6 +17,8 @@ class ReservationsLogic
 
     public void UpdateList(ReservationsModel reservation)
     {
+        LoadReservations();
+
         _reservations.Add(reservation);
         ReservationsAccess.WriteAll(_reservations);
     }
@@ -67,7 +69,7 @@ class ReservationsLogic
     {
         List<ReservationsModel> reservations = new List<ReservationsModel>();
         var CurrentAcc = AccountsLogic.CurrentAccount; // less typing later
-
+        
         // Find a customers own reservations when they're logged in, and add them to the list
         foreach (ReservationsModel reservation in _reservations)
         {
@@ -144,8 +146,6 @@ class ReservationsLogic
                     // reservations can only be cancelled 24+ hours in advance
                     if (reservation.ViewingDate > DateTime.Now.AddHours(24)) // attempt at cancelling is being made 24+ hours in advance
                     {
-                        LoadReservations();
-
                         // find index of reservation to remove
                         int index = _reservations.FindIndex(r => r.ReservationCode == reservation.ReservationCode);
                         

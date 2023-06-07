@@ -418,6 +418,7 @@ class ReservationMenu
     {
         // Get reservations already present in file
         List<ReservationsModel> originalReservations = ReservationsAccess.LoadAll();
+        
         // Get maximum ID from the original reservations
         int maxId = 0;
         try
@@ -432,7 +433,6 @@ class ReservationMenu
         // Update reservations.json to include this new reservation
         ReservationsModel newReservation = new ReservationsModel(maxId + 1, AccountsLogic.CurrentAccount.EmailAddress, AccountsLogic.CurrentAccount.FullName, AccountsLogic.CurrentAccount.Movie, AccountsLogic.CurrentAccount.SeatReservation, AccountsLogic.CurrentAccount.CateringReservation, AccountsLogic.CurrentAccount.AccessibilityRequest, AccountsLogic.CurrentAccount.Movie.ViewingDate, resCode, System.Math.Round(finalPrice, 2));
         reservationsLogic.UpdateList(newReservation);
-
     }
 
     // updates the seats from the reservation to unavailable/taken
