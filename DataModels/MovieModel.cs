@@ -26,11 +26,16 @@ public class MovieModel
     [JsonPropertyName("publish_date")]
     public DateTime PublishDate { get; set; }
 
+    [JsonPropertyName("runtime")]
+    public string RunTime { get; set; }
+
     [JsonPropertyName("movie_price")]
     public double MoviePrice { get; set; }
 
+    [JsonPropertyName("timeslot")]
+    public List<int> TimeSlot { get; set; }
 
-    public MovieModel(int id, string title, string genre, double rating, string description, int age, DateTime viewingdate, DateTime publishdate, double movieprice = 10.99)
+    public MovieModel(int id, string title, string genre, double rating, string description, int age, DateTime viewingdate, DateTime publishdate, string runtime, List<int> timeslot, double movieprice = 10.99)
     {
         Id = id;
         Title = title;
@@ -40,10 +45,11 @@ public class MovieModel
         Age = age;
         ViewingDate = viewingdate;
         PublishDate = publishdate;
+        RunTime = runtime;
+        TimeSlot = timeslot;
         MoviePrice = movieprice;
     }
 }
-
 
 
 

@@ -1,11 +1,13 @@
 using System.Text.Json;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 class MovieLogic
 {
     private List<MovieModel> _movies = new();
     static public MovieModel? CurrentMovie { get; private set; }
     public static List<string> ContinueList = new List<string>() { "Retry" };
+    public static TimeSpan oneTimeSlotAmount = new TimeSpan(2, 0, 0); // one timeslot == 2 hours
 
 
     public MovieLogic()
@@ -198,6 +200,7 @@ class MovieLogic
             movieInfoList.Add($"Publish Date: {movie.PublishDate}");
             movieInfoList.Add($"Description: {MovieLogic.SpliceText(movie.Description, "   ")}");
             movieInfoList.Add($"Viewing Date: {movie.ViewingDate}");
+            movieInfoList.Add($"Runtime: {movie.RunTime}");
             movieInfoList.Add($"Base Price: {movie.MoviePrice}");
             movieInfoList.Add("Auditorium seat editer\n");
             movieInfoList.Add("\u001b[31mRemove Movie\u001b[0m");
@@ -418,6 +421,45 @@ class MovieLogic
             }
             else if (edit == 8)
             {
+                while (true)
+                {
+                    OptionsMenu.Logo("edit movie");
+
+                    Console.WriteLine("Runtime: (ex. 1:30)");
+                    string[] times = Console.ReadLine().Split(":");
+
+                    if (times.Length != 2 || times[1].Length != 2 || !int.TryParse(times[0].TrimStart('0'), out int hour) || !int.TryParse(times[1], out int minute))
+                    {
+                        int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid time format. Please try again.", false, true);
+
+                        if (Answer == 2)
+                        {
+                            Return = true;
+                            break;
+                        }
+                        continue;
+                    }
+
+                    try
+                    {
+                        TimeOnly runTimeTest = new TimeOnly(hour, minute, 0);
+                        movie.RunTime = $"{runTimeTest.ToString("hh\\:mm")}";
+                        break;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid date or time. Please try again.", false, true);
+
+                        if (Answer == 2)
+                        {
+                            Return = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (edit == 9)
+            {
                 double price;
                 while (true)
                 {
@@ -441,12 +483,12 @@ class MovieLogic
                     }
                 }   
             }
-            else if (edit == 9)
+            else if (edit == 10)
             {
                 seatEdit = true;
                 SeatLogic.SeatSelectionEdit(movie);
             }
-            else if (edit == 10)
+            else if (edit == 11)
             {
 
                 int removeOptions = OptionsMenu.DisplaySystem(OptionsMenu.YesNoList, "confirm", "Are you sure you want to delete this item?", true, false);
@@ -542,6 +584,11 @@ class MovieLogic
             Console.ResetColor();
             Console.WriteLine($" {movie.ViewingDate.ToString("dddd, dd MMMM yyyy, HH:mm")}\n");
             
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"Runtime");
+            Console.ResetColor();
+            Console.WriteLine($" {movie.RunTime}\n");
+
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine($"Base Price");
             Console.ResetColor();
@@ -776,7 +823,7 @@ class MovieLogic
         foreach (var line in File.ReadLines(filePath).Skip(1))
         {
             // Create new MovieModels for each movie in the CSV and add to csvMovies list
-             csvMovies.Add(new MovieModel
+            csvMovies.Add(new MovieModel
             (
                 Convert.ToInt32(line.Split(",")[0]), // id
                 line.Split(",")[1], // title
@@ -785,7 +832,9 @@ class MovieLogic
                 line.Split(",")[4], // description
                 Convert.ToInt32(line.Split(",")[5]), // age
                 DateTime.Parse(line.Split(",")[6]), // viewing date
-                DateTime.Parse(line.Split(",")[7]) // publish date
+                DateTime.Parse(line.Split(",")[7]), // publish date
+                line.Split(",")[8], // runtime
+                line.Split(",")[9].Select(s => Convert.ToInt32(s)).ToList() // timeslot(s), converts string of numbers s
             ));
         }
 
@@ -934,6 +983,98 @@ class MovieLogic
     //         }
     //     } while (true);
     // }
+        public static Dictionary<String, List<String>> TimeSlots = new Dictionary<string, List<String>> () 
+    {
+       { "Monday", new List<String> { "9:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00" } },
+       { "Tuesday", new List<String> { "9:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00" } },
+       { "Wednesday", new List<String> { "9:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00" } },
+       { "Thursday", new List<String> { "9:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00" } },
+       { "Friday", new List<String> { "9:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00" } },
+       { "Saturday", new List<String> { "12:00", "14:00", "16:00", "18:00", "20:00", "22:00" } },
+       { "Sunday", new List<String> { "13:00", "15:00", "17:00", "19:00", "21:00" } },
+    };
+
+    public static List<int> CheckTimeSlotAvailability(DateTime viewingDate, TimeSpan runTime)
+    {
+        // get list of all movies
+        List<MovieModel> movies = MovieAccess.LoadAll();
+
+        // get list of movies where the viewing day is the same as the day and timeslots we want to check
+        List<MovieModel> relevantMovies = movies.Where(m => m.ViewingDate.Date == viewingDate.Date).ToList();
+
+        List<int> movieTimeSlots = new List<int>(){};
+        TimeSpan viewingTime = viewingDate.TimeOfDay; // viewing time
+        TimeSpan neededTimeSlot = TimeSpan.Zero;
+        int neededTimeSlotIndex = 0;
+        
+        foreach (string timeslot in TimeSlots[$"{viewingDate.DayOfWeek}"])
+        {
+            TimeSpan start = TimeSpan.Parse(timeslot);
+            TimeSpan end = TimeSpan.Parse(timeslot).Add(oneTimeSlotAmount);
+
+            // find the correct timeslot
+            if (start <= viewingTime && end > viewingTime)
+            {
+                neededTimeSlot = TimeSpan.Parse(timeslot);
+                neededTimeSlotIndex = TimeSlots[$"{viewingDate.DayOfWeek}"].FindIndex(d => d == timeslot);
+                break;
+            }
+        }
+
+        if (neededTimeSlot == TimeSpan.Zero) // timeslot wasn't found (timeslot not within opening/closing hours)
+        {
+            return Enumerable.Empty<int>().ToList(); // return an empty list
+        }
+        else
+        {
+            // check if timeslot is available
+            foreach (MovieModel movie in relevantMovies)
+            {
+                foreach (int takenTimeslot in movie.TimeSlot)
+                {
+                    // check if the timeslot we need is taken already
+                    if (takenTimeslot == neededTimeSlotIndex)
+                    {
+                        return Enumerable.Empty<int>().ToList(); // return an empty list
+                    }
+                }
+            }
+
+            if (runTime < oneTimeSlotAmount) // runtime fits within one timeslot, and its available
+            {
+                return new List<int>(){neededTimeSlotIndex};
+            }
+            else // runtime does not fit within current available timeslot
+            {
+                // check how many timeslots will be needed
+                int timeSlotAmount = (int)Math.Ceiling(runTime / oneTimeSlotAmount);
+
+                // go through every seperate movie in relevantMovies
+                foreach (MovieModel movie in relevantMovies)
+                {
+                    // go through list of timeslots for current movie
+                    foreach (int takenTimeslot in movie.TimeSlot)
+                    {
+                        // check the current movies list of timeslots for each timeslot that we'll need
+                        for (int timeslot = neededTimeSlotIndex; timeslot < ((neededTimeSlotIndex + timeSlotAmount) - 1); timeslot++)
+                        {
+                            if (takenTimeslot == timeslot)
+                            {
+                                Console.WriteLine("Timeslot is taken");
+                                return Enumerable.Empty<int>().ToList(); // return an empty list
+                            }
+                        }
+                    }
+                }
+
+                for (int i = neededTimeSlotIndex; i < (timeSlotAmount + 1); i++)
+                {
+                    movieTimeSlots.Add(i);
+                }
+                return movieTimeSlots;
+            }
+        }
+    }
 
     public static void AddOrUpdateMovie()
     {
@@ -995,7 +1136,7 @@ class MovieLogic
             }
         }
         
-        double rating;
+        double rating = 0;
         while (true)
         {
             OptionsMenu.Logo("Add movie");
@@ -1063,7 +1204,10 @@ class MovieLogic
             }
         }
 
-        DateTime viewingDate;
+        DateTime viewingDate = new DateTime();
+        string runTime = "";
+        List<int> movieTimeSlots = new List<int>();
+        TimeOnly runTimeTest;
         while (true)
         {
             OptionsMenu.Logo("Add movie");
@@ -1080,8 +1224,7 @@ class MovieLogic
                 {
                     return;
                 }
-
-                continue;
+                continue; // without continue, month, day, year will be considered unassigned
             }
 
             OptionsMenu.Logo("Add movie");
@@ -1109,15 +1252,12 @@ class MovieLogic
                         return;
                     }
                 }
-
                 continue;
             }
-
 
             try
             {
                 viewingDate = new DateTime(year, month, day, hour, minute, 0);
-                break;
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -1128,7 +1268,55 @@ class MovieLogic
                     return;
                 }
             }
+
+            OptionsMenu.Logo("Add movie");
+            Console.WriteLine("Enter the movie details.");
+
+            Console.WriteLine("Runtime: (ex. 2:30)");
+            string runTimes = Console.ReadLine() + "";
+            string pattern = "^(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
+    
+            if (!Regex.IsMatch(runTimes, pattern))
+            {
+                int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid time format. Please try again.", false, true);
+                if (Answer == 2)
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                string[] runtimes = runTimes.Split(":");
+                runTimeTest = new TimeOnly(Convert.ToInt32(runtimes[0]), Convert.ToInt32(runtimes[1]), 0);
+                runTime = $"{Convert.ToInt32(runtimes[0])}:{Convert.ToInt32(runtimes[1]):00}";
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nInvalid time. Please try again.", false, true);
+
+                if (Answer == 2)
+                {
+                    return;
+                }
+            }
+
+            movieTimeSlots = CheckTimeSlotAvailability(viewingDate, TimeSpan.Parse(runTime));
+            if (movieTimeSlots.Count == 0)
+            {
+                int Answer = OptionsMenu.DisplaySystem(ContinueList, "", "\nTimeslot not available. Please try again.", false, true);
+                if (Answer == 2)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                break;
+            }
+
         }
+
 
         DateTime publishDate;
         while (true)
@@ -1201,13 +1389,15 @@ class MovieLogic
             existingMovie.ViewingDate = viewingDate;
             existingMovie.PublishDate = publishDate;
             existingMovie.MoviePrice = price;
-            
+            existingMovie.RunTime = runTime;
+            existingMovie.TimeSlot = movieTimeSlots;
+    
             OptionsMenu.FakeContinue("Movie updated successfully!", "movie updated");
         }
         else
         {
             // Create a new movie with a unique ID
-            MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate, price);
+            MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate, runTime, movieTimeSlots, price);
             movies.Add(newMovie);
 
             OptionsMenu.FakeContinue("Movie added successfully!", "movie added");

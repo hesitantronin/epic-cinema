@@ -587,7 +587,7 @@ class CateringLogic
             Console.WriteLine("The following food items already exist and were not added:\n");
             foreach (CateringModel existingFood in existingFoods)
             {
-                Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: {existingFood.Price}\n");
+                Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: € {String.Format("{0:0.00}", existingFood.Price)}\n");
             }
             Console.CursorVisible = false;
             // prints a fake return option hehe

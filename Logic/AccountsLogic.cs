@@ -134,6 +134,9 @@ class AccountsLogic
                 List<string> DList = new List<string>(){"Continue"};
 
                 OptionsMenu.DisplaySystem(DList, "welcome page", $"Welcome back, {accountModel.FullName}.\nYour email address is: {accountModel.EmailAddress}", true, false);
+
+                // In case a reservation was previously started but unfinished, the previous data will be removed so that a fresh new reservation can be made
+                OptionsMenu.RemoveUnfinishedReservation();
                 
                 break;
             }

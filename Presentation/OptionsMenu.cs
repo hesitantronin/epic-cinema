@@ -240,7 +240,7 @@ static class OptionsMenu
         Console.WriteLine("Thursday: 9:00 to 23:00");
         Console.WriteLine("Friday: 9:00 to 23:00");
         Console.WriteLine("Saturday: 12:00 to 24:00");
-        Console.WriteLine("Sunday: 13:00 to 22:00");
+        Console.WriteLine("Sunday: 13:00 to 23:00");
 
         FakeReturn();
     }

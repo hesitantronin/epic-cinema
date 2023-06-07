@@ -62,9 +62,9 @@ class EmployeeMenu
 
                     List<string> optionList = new List<string>()
                     {
-                        $"Range 1: {SeatData[1].Item1} (+ {SeatData[1].Item2})",
-                        $"Range 2: {SeatData[2].Item1} (+ {SeatData[2].Item2})",
-                        $"Range 3: {SeatData[3].Item1} (+ {SeatData[3].Item2})"
+                        $"Range 1: {SeatData[1].Item1} (+ {String.Format("{0:0.00}", SeatData[1].Item2)})",
+                        $"Range 2: {SeatData[2].Item1} (+ {String.Format("{0:0.00}", SeatData[2].Item2)})",
+                        $"Range 3: {SeatData[3].Item1} (+ {String.Format("{0:0.00}", SeatData[3].Item2)})"
                     };
 
                     int option = OptionsMenu.DisplaySystem(optionList, "edit seat info", "Select what category you want to edit.", true, true);
@@ -77,7 +77,7 @@ class EmployeeMenu
                     }
                     else
                     {
-                        List<string> change = new() {$"Name: {SeatData[key].Item1}", $"Price: {SeatData[key].Item2}"};
+                        List<string> change = new() {$"Name: {SeatData[key].Item1}", $"Price: € {String.Format("{0:0.00}", SeatData[key].Item2)}"};
                         while (true)
                         {
                             int option3 = OptionsMenu.DisplaySystem(change, "edit seat info", "Select what field you want to edit.", true, true);
