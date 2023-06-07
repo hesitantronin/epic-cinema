@@ -696,7 +696,7 @@ static class OptionsMenu
                 newres.Add(reservation);
             }
         }
-        ReservationsAccess.WriteAll(reservations);
+        ReservationsAccess.WriteAll(newres);
     }
 
     // will delete any guest accounts that stay behind because of the program not quitting correctly
