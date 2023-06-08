@@ -1,0 +1,41 @@
+[
+    {
+    "id": 1,
+    "title": "Schindler\u0027s List",
+    "genre": "Historical",
+    "rating": 9,
+    "description": "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.",
+    "age": 16,
+    "viewing_date": "2023-09-09T16:45:00",
+    "publish_date": "1993-10-25T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  },
+  {
+    "id": 2,
+    "title": "12 Angry Men",
+    "genre": "Crime",
+    "rating": 9,
+    "description": "The jury in a New York City murder trial is frustrated by a single member whose skeptical caution forces them to more carefully consider the evidence before jumping to a hasty verdict.",
+    "age": 6,
+    "viewing_date": "2023-12-04T14:30:00",
+    "publish_date": "1957-10-01T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  },
+  {
+    "id": 3,
+    "title": "The Godfather Part II",
+    "genre": "Crime",
+    "rating": 9,
+    "description": "The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on the family crime syndicate.",
+    "age": 16,
+    "viewing_date": "2023-11-02T14:00:00",
+    "publish_date": "1974-06-29T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  }
+]
