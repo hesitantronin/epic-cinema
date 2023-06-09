@@ -36,7 +36,7 @@ public class ReservationsLogic
         accountsLogic.UpdateList(AccountsLogic.CurrentAccount);
     }
 
-    public void RemoveReservationFromCSV(ReservationsModel reservation)
+    public static void RemoveReservationFromCSV(ReservationsModel reservation)
     {
         // When reserving a seat, the visual auditorium will be updated to show that the seat is reserved. When a reservation is cancelled, this function will be used to revert the seat(s) back to showing up as available
 
@@ -146,16 +146,8 @@ public class ReservationsLogic
                     // reservations can only be cancelled 24+ hours in advance
                     if (reservation.ViewingDate > DateTime.Now.AddHours(24)) // attempt at cancelling is being made 24+ hours in advance
                     {
-                        // find index of reservation to remove
-                        int index = _reservations.FindIndex(r => r.ReservationCode == reservation.ReservationCode);
                         
-                        // reservation will show up as "cancelled" in json
-                        _reservations[index].Cancelled = true;
-                        
-                        // update the json so that the reservation is no longer there
-                        ReservationsAccess.WriteAll(_reservations);
-
-                        RemoveReservationFromCSV(reservation);
+                        CancelResLogic(reservation);
 
                         // show confirmation that the reservation has been cancelled + return to go back to the menu
                         List<string> emptyList = new List<string>() {"Return"};
@@ -193,6 +185,22 @@ public class ReservationsLogic
         }
         
     }
+
+    public static void CancelResLogic(ReservationsModel reservation)
+    {
+        List<ReservationsModel> reservations = ReservationsAccess.LoadAll();
+        // find index of reservation to remove
+        int index = reservations.FindIndex(r => r.ReservationCode == reservation.ReservationCode);
+        
+        // reservation will show up as "cancelled" in json
+        reservations[index].Cancelled = true;
+        
+        // update the json so that the reservation is no longer there
+        ReservationsAccess.WriteAll(reservations);
+
+        RemoveReservationFromCSV(reservation);
+    }
+
     public void PrintReservations() => PrintReservations(_reservations);
 
     public void PrintReservations(List<ReservationsModel> reservations)

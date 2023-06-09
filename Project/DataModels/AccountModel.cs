@@ -30,7 +30,6 @@ public class AccountModel
     [JsonPropertyName("accessibilityRequest")]
     public string AccessibilityRequest { get; set; }
 
-
     public bool Authorized = false;
 
     public AccountModel(int id, string emailAddress, string password, string fullName, AccountType type = AccountType.CUSTOMER)

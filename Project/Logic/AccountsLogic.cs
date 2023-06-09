@@ -41,14 +41,15 @@ public class AccountsLogic
 
     }
 
-    public void RemoveAcc(int id)
+    public static void RemoveAcc(int id)
     {
+        List<AccountModel> accounts = AccountsAccess.LoadAll();
         // finds if there is a movie with the same id
-        int index = _accounts.FindIndex(s => s.Id == id);
+        int index = accounts.FindIndex(s => s.Id == id);
 
         // removes the movie with that id, and updates the json file
-        _accounts.Remove(_accounts[index]);
-        AccountsAccess.WriteAll(_accounts);
+        accounts.Remove(accounts[index]);
+        AccountsAccess.WriteAll(accounts);
     }
     public void RemoveAccAdmin(int id)
     {
@@ -236,10 +237,8 @@ public class AccountsLogic
         Console.WriteLine("Name:");
         string fullName = Console.ReadLine() + "";
 
-        AccountModel.AccountType accountType = isEmployeeRegistration ? AccountModel.AccountType.EMPLOYEE : isAdminRegistration ? AccountModel.AccountType.ADMIN : AccountModel.AccountType.CUSTOMER;
-        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, AccountsLogic.HashPassword(password), fullName, accountType);
-        accountsLogic.UpdateList(acc);
-        
+        AccountModel acc = RegisterLogic(isEmployeeRegistration, isAdminRegistration, email, password, fullName);
+
         if (!isEmployeeRegistration && !isAdminRegistration) accountsLogic.SetCurrentAccount(acc);
 
         List<string> DList = new List<string>(){"Continue"};
@@ -251,6 +250,16 @@ public class AccountsLogic
         }
         
         Console.CursorVisible = false;
+    }
+
+    public static AccountModel RegisterLogic(bool isEmployeeRegistration, bool isAdminRegistration, string email, string password, string fullName)
+    {
+        
+        AccountModel.AccountType accountType = isEmployeeRegistration ? AccountModel.AccountType.EMPLOYEE : isAdminRegistration ? AccountModel.AccountType.ADMIN : AccountModel.AccountType.CUSTOMER;
+        AccountModel acc = new AccountModel(accountsLogic.GetNextId(), email, AccountsLogic.HashPassword(password), fullName, accountType);
+        accountsLogic.UpdateList(acc);
+        
+        return acc;
     }
 
     // Returns true if the email is not empty, contains an '@', contains a '.' and does not contain any white space.

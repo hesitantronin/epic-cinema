@@ -388,5 +388,44 @@
     "runtime": null,
     "movie_price": 10.99,
     "timeslot": null
+  },
+  {
+    "id": 31,
+    "title": null,
+    "genre": null,
+    "rating": 0,
+    "description": "Salty bacon",
+    "age": 0,
+    "viewing_date": "0001-01-01T00:00:00",
+    "publish_date": "0001-01-01T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  },
+  {
+    "id": 32,
+    "title": null,
+    "genre": null,
+    "rating": 0,
+    "description": "Carbonated soft drink",
+    "age": 0,
+    "viewing_date": "0001-01-01T00:00:00",
+    "publish_date": "0001-01-01T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  },
+  {
+    "id": 33,
+    "title": null,
+    "genre": null,
+    "rating": 0,
+    "description": "Plain potatoes",
+    "age": 0,
+    "viewing_date": "0001-01-01T00:00:00",
+    "publish_date": "0001-01-01T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
   }
 ]

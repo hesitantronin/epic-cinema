@@ -72,8 +72,7 @@ public static class OptionsMenu
 
                     if (AccountsLogic.CurrentAccount != null && AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
                     {
-                        AccountsLogic accLog = new AccountsLogic();
-                        accLog.RemoveAcc(AccountsLogic.CurrentAccount.Id);
+                        AccountsLogic.RemoveAcc(AccountsLogic.CurrentAccount.Id);
                         AccountsLogic.CurrentAccount = null;
                     }
 
@@ -717,8 +716,7 @@ public static class OptionsMenu
         {
             if (acc.Type == 0)
             {
-                AccountsLogic accLog = new AccountsLogic();
-                accLog.RemoveAcc(acc.Id);
+                AccountsLogic.RemoveAcc(acc.Id);
             }
         }
     }

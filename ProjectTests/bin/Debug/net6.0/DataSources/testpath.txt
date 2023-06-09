@@ -1,1 +1,1 @@
-DataSources\testmovies.json
+testmovies

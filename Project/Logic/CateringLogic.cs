@@ -284,9 +284,7 @@ public class CateringLogic
                 }
                 else
                 {
-                    _menu.Remove(_menu[index]);
-
-                    CateringAccess.WriteAll(_menu);
+                    RemoveLogic(index);
 
                     OptionsMenu.FakeContinue("Item deleted successfully.", "item deleted");
 
@@ -294,7 +292,15 @@ public class CateringLogic
                 }
             }
         }
+    }
 
+    public static void RemoveLogic(int index)
+    {
+        List<CateringModel> menu = CateringAccess.LoadAll();
+        
+        menu.Remove(menu[index]);
+
+        CateringAccess.WriteAll(menu);
     }
     public void PrintMenu() => PrintMenu(_menu);
 
@@ -543,6 +549,34 @@ public class CateringLogic
             }
         } while (!File.Exists(filename));
 
+        List<CateringModel> existingFoods = AddMultipleFoodsJsonLogic(filename);
+
+        // Display existing movies message
+        if (existingFoods.Count > 0)
+        {
+            OptionsMenu.Logo("double items");
+            Console.WriteLine("The following food items already exist and were not added:\n");
+            foreach (CateringModel existingFood in existingFoods)
+            {
+                Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: € {String.Format("{0:0.00}", existingFood.Price)}\n");
+            }
+            Console.CursorVisible = false;
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+
+            // actually returns you to the main menu
+            Console.ReadLine();
+
+            Console.CursorVisible = true;
+        }
+        else
+        {
+            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");
+        }
+    }
+
+    public static List<CateringModel> AddMultipleFoodsJsonLogic(string filename)
+    {
         // Read file with new food items
         string jsonstring = ReadJSON(filename);
         List<CateringModel> newFoodData = new();
@@ -580,28 +614,7 @@ public class CateringLogic
         // Write new + old movies to file
         CateringAccess.WriteAll(originalFoodData);
 
-        // Display existing movies message
-        if (existingFoods.Count > 0)
-        {
-            OptionsMenu.Logo("double items");
-            Console.WriteLine("The following food items already exist and were not added:\n");
-            foreach (CateringModel existingFood in existingFoods)
-            {
-                Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: € {String.Format("{0:0.00}", existingFood.Price)}\n");
-            }
-            Console.CursorVisible = false;
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-
-            // actually returns you to the main menu
-            Console.ReadLine();
-
-            Console.CursorVisible = true;
-        }
-        else
-        {
-            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");
-        }
+        return existingFoods;
     }
 
     public static string ReadJSON(string filename)
@@ -649,6 +662,38 @@ public class CateringLogic
             }
         } while (!File.Exists(filename));
 
+        List<CateringModel> existingFoods = AddMultipleFoodsCsvLogic(filename);
+
+        // Display existing movies message
+        if (existingFoods.Count > 0)
+        {
+            OptionsMenu.Logo("double items");
+
+            Console.WriteLine("The following food items already exist and were not added:\n");
+            foreach (CateringModel existingFood in existingFoods)
+            {
+                Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: {existingFood.Price}");
+            }
+
+            Console.CursorVisible = false;
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+
+            // actually returns you to the main menu
+            Console.ReadLine();
+
+            Console.CursorVisible = true;
+        }
+        else
+        {
+            OptionsMenu.Logo("Items added");
+
+            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");
+        }
+    }
+
+    public static List<CateringModel> AddMultipleFoodsCsvLogic(string  filename)
+    {
         var csvMenu = new List<CateringModel>();
         var filePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filename));
 
@@ -696,32 +741,7 @@ public class CateringLogic
         // Write original movies + new movies back to file
         CateringAccess.WriteAll(originalFoods);
 
-        // Display existing movies message
-        if (existingFoods.Count > 0)
-        {
-            OptionsMenu.Logo("double items");
-
-            Console.WriteLine("The following food items already exist and were not added:\n");
-            foreach (CateringModel existingFood in existingFoods)
-            {
-                Console.WriteLine($"- Food ID: {existingFood.Id}\nName: {existingFood.Name}\nType: {existingFood.Type}\nPrice: {existingFood.Price}");
-            }
-
-            Console.CursorVisible = false;
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-
-            // actually returns you to the main menu
-            Console.ReadLine();
-
-            Console.CursorVisible = true;
-        }
-        else
-        {
-            OptionsMenu.Logo("Items added");
-
-            OptionsMenu.FakeContinue("Food items have been succesfully added.", "Items added");
-        }
+        return existingFoods;
     }
     public List<CateringModel> SortBy(string input, bool ascending)
     {
@@ -877,6 +897,22 @@ public class CateringLogic
             }
         }
 
+        AddOrUpdateFoodLogic(existingCatering, name, type, price, description);
+
+        if (existingCatering != null)
+        {
+            OptionsMenu.FakeContinue("Menu updated successfully!", "menu updated");
+        }
+        else
+        {
+            OptionsMenu.FakeContinue("Food item added successfully!", "item added");
+        }
+    }
+
+    public static void AddOrUpdateFoodLogic(CateringModel existingCatering, string name, string type, double price, string description)
+    {
+        List<CateringModel> foods = CateringAccess.LoadAll();
+
         int maxId = foods.Count > 0 ? foods.Max(food => food.Id) : 0;
 
         if (existingCatering != null)
@@ -886,31 +922,14 @@ public class CateringLogic
             existingCatering.Type = type;
             existingCatering.Price = price;
             existingCatering.Description = description;
-
-            OptionsMenu.Logo("menu updated");
-            Console.WriteLine("Menu updated successfully!");
-
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-
-            // actually returns you to the main menu
-            Console.ReadLine();
         }
         else
         {
             // Create a new movie with a unique ID
             CateringModel newFood = new CateringModel(++maxId, name, type, price, description);
             foods.Add(newFood);
-
-            OptionsMenu.Logo("Item added");
-            Console.WriteLine("Food item added successfully!");
-
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-
-            // actually returns you to the main menu
-            Console.ReadLine();
         }
+
         // Save the updated movies list
         CateringAccess.WriteAll(foods);
     }

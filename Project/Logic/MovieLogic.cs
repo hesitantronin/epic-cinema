@@ -526,9 +526,7 @@ public class MovieLogic
                 }
                 else
                 {
-                    _movies.Remove(_movies[index]);
-
-                    MovieAccess.WriteAll(_movies);
+                    RemoveLogic(index);
                     
                     OptionsMenu.FakeContinue("Movie deleted successfully.", "movie deleted");
 
@@ -537,6 +535,15 @@ public class MovieLogic
                 }
             }
         }
+    }
+    
+    public static void RemoveLogic(int index)
+    {
+        List<MovieModel> movies = MovieAccess.LoadAll();
+        
+        movies.Remove(movies[index]);
+
+        MovieAccess.WriteAll(movies);
     }
 
     public void PrintMovies() => PrintMovies(_movies);
@@ -685,7 +692,7 @@ public class MovieLogic
         return finalString;
     }
 
-    public static void AddMultipleMoviesJSON()
+    public static void AddMultipleMoviesJSON( )
     {
         string filename;
         do
@@ -707,6 +714,36 @@ public class MovieLogic
             }
         } while (!File.Exists(filename));
 
+        List<MovieModel> existingMovies = AddMultipleMoviesJsonLogic(filename);
+
+        // Display existing movies message
+        if (existingMovies.Count > 0)
+        {
+            OptionsMenu.Logo("double movies");
+
+            Console.WriteLine("The following movies already exist and were not added:\n");
+            foreach (MovieModel existingMovie in existingMovies)
+            {
+                Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
+            }
+
+            Console.CursorVisible = false;
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+
+            Console.CursorVisible = true; 
+        }
+        else
+        {
+            OptionsMenu.FakeContinue("Movies have been succesfully added.", "Movies added");          
+        }  
+    }
+
+    public static List<MovieModel> AddMultipleMoviesJsonLogic(string filename)
+    {
         // Read file with new movies
         string jsonstring = ReadJSON(filename);
         List<MovieModel> newMovieData = new();
@@ -743,32 +780,10 @@ public class MovieLogic
 
         // Write new + old movies to file
         MovieAccess.WriteAll(originalMovieData);
-
-        // Display existing movies message
-        if (existingMovies.Count > 0)
-        {
-            OptionsMenu.Logo("double movies");
-
-            Console.WriteLine("The following movies already exist and were not added:\n");
-            foreach (MovieModel existingMovie in existingMovies)
-            {
-                Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
-            }
-
-            Console.CursorVisible = false;
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
-
-            Console.CursorVisible = true; 
-        }
-        else
-        {
-            OptionsMenu.FakeContinue("Movies have been succesfully added.", "Movies added");          
-        }  
+        return existingMovies;
     }
+
+
     public static string ReadJSON(string filename)
     {
         StreamReader? reader = null;
@@ -814,6 +829,36 @@ public class MovieLogic
             }
         } while (!File.Exists(filename));
        
+        List<MovieModel> existingMovies = AddMultipleMoviesCsvLogic(filename);
+
+        // Display existing movies message
+        if (existingMovies.Count > 0)
+        {
+            OptionsMenu.Logo("double movies");
+
+            Console.WriteLine("The following movies already exist and were not added:\n");
+            foreach (MovieModel existingMovie in existingMovies)
+            {
+                Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
+            }
+
+            Console.CursorVisible = false;
+            // prints a fake return option hehe
+            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
+        
+            // actually returns you to the main menu
+            Console.ReadLine();
+
+            Console.CursorVisible = true;
+        }
+        else
+        {
+            OptionsMenu.FakeContinue("Movies have been succesfully added.", "movies added");      
+        }
+    }
+
+    public static List<MovieModel> AddMultipleMoviesCsvLogic(string filename)
+    {
         var csvMovies = new List<MovieModel>();
         var filePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filename));
 
@@ -866,30 +911,7 @@ public class MovieLogic
         // Write original movies + new movies back to file
         MovieAccess.WriteAll(originalMovies);
 
-        // Display existing movies message
-        if (existingMovies.Count > 0)
-        {
-            OptionsMenu.Logo("double movies");
-
-            Console.WriteLine("The following movies already exist and were not added:\n");
-            foreach (MovieModel existingMovie in existingMovies)
-            {
-                Console.WriteLine($"- Movie ID: {existingMovie.Id}\nTitle: {existingMovie.Title}\nGenre: {existingMovie.Genre}\n");
-            }
-
-            Console.CursorVisible = false;
-            // prints a fake return option hehe
-            Console.WriteLine("\n > \u001b[32mContinue\u001b[0m");
-        
-            // actually returns you to the main menu
-            Console.ReadLine();
-
-            Console.CursorVisible = true;
-        }
-        else
-        {
-            OptionsMenu.FakeContinue("Movies have been succesfully added.", "movies added");      
-        }
+        return existingMovies;
     }
     
     // private static void RemoveMovie()
@@ -1376,6 +1398,22 @@ public class MovieLogic
             }
         }   
 
+        AddOrUpdateMovieLogic(existingMovie, title, genre, rating, description, age, viewingDate, publishDate, price, runTime, movieTimeSlots);
+
+        if (existingMovie != null)
+        {
+            OptionsMenu.FakeContinue("Movie updated successfully!", "movie updated");
+        }
+        else
+        {
+            OptionsMenu.FakeContinue("Movie added successfully!", "movie added");
+        }
+    }
+
+    public static void AddOrUpdateMovieLogic(MovieModel existingMovie, string title, string genre, double rating, string description, int age, DateTime viewingDate, DateTime publishDate, double price, string runTime, List<int> movieTimeSlots)
+    {
+        List<MovieModel> movies = MovieAccess.LoadAll();
+
         int maxId = movies.Count > 0 ? movies.Max(movie => movie.Id) : 0;
 
         if (existingMovie != null)
@@ -1391,16 +1429,12 @@ public class MovieLogic
             existingMovie.MoviePrice = price;
             existingMovie.RunTime = runTime;
             existingMovie.TimeSlot = movieTimeSlots;
-    
-            OptionsMenu.FakeContinue("Movie updated successfully!", "movie updated");
         }
         else
         {
             // Create a new movie with a unique ID
             MovieModel newMovie = new MovieModel(++maxId, title, genre, rating, description, age, viewingDate, publishDate, runTime, movieTimeSlots, price);
             movies.Add(newMovie);
-
-            OptionsMenu.FakeContinue("Movie added successfully!", "movie added");
         }
         // Save the updated movies list
         MovieAccess.WriteAll(movies);
