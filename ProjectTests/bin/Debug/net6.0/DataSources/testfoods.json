@@ -1,0 +1,23 @@
+[
+    {
+      "id": 1,
+      "name": "Bacon",
+      "type": "Snack",
+      "price": 2.99,
+      "description": "Salty bacon"
+    },
+    {
+      "id": 2,
+      "name": "Fanta",
+      "type": "Beverage",
+      "price": 1.99,
+      "description": "Carbonated soft drink"
+    },
+    {
+      "id": 3,
+      "name": "Potatoes",
+      "type": "Snack",
+      "price": 0.99,
+      "description": "Plain potatoes"
+    }
+]
