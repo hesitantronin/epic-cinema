@@ -102,10 +102,10 @@ public static class OptionsMenu
                 // list of options that will be displayed in start
                 List<string> StartList = new List<string>()
                 {
-                    "Logout",
                     menuOption,
                     "View Reservations",
                     "Info page",
+                    "Logout"
                 };
 
                 // the necessary info gets used in the display method
@@ -113,13 +113,13 @@ public static class OptionsMenu
                 int option = OptionsMenu.DisplaySystem(StartList, "START", "Use ⬆ and ⬇ to navigate and press Enter to select:", true, true, "Exit");
 
                 // Logout
-                if (option == 1)
+                if (option == 4)
                 {
                     LogOut();
                 }
 
                 // depending on the kind of account, it will restart the right menu for you
-                else if (option == 2)
+                else if (option == 1)
                 {
                     if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
                     {
@@ -136,12 +136,12 @@ public static class OptionsMenu
                 }
 
                 // Shows the Info Page
-                else if (option == 4)
+                else if (option == 3)
                 {
                     InfoPage();
                 }
 
-                else if (option == 3)
+                else if (option == 2)
                 {
                     // View reservations
                     ReservationsLogic reservationsLogic = new ReservationsLogic();
