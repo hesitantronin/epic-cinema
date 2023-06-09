@@ -644,15 +644,65 @@ public class MovieLogic
         return unsorted;
     }
 
-    public List<MovieModel> FilterBy(string? genre, bool? mature)
+    public List<MovieModel> FilterBy(List<(object Value, string Type)> filters, bool mature)
     {
-        // copies the original list
         List<MovieModel> filtered = _movies;
 
-        if (genre != null)
-            filtered = _movies.Where(movie => movie.Genre == genre).ToList();
-        if (mature == false)
+        // Retrieve selected genres from filters
+        List<string> selectedGenres = filters
+            .Where(filter => filter.Type == "genre")
+            .Select(filter => filter.Value?.ToString())
+            .Where(genre => !string.IsNullOrEmpty(genre))
+            .ToList();
+
+        // Apply genre filter if at least one genre is selected
+        if (selectedGenres.Count > 0)
+        {
+            filtered = filtered.Where(movie => selectedGenres.Any(genre => movie.Genre.Contains(genre))).ToList();
+        }
+
+        // Variables to store price range values
+        double fromPrice = 0;
+        double toPrice = 0;
+
+        // Apply other filters
+        foreach (var filter in filters)
+        {
+            var (value, type) = filter;
+
+            // Store the price range value 1
+            if (type == "price range value 1")
+            {
+                fromPrice = Convert.ToDouble(value);
+            }
+            // Store the price range value 2
+            else if (type == "price range value 2")
+            {
+                toPrice = Convert.ToDouble(value);
+            }
+            // Apply rating filter
+            else if (type == "rating" && value is double rating)
+            {
+                filtered = filtered.Where(movie => movie.Rating >= rating).ToList();
+            }
+            // Apply date filter
+            else if (type == "date" && value is DateTime date && date != DateTime.MinValue)
+            {
+                filtered = filtered.Where(movie => movie.ViewingDate.Date == date.Date).ToList();
+            }
+        }
+
+        // Apply price range filter
+        filtered = filtered.Where(movie =>
+            movie.MoviePrice >= fromPrice &&
+            movie.MoviePrice <= toPrice
+        ).ToList();
+
+        // Apply mature filter
+        if (mature)
+        {
             filtered = filtered.Where(movie => movie.Age < 18).ToList();
+        }
 
         return filtered;
     }
