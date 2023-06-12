@@ -352,5 +352,37 @@
     "reservationCode": "12-06-2023 14:13/5725843",
     "totalPrice": 10.99,
     "cancelled": true
+  },
+  {
+    "id": 12,
+    "emailAddress": "@.U",
+    "fullName": "User",
+    "movie": {
+      "id": 1,
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "rating": 9.3,
+      "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+      "age": 16,
+      "viewing_date": "2023-10-12T22:30:00",
+      "publish_date": "1994-05-01T00:00:00",
+      "runtime": null,
+      "movie_price": 10.99,
+      "timeslot": null
+    },
+    "seatReservation": [
+      {
+        "Id": "A5",
+        "Price": 0,
+        "SeatTypeValue": 1,
+        "SeatTypeName": "Cheap Price"
+      }
+    ],
+    "cateringReservation": {},
+    "accessibilityRequest": "",
+    "viewing_date": "2023-10-12T22:30:00",
+    "reservationCode": "12-06-2023 14:42/7451346",
+    "totalPrice": 10.99,
+    "cancelled": true
   }
 ]
