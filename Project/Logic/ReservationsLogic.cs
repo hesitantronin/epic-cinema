@@ -145,8 +145,7 @@ public class ReservationsLogic
                 case 1: // Cancel
                     // reservations can only be cancelled 24+ hours in advance
                     if (reservation.ViewingDate > DateTime.Now.AddHours(24)) // attempt at cancelling is being made 24+ hours in advance
-                    {
-                        
+                    {                        
                         CancelResLogic(reservation);
 
                         // show confirmation that the reservation has been cancelled + return to go back to the menu
@@ -230,6 +229,7 @@ public class ReservationsLogic
 
                 while (BaseLine < reservations.Count())
                 {   
+                    reservations = GetOwnReservations();
 
                     // if there are more than 5 reservations in the list, a "next page" button will be visible and there will be multiple pages available
                     if (BaseLine + 5 > reservations.Count())
