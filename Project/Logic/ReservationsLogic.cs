@@ -67,6 +67,8 @@ public class ReservationsLogic
 
     public List<ReservationsModel> GetOwnReservations()
     {
+        LoadReservations();
+
         List<ReservationsModel> reservations = new List<ReservationsModel>();
         var CurrentAcc = AccountsLogic.CurrentAccount; // less typing later
         
