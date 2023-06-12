@@ -1,0 +1,41 @@
+[
+    {
+    "id": 1,
+    "title": "Gladiator",
+    "genre": "Adventure",
+    "rating": 8.5,
+    "description": "A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him into slavery.",
+    "age": 16,
+    "viewing_date": "2023-09-09T16:45:00",
+    "publish_date": "1993-10-25T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  },
+  {
+    "id": 2,
+    "title": "The Prestige",
+    "genre": "Drama",
+    "rating": 9,
+    "description": "After a tragic accident, two stage magicians in 1890s London engage in a battle to create the ultimate illusion while sacrificing everything they have to outwit each other.",
+    "age": 6,
+    "viewing_date": "2023-12-04T14:30:00",
+    "publish_date": "1957-10-01T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  },
+  {
+    "id": 3,
+    "title": "Casablanca",
+    "genre": "Romance",
+    "rating": 9,
+    "description": "A cynical expatriate American cafe owner struggles to decide whether or not to help his former lover and her fugitive husband escape the Nazis in French Morocco.",
+    "age": 16,
+    "viewing_date": "2023-11-02T14:00:00",
+    "publish_date": "1974-06-29T00:00:00",
+    "runtime": null,
+    "movie_price": 10.99,
+    "timeslot": null
+  }
+]
