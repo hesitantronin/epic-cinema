@@ -22,6 +22,7 @@ public class CateringLogic
         // returns the movie data that matches the id
         return _menu.Find(i => i.Id == id);
     }
+    
     public void PrintMenu(List<CateringModel> FoodList, bool IsEmployee = false, bool IsEdit = false)
     {
         while (true)
@@ -30,8 +31,6 @@ public class CateringLogic
             {
                 return;
             }
-
-            FoodList = CateringAccess.LoadAll();
 
             // prints an error message if nothing was found
             if (FoodList.Count() == 0)
@@ -125,7 +124,7 @@ public class CateringLogic
                         else if (IsEmployee && !IsEdit)
                         {
                             EditCatering(subList[option - 1]);
-                            break;
+                            return;
                         }
                         else
                         {
@@ -306,6 +305,7 @@ public class CateringLogic
 
         CateringAccess.WriteAll(menu);
     }
+
     public void PrintMenu() => PrintMenu(_menu);
 
     public void CateringInfo(CateringModel foodItem)
