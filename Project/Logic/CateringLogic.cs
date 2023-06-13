@@ -31,6 +31,8 @@ public class CateringLogic
                 return;
             }
 
+            FoodList = CateringAccess.LoadAll();
+
             // prints an error message if nothing was found
             if (FoodList.Count() == 0)
             {
@@ -123,6 +125,7 @@ public class CateringLogic
                         else if (IsEmployee && !IsEdit)
                         {
                             EditCatering(subList[option - 1]);
+                            break;
                         }
                         else
                         {
@@ -268,12 +271,13 @@ public class CateringLogic
 
             if (!Return)
             {
+                LoadCatering();
+
                 // Find the index of the movie to update
                 int index = _menu.FindIndex(c => c.Id == foodItem.Id);
 
                 if (!remove)
                 {
-
                     // Update the movie in the list
                     _menu[index] = foodItem;
 

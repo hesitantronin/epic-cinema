@@ -73,6 +73,24 @@ public class MovieLogic
                 return;
             }
 
+            TempMovieList = MovieAccess.LoadAll();
+
+            MovieList = null;
+            if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER || AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.GUEST)
+            {
+                foreach (MovieModel movie in TempMovieList)
+                {   
+                    if (movie.ViewingDate > DateTime.Now)
+                    {
+                        MovieList.Add(movie);
+                    }
+                }
+            }
+            else
+            {
+                MovieList = TempMovieList;
+            }
+
             // prints an error message if nothing was found
             if (MovieList.Count() == 0)
             {
@@ -165,6 +183,7 @@ public class MovieLogic
                         else if (IsEmployee && !IsEdit)
                         {
                             EditMovie(subList[option - 1]);
+                            break;
                         }
                         else if (SeatEdit)
                         {
@@ -508,6 +527,8 @@ public class MovieLogic
 
             if (!Return)
             {
+                LoadMovies();
+                
                 // Find the index of the movie to update
                 int index = _movies.FindIndex(m => m.Id == movie.Id);
 
