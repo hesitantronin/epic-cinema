@@ -416,7 +416,7 @@ public class CateringLogic
 
                         menuReservations += $"\nSubtotal Catering: ----  € {String.Format("{0:0.00}", totalCatering)}";
 
-                        List<string> finalOptionList = new() {"yes", "remove items", "Add more items"};
+                        List<string> finalOptionList = new() {"Yes", "Remove items", "Add more items"};
 
                         int option2 = OptionsMenu.DisplaySystem(finalOptionList, "catering selection", $"You've selected these menu items:\n\n{menuReservations}\n\nAre you satisfied with these selections?", true, true);
 
