@@ -67,6 +67,8 @@ public class ReservationsLogic
 
     public List<ReservationsModel> GetOwnReservations()
     {
+        LoadReservations();
+
         List<ReservationsModel> reservations = new List<ReservationsModel>();
         var CurrentAcc = AccountsLogic.CurrentAccount; // less typing later
         
@@ -145,8 +147,7 @@ public class ReservationsLogic
                 case 1: // Cancel
                     // reservations can only be cancelled 24+ hours in advance
                     if (reservation.ViewingDate > DateTime.Now.AddHours(24)) // attempt at cancelling is being made 24+ hours in advance
-                    {
-                        
+                    {                        
                         CancelResLogic(reservation);
 
                         // show confirmation that the reservation has been cancelled + return to go back to the menu
@@ -230,6 +231,14 @@ public class ReservationsLogic
 
                 while (BaseLine < reservations.Count())
                 {   
+                    if (AccountsLogic.CurrentAccount.Type == AccountModel.AccountType.CUSTOMER)
+                    {
+                        reservations = GetOwnReservations();
+                    }
+                    else
+                    {
+                        reservations = ReservationsAccess.LoadAll();
+                    }
 
                     // if there are more than 5 reservations in the list, a "next page" button will be visible and there will be multiple pages available
                     if (BaseLine + 5 > reservations.Count())

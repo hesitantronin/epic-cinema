@@ -165,6 +165,7 @@ public class MovieLogic
                         else if (IsEmployee && !IsEdit)
                         {
                             EditMovie(subList[option - 1]);
+                            return;
                         }
                         else if (SeatEdit)
                         {
@@ -508,6 +509,8 @@ public class MovieLogic
 
             if (!Return)
             {
+                LoadMovies();
+                
                 // Find the index of the movie to update
                 int index = _movies.FindIndex(m => m.Id == movie.Id);
 

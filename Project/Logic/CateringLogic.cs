@@ -22,6 +22,7 @@ public class CateringLogic
         // returns the movie data that matches the id
         return _menu.Find(i => i.Id == id);
     }
+    
     public void PrintMenu(List<CateringModel> FoodList, bool IsEmployee = false, bool IsEdit = false)
     {
         while (true)
@@ -123,6 +124,7 @@ public class CateringLogic
                         else if (IsEmployee && !IsEdit)
                         {
                             EditCatering(subList[option - 1]);
+                            return;
                         }
                         else
                         {
@@ -268,12 +270,13 @@ public class CateringLogic
 
             if (!Return)
             {
+                LoadCatering();
+
                 // Find the index of the movie to update
                 int index = _menu.FindIndex(c => c.Id == foodItem.Id);
 
                 if (!remove)
                 {
-
                     // Update the movie in the list
                     _menu[index] = foodItem;
 
@@ -302,6 +305,7 @@ public class CateringLogic
 
         CateringAccess.WriteAll(menu);
     }
+
     public void PrintMenu() => PrintMenu(_menu);
 
     public void CateringInfo(CateringModel foodItem)
@@ -412,7 +416,7 @@ public class CateringLogic
 
                         menuReservations += $"\nSubtotal Catering: ----  € {String.Format("{0:0.00}", totalCatering)}";
 
-                        List<string> finalOptionList = new() {"yes", "remove items", "Add more items"};
+                        List<string> finalOptionList = new() {"Yes", "Remove items", "Add more items"};
 
                         int option2 = OptionsMenu.DisplaySystem(finalOptionList, "catering selection", $"You've selected these menu items:\n\n{menuReservations}\n\nAre you satisfied with these selections?", true, true);
 

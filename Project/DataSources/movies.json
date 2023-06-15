@@ -375,18 +375,5 @@
     "runtime": null,
     "movie_price": 10.99,
     "timeslot": null
-  },
-  {
-    "id": 30,
-    "title": "It\u0027s a Wonderful Life",
-    "genre": "Fantasy",
-    "rating": 8.6,
-    "description": "An angel is sent from Heaven to help a desperately frustrated businessman by showing him what life would have been like if he had never existed.",
-    "age": 10,
-    "viewing_date": "2023-06-27T23:00:00",
-    "publish_date": "1946-02-07T00:00:00",
-    "runtime": null,
-    "movie_price": 10.99,
-    "timeslot": null
   }
 ]

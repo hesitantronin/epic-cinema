@@ -51,7 +51,7 @@ public class EmployeeMenu
         {
             List<string> SeatDataOptions = new() {"Global Seat Data", "Edit Heat Map", "Reset Heat Map"};
 
-            int option2 = OptionsMenu.DisplaySystem(SeatDataOptions, "edit auditorium", "What would you like tho change?");
+            int option2 = OptionsMenu.DisplaySystem(SeatDataOptions, "edit auditorium", "What would you like to change?");
             
             // global seat data
             if (option2 == 1)
